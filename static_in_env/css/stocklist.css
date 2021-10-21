@@ -1,0 +1,8 @@
+.navbar {
+    position:  relative !important;
+    background-color: #30353b!important;
+}
+#mapContainer {
+    width: 100%;
+    text-align: center;
+}

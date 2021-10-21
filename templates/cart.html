@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<div class="container mt-5  mb-5">
+    <section class="wrapper sec-space shopping-cart">
+        <div class="container" id="bindallcartdata">
+            <h2 class="section-title"> Warenkorb </h2>
+            <form action="/Cart/Cartdata" enctype="multipart/form-data" method="post">
+                <input name="__RequestVerificationToken" type="hidden" value="">
+                <div class="cart-table">
+                    <table class="product-table">
+                        <thead class="font-2">
+                            <tr>
+                                <th></th>
+                                <th>Produkt</th>
+                                <th>Preis</th>
+                                <th>Menge</th>
+                                <th>Summe</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="image">
+                                    <div class="white-bg">
+                                        <a class="media-link" href="/Tracker/Detail/6">
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="description">
+                                    <a href="/Tracker/Detail/6">
+                                        GPS Tracker Paket 1
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            <i class="arrow_carrot-right"></i>
+                                            <span>Kategorie:</span> <span class="gray-color"> GPS Tracker </span>
+                                        </li>
+                                        <li>
+                                            <i class="arrow_carrot-right"></i>
+                                            <span>Artikel Nummer:</span> <span class="gray-color"> 10002 </span>
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td class="price">
+                                    69,90 €
+                                </td>
+                                <td class="quantity">
+                                    <div class="prod-btns">
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-left-minus btn btn-default btn-number" data-type="minus" data-field="" onclick="getqtydecerment(32)">
+                                                    <span class="fa fa-minus"></span>
+                                                </button>
+                                            </span>
+                                            <input type="text" value="1" class="form-control input-number" id="qty_32" readonly="">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-right-plus btn btn-default btn-number" data-type="plus" data-field="" onclick="getqtyincerment(32,1)">
+                                                    <span class="fa fa-plus"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span id="spnqty_32" style="display:none"> Maximale Menge ist:1 </span>
+                                    </div>
+                                </td>
+                                <td class="price">
+                                    69,90 €
+                                </td>
+                                <td class="remove-edit">
+                                    <a href="#" class="fa fa-trash" onclick="Comfirmundelete(32)"></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-md-7 col-lg-8 col-sm-6">
+                    </div>
+                    <div class="col-md-5 col-lg-4 col-sm-8 float-right">
+                        <div class="chk-total text-right">
+                            <ul class="font-2">
+                                <li class="title-2"> Zwischensumme<span> 69,90 € </span> </li>
+                                <li class="title-2">MwSt <span>13,28 € </span> </li>
+                                <li class="section-title pt-20"> <b> Gesamtsumme  <span class="red-color">83,18 € </span> </b> </li>
+                                <li class="ptb-10"> <hr class="divider"> </li>
+                                <li>
+
+
+                                            <button class="btn btn-warning" type="button" onclick="Comfirmsubscription()">Gehen Sie zur Kasse</button>
+
+                                    
+
+
+                                    <a class="btn btn-warning" href="/Shop">Weiter einkaufen</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div class="text-center"></div>
+                    </div>
+                </div>
+            </form>
+            <div id="preloader" style="display: none;"><div id="status" style="display: none;"></div></div>
+            <script src="/Scripts/Admin/bootbox.min.js"></script>
+            <script>
+
+                $(document).ready(function () {
+
+                    Loader(1)
+                    var oldConfirm = bootbox.confirm;
+                    var oldPrompt = bootbox.prompt;
+                    bootbox.confirm = function (options) {
+                        if (options.reorder) {
+                            options = $.extend({}, options, { show: false });    // don't show the modal
+                            var $dialog = oldConfirm(options),
+                                $cancel = $dialog.find('[data-bb-handler="cancel"]');
+                            $cancel.parent().append($cancel.detach());        // swap the buttons
+                            $dialog.modal('show');
+                        } else {
+                            oldConfirm(options);
+                        }
+                    };
+
+                });
+
+                function Comfirmundelete(ID) {
+
+                    bootbox.confirm({
+                        title: "Artikel l&#246;schen",
+                        reorder: true,
+                        size: "medium",
+                        message: "Sind Sie sicher, dass Sie diesen Artikel aus dem Warenkorb l&#246;schen m&#246;chten?",
+                        // <== re-order buttons
+                        buttons: {
+
+                            confirm: {
+                                label: 'Bestätigen'
+                            },
+                            cancel: {
+                                label: 'Abbrechen'
+                            }
+                        },
+                        callback: function (result) {
+
+                            if (result) {
+                                deletedata(ID);
+                            } else {
+                                // return false;
+                            }
+
+                        }
+                    });
+                }
+
+
+                function deletedata(ID) {
+
+                    $.ajax({
+                        url: 'https://tyc.azurewebsites.net/cart/deletecartitem',
+                        data: { Cartitemid: ID },
+                        async: false,
+                        success: function (response) {
+                            Cartbinddata();
+                        }
+                    });
+                }
+
+
+                function Cartbinddata() {
+                    $.ajax({
+                        url: 'https://tyc.azurewebsites.net/cart/Cartdata',
+                        beforeSend: function () { },
+                        success: function (response) {
+
+                            $('#bindallcartdata').empty();
+                            $('#bindallcartdata').append(response);
+                        }
+                    });
+                }
+
+                function getqtyincerment(cartitemid, maxqty) {
+
+                    var qty_textbox = $("#qty_" + cartitemid).val();
+                    if (maxqty > qty_textbox) {
+                        $.ajax({
+                            type: "POST",
+                            url: 'https://tyc.azurewebsites.net/cart/updateqtycartitem',
+                            data: '{Cartitemid: "' + cartitemid + '",Qty: "' + 1 + '" }',
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (response) {
+                                if (response) {
+
+                                    Cartbinddata();
+
+                                }
+                                else {
+
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#spnqty_" + cartitemid).attr("style", "display:block;color:red;");
+                    }
+
+                }
+
+                function getqtydecerment(cartitemid) {
+                    var qty_textbox = $("#qty_" + cartitemid).val();
+                    if (qty_textbox > 1) {
+                        $.ajax({
+                            type: "POST",
+                            url: 'https://tyc.azurewebsites.net/cart/decrement_updateqtycartitem',
+                            data: '{Cartitemid: "' + cartitemid + '",Qty: "' + 1 + '" }',
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (response) {
+                                if (response) {
+                                    Cartbinddata();
+                                }
+                                else {
+
+                                }
+                            }
+                        });
+                    }
+
+
+                }
+                function Loader(val) {
+                    if (val == 0) {
+                        $('#status').fadeIn();
+                        $('#preloader').delay(50).fadeIn('slow');
+                    }
+                    else {
+                        $('#status').fadeOut();
+                        $('#preloader').delay(50).fadeOut('slow');
+                        $('body').delay(50).css({ 'overflow': 'visible' });
+                    }
+                }
+
+
+                function Comfirmsubscription() {
+
+                    bootbox.confirm({
+                        title: "Subscription",
+                        reorder: true,
+                        size: "medium",
+                        message: "Please login before proceed to checkout <br/> <b>Note :</b> If you don't have any subscription then you first have to subscribe the package.",
+                        // <== re-order buttons
+                        buttons: {
+
+                            confirm: {
+                                label: 'Confirm'
+                            },
+                            cancel: {
+                                label: 'Cancel'
+                            }
+                        },
+                        callback: function (result) {
+
+                            if (result) {
+                                window.location = 'https://tyc.azurewebsites.net/Login?rtnurl=checkout'
+                            } else {
+                                // return false;
+                            }
+
+                        }
+                    });
+                }
+
+            </script>
+        </div> 
+    </section>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/cart.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% load static %}
+<!-- Main sidebar -->
+<div class="sidebar sidebar-dark sidebar-main sidebar-expand-md">
+
+    <!-- Sidebar mobile toggler -->
+    <div class="sidebar-mobile-toggler text-center">
+        <a href="#" class="sidebar-mobile-main-toggle">
+            <i class="icon-arrow-left8"></i>
+        </a>
+        Navigation
+        <a href="#" class="sidebar-mobile-expand">
+            <i class="icon-screen-full"></i>
+            <i class="icon-screen-normal"></i>
+        </a>
+    </div>
+    <!-- /sidebar mobile toggler -->
+
+
+    <!-- Sidebar content -->
+    <div class="sidebar-content">
+
+        <!-- Main navigation -->
+        <div class="card card-sidebar-mobile">
+            <ul class="nav nav-sidebar" data-nav-type="accordion">
+
+                <!-- Main -->
+                <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
+                <li class="nav-item">
+                    <a href="/Admin" class="nav-link active">
+                        <i class="icon-home4"></i>
+                        <span>
+                            Dashboard
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageTrackerAlarm" class="nav-link">
+                        <i class="icon-bell2"></i>
+                        <span>
+                            Überwachungszentrale
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item nav-item-submenu">
+                    <a href="#" class="nav-link"><i class="icon-bus"></i> <span>Wohnmobil</span></a>
+
+                    <ul class="nav nav-group-sub" data-submenu-title="Layouts">
+                        <li class="nav-item"><a href="/Admin/ManageVehicles" class="nav-link active">Alle anzeigen</a></li>
+                        <li class="nav-item"><a href="/Admin/ManageTrackerLoctionHistory" class="nav-link">Tracker location history</a></li>
+                        <li class="nav-item"><a href="/Admin/ManageBrands" class="nav-link">Marken</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item nav-item-submenu">
+                    <a href="#" class="nav-link"><i class="icon-home2"></i> <span>Campingpl&#228;tze</span></a>
+
+                    <ul class="nav nav-group-sub" data-submenu-title="Themes">
+                        <li class="nav-item"><a href="/Admin/ManageCampingPlace" class="nav-link active">Alle anzeigen</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageOrders" class="nav-link">
+                        <i class="icon-cart2"></i>
+                        <span>
+                            Bestellungen
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item nav-item-submenu">
+                    <a href="#" class="nav-link"><i class="icon-users4"></i> <span>user</span></a>
+
+                    <ul class="nav nav-group-sub" data-submenu-title="Starter kit">
+                        <li class="nav-item"><a href="/Admin/ManageUser" class="nav-link">Alle anzeigen</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageMerchant" class="nav-link">
+                        <i class="icon-office"></i>
+                        <span>
+                            H&#228;ndler
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageSecurityCompany" class="nav-link">
+                        <i class="icon-user-tie"></i>
+                        <span>
+                            Sicherheitsdienste
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageSubscriptions" class="nav-link">
+                        <i class="icon-file-empty2"></i>
+                        <span>
+                            Abonnements
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageSubscriptionInvoice" class="nav-link">
+                        <i class="icon-cash2"></i>
+                        <span>
+                            Abonnement Abrechnung
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageTracker" class="nav-link">
+                        <i class="icon-cart2"></i>
+                        <span>
+                            Shop Artikel
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ShopCategory" class="nav-link">
+                        <i class="icon-cart2"></i>
+                        <span>
+                            Shop Kategorie
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageForms" class="nav-link">
+                        <i class="icon-file-pdf"></i>
+                        <span>
+                            Formulare
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageCustomerServicedata" class="nav-link">
+                        <i class="icon-info22"></i>
+                        <span>
+                            Kundeninformationen
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManageCustomerServicedata/CustomerGraphics" class="nav-link">
+                        <i class="icon-info22"></i>
+                        <span>
+                            Grafiken
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/ManagePromotionCredit" class="nav-link">
+                        <i class="icon-file-empty2"></i>
+                        <span>
+                            Promotion Credit
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/Reviewratting" class="nav-link">
+                        <i class="icon-office"></i>
+                        <span>
+                            Kundenbewertungen
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/TermsOfService" class="nav-link">
+                        <i class="icon-office"></i>
+                        <span>
+                            Allgemeine Geschäftsbedingungen
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/AdminPrivacypolicy" class="nav-link">
+                        <i class="icon-office"></i>
+                        <span>
+                            Datenschutzerklärung
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/AdminImprint" class="nav-link">
+                        <i class="icon-office"></i>
+                        <span>
+                            Impressum
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/Adminchangepassword" class="nav-link">
+                        <i class="icon-lock2"></i>
+                        <span>
+                            Passwort &#228;ndern 
+                        </span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- /main navigation -->
+
+    </div>
+    <!-- /sidebar content -->
+    
+</div>
+<!-- /main sidebar -->

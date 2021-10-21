@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<div class="container mt-5  mb-5">
+    <div class="row">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-6">
+            <div id="checkout-wizard" class="ck-wizard clearfix">
+                <div class="tab-content  clearfix">
+                    <div id="register-customer" class="row tab-pane active" role="tabpanel">
+                        <div id="customer" class="col-xs-12 col-md-12">
+                            <form action="/Login" method="post" novalidate="novalidate">
+                                <input name="__RequestVerificationToken" type="hidden" value="">
+                                <div class="validation-summary-valid" data-valmsg-summary="true">
+                                    <ul><li style="display:none"></li></ul>
+                                </div>                                
+                                <div class="panel-wrap">
+                                    <fieldset>
+                                        <h4>Login</h4>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="form_name">User Name</label>
+                                                    <input class="form-control valid" data-val="true" data-val-required=" " id="Username" name="Username" placeholder="your username" type="text" value="">
+                                                    <span class="field-validation-valid" data-valmsg-for="Username" data-valmsg-replace="true"></span>
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="form_name">Passwort</label>
+                                                    <input class="form-control valid" data-val="true" data-val-required=" " id="Password" name="Password" placeholder="your password" type="password">
+                                                    <span class="field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="submit" class="btn btn-warning btn-send" value="Senden ">
+                                            </div>
+                                            <div class="col-md-6" style='text-align: right;'>
+                                                <a href="/ForgotPassword">Passwort vergessen?</a>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            <input type="hidden" id="rtnurl" name="rtnurl">
+                                            <a href="/Subscription">Registrieren Sie sich</a>
+                                        </p>
+                                    </fieldset>
+                                </div>
+                            </form>                     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/login.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,92 @@
+.shop_bg {
+    background-image: url(../img/bg_shop.jpg);
+    background-size: cover;
+}
+.navbar {
+    position:  relative !important;
+    background-color: #30353b!important;
+}
+.sf-icon-box-content-wrap {
+    background: #fff;
+    padding: 40px 30px 60px 30px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    box-shadow: -5px 9px 10px -4px rgb(0 0 0 / 30%);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.sf-animation {
+    -webkit-perspective: 600px;
+    -moz-perspective: 600px;
+    perspective: 600px;
+    opacity: 1;
+    position: relative;
+}
+.sf-icon-box {
+    display: block;
+    position: relative;
+    z-index: 2;
+}
+.sf-icon-box[class*="sf-icon-box-boxed-"] .sf-icon-cont {
+    background-size: 100% 100%;
+    background-position: center center;
+    position: absolute;
+    top: -30px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    height: 55px;
+    width: 55px;
+    line-height: 12px;
+    border: 0;
+    margin: 0;
+    transition: all .1s ease-in-out;
+    -moz-transition: all .1s ease-in-out;
+    -webkit-transition: all .1s ease-in-out;
+    -o-transition: all .1s ease-in-out;
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+}
+.sf-icon-box.sf-icon-box-boxed-three .sf-icon-cont {
+    right: calc(50% - 27.5px);;
+}
+.sf-icon-cont.cont-small {
+    padding: 19px 20px 19px 18px;
+}
+.sf-icon-cont {
+    background-color: #f6ab36;
+}
+.sf-icon-box[class*="sf-icon-box-boxed-"] .sf-icon-cont:after {
+    content: '';
+    width: 1px;
+    height: 0;
+    border-top: 1px solid #f6ab36;
+    border-bottom: 10px solid transparent;
+    border-left: 12px solid #f6ab36;
+    position: absolute;
+    left: 20px;
+    bottom: -10px;
+}
+.yellow-color {
+    color: #F6AB36;
+}
+a {
+    color: #888888;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

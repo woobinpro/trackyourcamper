@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    {% include 'admin/header.html' %}
+    <!-- Page content -->
+	<div class="page-content">
+        {% include 'admin/sidebar.html' %}
+        <div class="content-wrapper">
+            {% block content %}
+            {% endblock %}
+            {% include  'admin/footer.html' %}
+        </div>
+    </div>
+    {% block script %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/contactUs.css' %}">
+<div class="container mt-5">
+    <div class="col-sm-12 text-center">
+        <h3 class="page-heading">Kontaktieren Sie uns?&nbsp;Ganz einfach hier!</h3>
+        <div class="horizontal-break"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <p>Schreiben Sie uns Ihr Anliegen. Wir werden jede Anfrage Zeitnah bearbeiten.</p>
+            <form action="/Contactus" id="frmcontactsubmit" method="post" novalidate="novalidate">
+                <input name="__RequestVerificationToken" type="hidden" value="lbivh4tzeAyS44435myRDdRxQHnBpEvNQ0MiSqtVtuMzh6d9e-L6N4PcX_5sscDgoYXCCbZ_TETC05R1wWWRk7xh_r5GWWVlGt63NDpOQFc1">
+                <div class="validation-summary-valid" data-valmsg-summary="true">
+                    <ul>
+                        <li style="display:none"></li>
+                    </ul>
+                </div>
+                <div class="messages"></div>
+                <div class="controls">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form_name">Name</label>
+                                <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Name" name="Name" placeholder="Bitte geben Sie Ihren Namen ein" type="text" value="">
+                                <span class="field-validation-valid" data-valmsg-for="Name" data-valmsg-replace="true"></span>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form_lastname">E-Mail</label>
+                                <input class="form-control" data-val="true" data-val-email=" " data-val-required=" " id="Email" name="Email" placeholder="Bitte geben Sie Ihre e-Mail-Adresse ein" type="text" value="">
+                                <span class="field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form_name">Betreff</label>
+                                <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Subject" name="Subject" placeholder="Bitte geben Sie einen Betreff ein" type="text" value="">
+                                <span class="field-validation-valid" data-valmsg-for="Subject" data-valmsg-replace="true"></span>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form_lastname">Kontakt  Telefon</label>
+                                <input class="form-control" data-val="true" data-val-required=" " id="Phoneno" name="Phoneno" placeholder="Bitte geben Sie Ihre Kontakt-Telefonnummer an" type="text" value="">
+                                <span class="field-validation-valid" data-valmsg-for="Phoneno" data-valmsg-replace="true"></span>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="form_message">Nachricht</label>
+                                <textarea class="form-control" cols="20" data-val="true" data-val-length=" " data-val-length-max="500" data-val-length-min="2" data-val-required=" " id="Message" name="Message" placeholder="Ihre Nachricht an uns*" rows="4"></textarea>
+                                <span class="field-validation-valid" data-valmsg-for="Message" data-valmsg-replace="true"></span>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="Captcha" class="sr-only">Captcha</label>
+                            <div class="g-recaptcha" data-sitekey="6Le8ldoUAAAAAPlgXzosiX-bt1x0I1qeYGvKCOOp" data-callback="verifyRecaptchaCallback" data-expired-callback="expiredRecaptchaCallback"><div style="width: 304px; height: 78px;"><div><iframe title="reCAPTCHA" src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6Le8ldoUAAAAAPlgXzosiX-bt1x0I1qeYGvKCOOp&amp;co=aHR0cHM6Ly90eWMuYXp1cmV3ZWJzaXRlcy5uZXQ6NDQz&amp;hl=en&amp;v=qljbK_DTcvY1PzbR7IG69z1r&amp;size=normal&amp;cb=wzptr6zg5hiw" width="304" height="78" role="presentation" name="a-43a5eu2j19n" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea></div><iframe style="display: none;"></iframe></div>
+                            <input class="form-control d-none" data-recaptcha="true" required="" data-error="Bitte geben Sie die gültige Captcha an" id="lblcaptchavalid">
+                            <div class="help-block with-errors"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3 mb-5">
+                        <div class="col-md-12">
+                            <input type="submit" class="btn btn-warning btn-send" value="Senden ">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-4 contact-address">
+            <h5 class="yellow-color"><i class="fas fa-map-marker-alt"></i> Adresse</h5>
+            <p class="c-contact">
+                <i class="fa fa-home"></i>&nbsp; Trackyourcamper <br> Werderstraße 83 <br>
+                D-79639 Müllheim<br>
+            </p>
+            <p>&nbsp;</p>
+            <h5 class="yellow-color"><i class="far fa-file-alt"></i> Kontaktdaten </h5>
+            <p>
+                <i class="fa fa-envelope"></i> <a href="mailto:info@trackyourcamper.com" target="_blank">
+                    info@trackyourcamper.com<br>
+                </a><i class="fa fa-phone"></i>&nbsp;07621/5604978<br>
+                <i class="far fa-clock"></i>&nbsp; Mo - Fr 08:30 - 17:00
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/contactUs.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,18 @@
+.navbar {
+    position:  relative !important;
+    background-color: #30353b!important;
+}
+.contact-address p {
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #888;
+    line-height: 32px;
+}
+a {
+    color: #888888;
+    text-decoration: none;
+}
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

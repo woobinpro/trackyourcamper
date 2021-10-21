@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/stocklist.css' %}">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM&amp;sensor=false"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/common.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/util.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/map.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/marker.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/onion.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/infowindow.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/controls.js"></script>
+<div class="container mt-5  mb-5">
+    <div class="col-sm-12 text-center">
+        <h3 class="page-heading">Händler</h3><div class="horizontal-break"></div>
+    </div>
+    <div class="row" id="bindallmapdata">
+        <div class="col-sm-2 mt-2">
+            &nbsp;
+        </div>
+        <div class="col-sm-4 mt-2">
+            <input type="text" class="form-control" placeholder="Ort" id="txtzipcode">
+            <span>Um bessere Suchergebnisse zu erzielen suchen Sie mit Postleitzahl und Stadt</span>
+        </div>
+        <div class="col-sm-3 mt-2">
+            <select class="form-control" id="selectradious" name="selectradious">
+                <option value="20">&lt; 20 km</option>
+                <option selected="selected" value="50">&lt; 50 km</option>
+                <option value="100">&lt; 100 km</option>
+            </select>
+        </div>
+        <div class="col-sm-3 mt-2">
+            <button type="button" class="btn btn-warning" onclick="Bindzipcodedata()">Suche</button>
+        </div>
+        
+        <div class="col-sm-12 pt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="mapContainer">
+                        <div id="dvMap" style="height: 500px; max-width: 100%; margin: 0 auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-sm-12">
+            <br>
+            <p>Hier finden Sie Händler aus Ihrer Nähe! Wir sind dabei das Händlernetz auszubauen falls in Ihrer Nähe keine Fachwerkstatt zu finden ist werden wir für Sie eine in Ihrem Umkreis suchen. Bitte kontaktieren Sie uns dazu über unser Kontaktformular wir werden uns umgehend darum Kümmern.</p>
+        </div>
+
+        <div id="preloader" style="display: none;"><div id="status" style="display: none;"></div></div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/stocklist.js' %}"></script>
+{% endblock %}

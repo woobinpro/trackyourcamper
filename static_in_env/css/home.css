@@ -1,0 +1,131 @@
+#world_back {
+    background-image: url(../img/Worldcard01.jpg);
+}
+#ex_imgs .col-lg-3 {
+    text-align: center;
+}
+.style_prevu_kit img {
+    width: 100%;
+}
+.style_prevu_kit img:hover {
+    position: absolute;
+    box-shadow: 0px 0px 150px #000000;
+    z-index: 2;
+    -webkit-transition: all 300ms ease-in;
+    -webkit-transform: scale(1.3);
+    -ms-transition: all 300ms ease-in;
+    -ms-transform: scale(1.3);
+    -moz-transition: all 300ms ease-in;
+    -moz-transform: scale(1.3);
+    transition: all 300ms ease-in;
+    transform: scale(1.3);
+}
+.product-box {
+    text-align: center;
+}
+.product-detail-Home {
+    min-height: 290px;
+    padding: 10px 15px;
+}
+.product-detail-Home p {
+    font-weight: bold;
+}
+.horizontal-break {
+    background-color: #f9c765;
+    height: 1px;
+    width: 50px;
+    margin: 20px auto 25px;
+}
+.membership-pricing-table table tr td {
+    background-color: transparent;
+    text-align: left;
+    width: 24%;
+    border-top: #efefef 1px solid;
+    font-size: 13px;
+    padding: 7px 10px;
+}
+.membership-pricing-table table tr th {
+    font-size: 17px;
+    padding-bottom: 10px;
+}
+.membership-pricing-table table tr td:first-child {
+    font-weight: bold;
+}
+.asset-bg.alt-ten {
+    background-color: #f6ab36;
+}
+.full-width-text {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    position: relative;
+}
+#rating .item {
+    background: #fff;
+    padding: 1rem;
+}
+.rating {
+    list-style: none;
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+    text-align: center;
+    margin-left: auto;
+    width: 100px;
+    margin-right: auto;
+}
+.rating li {
+    list-style: none;
+    float: left;
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+}
+.rating li .full {
+    background-position: 0px -40px;
+}
+.rating li a {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    text-indent: -100px;
+    background-image: url(../img/rating.png);
+    background-repeat: no-repeat;
+    text-decoration: none;
+    text-align: center;
+}
+.owl-carousel .item {
+    margin: 10px;
+}
+.owl-carousel .item p {
+    min-height: 170px;
+}
+h4 {
+    font-size: 1.2rem;
+}
+.custom-owl-buttons {
+    width: 100%;
+    margin-top: 15px;
+}
+.custom-owl-buttons .btn-prev, .custom-owl-buttons .btn-next {
+    display: inline;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+.alt-ten .full-width-text:after {
+    border-top-color: #f6ab36;
+}
+.full-width-text:after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-right: 30px solid transparent;
+    border-left: 30px solid transparent;
+    position: absolute;
+    left: 50%;
+    margin-left: -30px;
+    bottom: -25px;
+}

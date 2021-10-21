@@ -1,0 +1,77 @@
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Trackyourcamper</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css'>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header id="immortal_header">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="{% static 'img/TYC.png' %}">
+                </a>
+                <div class='header-text'>
+                    <h1>Egal wann und wo</h1>
+                    <h2>immer ein sicheres Gefühl!</h1>
+                </div>
+                <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="navbar-collapse collapse" id="navbarResponsive">
+                    <div class="col-md-12 col-12 float-right">
+                        <div class="row">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="/"> Startseite</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Stocklist">Händler </a>
+                                </li>
+                                <li class="nav-item">
+                                    <nav id="primary_nav_wrap">
+                                        <ul>
+                                            <li class="nav-item shop_link">
+                                                <a class="nav-link" href="javascript:void();"> Shop</a>
+                                                <ul>
+                                                    <li><a href="/Shop/Index/1">GPS Tracker</a></li>
+                                                    <li><a href="/Shop/Index/2">Rund um die Sicherheit</a></li>
+                                                    <li><a href="/Shop/Index/3">Camping</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Contactus">  Kontakt</a>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button" class="btn btn-circle login-btn"  onclick="Redirecttologin()">
+                                        Login
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button" class="btn btn-circle login-btn" onclick="Redirecttoregister()">
+                                        Registrieren Sie sich
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="row">
+                            <p class="ml-auto contact-menu">
+                                Kundenservice Mo - Fr 09:00 - 17:00 Uhr<br>
+                                +49 (0) 15678 / 725018
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>

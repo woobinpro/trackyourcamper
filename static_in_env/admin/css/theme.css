@@ -1,0 +1,10 @@
+.hide {
+    display: none;
+}
+.visible-hide {
+    visibility: hidden;
+}
+.navbar-brand img {
+    height: 1.8rem;
+    display: block;
+}

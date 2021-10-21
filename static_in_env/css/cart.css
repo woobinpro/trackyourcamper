@@ -1,0 +1,99 @@
+.navbar {
+    position:  relative !important;
+    background-color: #30353b!important;
+}
+.cart-table {
+    padding: 30px 0;
+}
+table {
+    height: auto;
+    overflow: auto;
+    width: 100%;
+}
+.product-table {
+    border-bottom: 1px solid #cccccc;
+    color: #000;
+}
+.product-table th {
+    font-weight: normal;
+    padding: 13px 15px;
+}
+.product-table td {
+    padding: 10px 20px;
+    vertical-align: top;
+    border-top: 1px solid #cccccc;
+}
+.product-table .quantity {
+    width: 190px;
+}
+.product-table td.image {
+    padding: 30px 0 30px 0px;
+}
+.product-table .price, .product-table .description a {
+    font-size: 16px;
+    color: #f6ab36;
+    font-weight: 500;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+.product-table .description li {
+    padding: 5px 0 0;
+}
+.product-table .description li i, .product-table .description li span {
+    vertical-align: middle;
+}
+.product-table .quantity .prod-btns > div {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.prod-btns > .input-group {
+    border: 1px solid #ccc;
+}
+.prod-btns > .input-group > .input-group-btn > .btn-number, .prod-btns > .input-group > .input-number {
+    background: transparent;
+    border: 0;
+}
+.prod-btns > .input-group > .input-group-btn > .btn-number:hover, .prod-btns > .input-group > .input-group-btn > .btn-number:focus, .prod-btns > .input-group > .input-number {
+    background: transparent;
+    border: 0;
+    text-align: center;
+    box-shadow: none;
+}
+.product-table .remove-edit a {
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    text-align: right;
+    width: 20px;
+    color: #cccccc;
+}
+.product-table .remove-edit a:hover {
+    color: #000;
+}
+.chk-total {
+    background-color: #efefef;
+    padding: 15px 40px;
+}
+.chk-total .font-2 {
+    margin-bottom: 0rem;
+}
+.chk-total li span {
+    margin-left: 20px;
+}
+.red-color {
+    color: #cc0000;
+}
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+}
+.btn-warning {
+    margin-left: 0px;
+    margin-right: 4px;
+    margin-bottom: 10px;
+}

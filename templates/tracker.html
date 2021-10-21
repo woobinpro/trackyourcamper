@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/tracker.css' %}">
+<div class="container mt-5  mb-5">
+    <form action="/Tracker/Detail/6" enctype="multipart/form-data" method="post" novalidate="novalidate">
+        <input name="__RequestVerificationToken" type="hidden" value="">        
+        <div class="clearfix layout-1">
+            <div class="col-md-5 col-sm-12 prod-slider-wrap">
+                <div class="owl-carousel prod-slider sync1 owl-loaded owl-drag" id="large_img_slider">       
+                    <div class="item">
+                        <img src="{% static 'upload/product3.png' %}" class="d-block">
+                    </div>
+                    <div class="item">
+                        <img src="{% static 'upload/product1.png' %}" class="d-block">
+                    </div>
+                </div>
+                <div class="owl-carousel sync2 owl-loaded owl-drag" id="small_img_slider">
+                    <div class="item">
+                        <img src="{% static 'upload/product3.png' %}" class="d-block">
+                    </div>
+                    <div class="item">
+                        <img src="{% static 'upload/product1.png' %}" class="d-block">
+                    </div>
+                </div>
+            </div>
+            <input data-val="true" data-val-number="The field TrackerId must be a number." data-val-required="The TrackerId field is required." id="TrackerId" name="TrackerId" type="hidden" value="6">
+            <div class="col-md-7 col-sm-12">
+                <div class="product-detail">
+                    <div class="product-heading">
+                        <h2 class="section-title">
+                            GPS Tracker Paket 1
+                        </h2>
+                        <p>
+                            Artikelnummer:
+                            <span>10002</span>
+                        </p>
+                    </div>
+                    <div class="price">
+                        <b>
+                            69,90 €
+                        </b>
+                        <del>
+                            99,90 €
+                        </del>
+                    </div>
+                    <div class="product-availability">
+                        <ul class="stock-detail list-items black-color">
+                            <li class=""><b>Kategorie:</b> <a style="color:#99cc00!important" class="green-color">GPS Tracker </a></li>
+                            <li>
+                                <small>
+                                    19%
+                                    <a class="green-color" style="color:#99cc00!important">
+                                        MwSt
+                                    </a>
+                                </small>
+                            </li>
+                        </ul>
+                    </div>
+                    <hr class="divider-2">
+                    <div class="product-description">
+                        <p>Für Fahrzeuge mit eigener Bordbatterie (Bilder unserer Tracker werden nicht veröffentlicht)</p>
+                    </div>
+                    <hr class="divider-2">
+                    <div class="product-options">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="prod-btns">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="quantity-left-minus btn btn-default btn-number" data-type="minus" data-field="">
+                                            <span class="fa fa-minus"></span>
+                                        </button>
+                                    </span>
+                                    <input class="form-control input-number" data-val="true" data-val-number="The field qty must be a number." data-val-required="The qty field is required." id="qty" name="qty" readonly="readonly" type="text" value="1">
+                                    <span class="field-validation-valid" data-valmsg-for="qty" data-valmsg-replace="true"></span>
+
+                                    <span class="input-group-btn">
+                                        <button type="button" class="quantity-right-plus btn btn-default btn-number" data-type="plus" data-field="">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                                <span id="spnmaxqty" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <ul class="list-inline">
+                                <li><button class="theme-btn-1 btn btn-warning" type="submit"> <i class="fa fa-plus"></i>&nbsp;In den Warenkorb </button></li>
+                                <li>
+                                    <a href="/Shop" class="theme-btn-1 btn btn-black"><i class="fa fa-arrow-left"></i>&nbsp;zurück zum Shop</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/tracker.js' %}"></script>
+{% endblock %}
