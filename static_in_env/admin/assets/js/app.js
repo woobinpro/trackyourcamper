@@ -555,11 +555,42 @@ var App = function () {
             App.initCardActions();
             App.initDropdownSubmenu();
             App.initHeaderElementsToggle();
+            Noty.overrideDefaults({
+                theme: 'limitless',
+                layout: 'topRight',
+                type: 'alert',
+                timeout: 2500
+            });
         }
+
+        
     }
 }();
 
-
+var swalInit = swal.mixin({
+    buttonsStyling: false,
+    confirmButtonClass: 'btn btn-primary',
+    cancelButtonClass: 'btn btn-light'
+});
+var host_url = location.protocol + "//" + location.host;
+var showProgress = function(){
+    $("body").block({
+        message: '<i class="icon-spinner10 icon-5x spinner"></i>',
+        overlayCSS: {
+            backgroundColor: '#fff',
+            opacity: 0.8,
+            cursor: 'wait'
+        },
+        css: {
+            border: 0,
+            padding: 0,
+            backgroundColor: 'none'
+        }
+    });
+}
+var hideProgress = function(){
+    $("body").unblock();
+}
 // Initialize module
 // ------------------------------
 

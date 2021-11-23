@@ -1,6 +1,11 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<script src="{% static 'admin/global_assets/js/demo_pages/dashboard.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/pickers/pickadate/picker.time.js' %}"></script>
+<link href="{% static 'admin/css/manageTrackerAlarm.css' %}" rel="stylesheet" type="text/css">
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
@@ -26,7 +31,99 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Alarmfilter</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group" style="margin:0;text-align: center;">
+                        <label class="control-label" for="customer">Alarm Beendet</label>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label" for="customer">Datum / Uhrzeit  von - bis</label>
+                        <br>
+                        <input id="txtDateFilter" type="text" class="form-control datefilter" placeholder="Datum">
+                        <input id="txtTimeFilter1" type="text" class="form-control timefilter" placeholder="Uhrzeit von">
+                        <input id="txtTimeFilter2" type="text" class="form-control timefilter" placeholder="Uhrzeit bis">
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="form-group">
+                        <label class="control-label" for="date_modified">&nbsp;</label>
+                        <div class="input-group date text-right">
+                            <div class="btn-group-sm">
+                                <button class="btn btn-sm btn-primary form-control" onclick="FunsearchDaterecords()">Suche</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label" for="customer">Fahrzeug / Befehl / Besitzer</label>
+                        <input id="txtTextFilter" type="text" class="form-control" placeholder="Kennzeichen Kundenname Befehlsart">
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="form-group">
+                        <label class="control-label" for="date_modified">&nbsp;</label>
+                        <div class="input-group date text-right">
+                            <div class="btn-group-sm">
+                                <button class="btn btn-sm btn-primary form-control" onclick="FunsearchTextrecords()">Suche</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Sie können detaillierte Daten anzeigen, indem Sie auf die Zeile doppelklicken.</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Datum / Uhrzeit</th>
+                        <th>Befehl</th>
+                        <th>Antwort</th>
+                        <th>Befehlsstatus</th>
+                        <th>Kennzeichen</th>
+                        <th>Besitzer</th>
+                        <th>Alarm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alarm in alarm_list %}
+                    <tr>
+                        <td>{{ alarm.Location_Date }} / {{ alarm.Location_time|slice:8 }}</td>
+                        <td>{{ alarm.Command }}</td>
+                        <td>{{ alarm.Response }}</td>
+                        <td>{{ alarm.CommandStatus }}</td>
+                        <td>{{ alarm.LicensePlate }}</td>
+                        <td>{{ alarm.Firstname }} {{ alarm.Lastname }}</td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

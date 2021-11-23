@@ -1,0 +1,203 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageTracker.css' %}" rel="stylesheet" type="text/css">
+
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switchery.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switch.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> {% if not tracker_info %}Create Catalog{% else %}Update Catalog{% endif %}</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if tracker_info %}<a href="/Admin/ManageTracker/Detail/{{ tracker_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-search4 mr-2"></i> Detail</a>{% endif %}
+                <a href="/Admin/ManageTracker" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Catalog</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-sm-6'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">{% if not tracker_info %}Create Catalog{% else %}Update Catalog{% endif %}</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form id='tracker_form' action="{% if not tracker_info %}/Admin/ManageTracker/Create{% else %}/Admin/ManageTracker/Edit/{{ tracker_info.id }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                        <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                        
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label">Name</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" required  name="trackername" type="text" value="{{ tracker_info.trackername }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label">Kategeorie</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" required  name="trackercategory">
+                                        <option value=''>Select catalog category</option>
+                                        {% for category in category_list %}
+                                        <option value="{{ category.id }}" {% if tracker_info.trackercategory == category.id %} selected {% endif %}>{{ category.tracker_category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                           
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label">Artikel Nummer</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" required  name="articlenumber" type="text" value="{{ tracker_info.articlenumber }}">
+                                </div>
+                            </div>
+                        </div>
+                            
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label">Kurz Beschreibung</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" required  name="trackershortdesc" type="text" value="{{ tracker_info.trackershortdesc }}">
+                                </div>
+                            </div>
+                        </div>
+                            
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label">Preis</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control"  required name="price" type="text" value="{{ tracker_info.price }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label">Angebotspreis</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control"  required name="dicountprice" type="text" value="{{ tracker_info.dicountprice }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label">Menge</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control"  required name="original_qty" type="text" value="{{ tracker_info.original_qty }}">
+                                </div>
+                            </div>
+                        </div>
+                           
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-3 control-label"> ist Aktive</label>
+                                <div class="col-sm-9">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if tracker_info.isactive == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='isactive'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        {% if tracker_info %}<input name='id' type='hidden' value="{{ tracker_info.id }}">{% endif %}
+                        <div class="row float-right">
+                            <div class="col-sm-12">
+                                <button class="btn btn-primary" type="submit">{% if not tracker_info %}Erstellen{% else %}Speichern{% endif %}</button>
+                                <a class="btn btn-warning" href="/Admin/ManageTracker">Abrechen</a>
+                                {% if not tracker_info %}<a class="btn btn-light" href="/Admin/ManageTracker/Create">Zurücksetzen</a>{% endif %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class='col-sm-6'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Upload images</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <input type='hidden' id='tracker_id' value='{{ tracker_info.id }}'>
+                    <form id="image_upload" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label"> Bilder:</label>
+                                <div class="col-sm-12">
+                                    <input accept=".jpg,.jpeg,.png" class="form-control-uniform" id="upload_image" name="image" type="file" value="">
+                                    <br>
+                                    <span>[.jpg,.jpeg,.png Only ]</span>
+                                    <span>[Max. Dateigröße 5MB] </span>
+                                </div>
+                            </div>
+                            <div class='row float-right'>
+                                <div class='col-sm-12'>
+                                    <button class="btn btn-primary" type='submit' {% if not tracker_info%}disabled{% endif %}>Auswählen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+                    <div class='row image-list'>
+                        {% for image in tracker_images %}
+                        <div class='col-sm-12 image-item' image_id="{{ image.id }}">
+                            <img src="{% static 'upload/' %}{{ image.imagename }}" width="100%" alt="" >
+                            <i class="icon-cancel-circle2 text-danger"></i>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageTrackerCreate.js' %}"></script>
+{% endblock %}
+

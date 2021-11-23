@@ -1,0 +1,28 @@
+.table-responsive {
+    min-height:300px;
+}
+.image-item{
+    border: 1px solid #999;
+    padding: 0.25rem;
+    border-radius: 4px;
+    margin-top:0.8em;
+}
+.image-item:hover img {
+    opacity: 0.3;
+}
+.image-item:hover i {
+    display: inherit;
+}
+.image-item i{
+    position: absolute;
+    top:0;
+    right:0;
+    border-left: 1px solid #999;
+    border-bottom: 1px solid #999;
+    display: none;
+    padding: 0.25rem;
+    cursor: pointer;
+}
+.control-label {
+    font-weight: bold;
+}

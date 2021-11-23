@@ -1,0 +1,24 @@
+.badge-pill {
+    padding-right: 0.6rem;
+    padding-left: 0.6rem;
+    border-radius: 10rem;
+}
+.badge {
+    font-size: 150%;
+}
+.user-count {
+    background-image: url(../global_assets/images/bg_user.png);
+    background-size: cover;
+}
+.campsite-count {
+    background-image: url(../global_assets/images/bg_campsite.png);
+    background-size: cover;
+}
+.campvehicle-count {
+    background-image: url(../global_assets/images/bg_campvehicle.png);
+    background-size: cover;
+}
+.card {
+    min-height: 162px;
+    background-repeat: no-repeat;
+}

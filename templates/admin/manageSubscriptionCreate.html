@@ -1,0 +1,515 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageSecurityCompany.css' %}" rel="stylesheet" type="text/css">
+
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switchery.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switch.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> {% if not subscription_info %}Abonnement erstellen{% else %}Abonnement bearbeiten{% endif %}</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if subscription_info %}<a href="/Admin/ManageSubscription/Detail/{{ subscription_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-search4 mr-2"></i> Detail</a>{% endif %}
+                <a href="/Admin/ManageSubscriptions" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Abonnement</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">{% if not subscription_info %}Abonnement erstellen{% else %}Abonnement bearbeiten{% endif %}</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id='subscription_form' action="{% if not subscription_info %}/Admin/ManageSubscription/Create{% else %}/Admin/ManageSubscription/Edit/{{ subscription_info.id }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class='row'>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Name</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="packagename" type="text" value="{{ subscription_info.packagename }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Auf Anfrage</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="onrequest_txt" type="text" value="{% if subscription_info.onrequest_txt is not None %}{{ subscription_info.onrequest_txt }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Einmalige Aktivierungsgebühr</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="activationfeeoncepervehicle" type="text" value="{% if subscription_info.activationfeeoncepervehicle is not None %}{{ subscription_info.activationfeeoncepervehicle }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">jedes weitere Fahrzeug</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="eachadditionalvehicle" type="text" value="{% if subscription_info.eachadditionalvehicle is not None %}{{ subscription_info.eachadditionalvehicle }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Preis gilt pro Fahrzeug pro Jahr inkl. Mobilfunkkarte mit EU Roaming</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="annualpricepervehicle" type="text" value="{% if subscription_info.annualpricepervehicle is not None %}{{ subscription_info.annualpricepervehicle }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">+ Schweiz, Norwegen & Island</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.annualpricepervehicle2 == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='annualpricepervehicle2'>
+                                        </label>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Händlersuche in Ihrer Nähe</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.dealersearchinyourarea == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='dealersearchinyourarea'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Alarm an: Verlassen eines Bereichs (Geofence)</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.alarmonleavinganarea_geofence == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='alarmonleavinganarea_geofence'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Alarm: SOS-Taste</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.alarmonpresssosbutton == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='alarmonpresssosbutton'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Alarm: Geschwindigkeit Überschritten</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.alarmonoverspeed == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='alarmonoverspeed'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Alarm bei: Vibration</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.alarmatvibration == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='alarmatvibration'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Bring back service from</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required step='1' type="time" name="bringbackservicefrom" value="{{ subscription_info.bringbackservicefrom }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Bring back service up</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required step='1' type="time" name="bringbackserviceup" value="{{ subscription_info.bringbackserviceup }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Sofort Austausch des Trackers</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required type="text" name="immediatereplacementserviceofthetracker" value="{{ subscription_info.immediatereplacementserviceofthetracker }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">False alarms incl.</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  type="text" name="alarmincluded_beforevehicleismoved_mustbeswitchedoff" value="{% if subscription_info.alarmincluded_beforevehicleismoved_mustbeswitchedoff is not None %}{{ subscription_info.alarmincluded_beforevehicleismoved_mustbeswitchedoff }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Echtzeit-Überwachung</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.realtimemonitoring == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='realtimemonitoring'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Vehicle fleet management (number of vehicles *)</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  type="text" name="vehiclefleetmanagement_numberofvehicles" value="{% if subscription_info.vehiclefleetmanagement_numberofvehicles is not None %}{{ subscription_info.vehiclefleetmanagement_numberofvehicles }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">History der Fahrzeugstandorte</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  type="text" name="archivehistoryofvehiclelocations" value="{% if subscription_info.archivehistoryofvehiclelocations is not None %}{{ subscription_info.archivehistoryofvehiclelocations }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Live-tracking</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.livetracking == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='livetracking'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Positionsabfrage pro Tag</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  type="text" name="locationqueryperday" value="{% if subscription_info.locationqueryperday is not None %}{{ subscription_info.locationqueryperday }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Zahlungsweise monatlich, 1/4 Jahr, 1/2 Jahr, 1 Jahr</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.isallowpayment == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='isallowpayment'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Extrahieren und Lesen der Daten</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.extractingreadingthedata == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='extractingreadingthedata'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Mobile SIM-Karte inkl. Daten roaming EU monatlich</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" name="mobilesimcardincl_dataroamingeumtl" value="{% if subscription_info.mobilesimcardincl_dataroamingeumtl is not None %}{{ subscription_info.mobilesimcardincl_dataroamingeumtl }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Support-Service von</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" step="1" required type="time" name="support_service_starttime" value="{{ subscription_info.support_service_starttime }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Support-Service</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required step='1' type="time" name="support_service_endtime" value="{{ subscription_info.support_service_endtime }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Urlaubsmodus</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if subscription_info.holidaymode_vehiclecannotbemonitoredonholidayifdesired == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='holidaymode_vehiclecannotbemonitoredonholidayifdesired'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Preis pro Monat</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="pricemonthly" value="{% if subscription_info.pricemonthly is not None %}{{ subscription_info.pricemonthly }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Preis für 3 Monate</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="pricequarter" value="{% if subscription_info.pricequarter is not None %}{{ subscription_info.pricequarter }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Preis für 6 Monate</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="pricehalf" value="{% if subscription_info.pricehalf is not None %}{{ subscription_info.pricehalf }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Preis pro Jahr</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="priceoneyear" value="{% if subscription_info.priceoneyear is not None %}{{ subscription_info.priceoneyear }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Preis für 2 Jahre</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="pricetwoyear" value="{% if subscription_info.pricetwoyear is not None %}{{ subscription_info.pricetwoyear }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Sortorder</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="sortorder" value="{% if subscription_info.sortorder is not None %}{{ subscription_info.sortorder }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if subscription_info %}<input name='id' type='hidden' value="{{ subscription_info.id }}">{% endif %}
+                <input name="isactive" value="{% if subscription_info.isactive is not None %}{{subscription_info.isactive}}{% endif %}" type='hidden'>
+                <div class="row float-right">
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary" type="submit">{% if not subscription_info %}Erstellen{% else %}Speichern{% endif %}</button>
+                        <a class="btn btn-warning" href="/Admin/ManageSubscriptions">Abrechen</a>
+                        {% if not subscription_info %}<a class="btn btn-light" href="/Admin/ManageSubscription/Create">Zurücksetzen</a>{% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageSubscriptionCreate.js' %}"></script>
+{% endblock %}
+

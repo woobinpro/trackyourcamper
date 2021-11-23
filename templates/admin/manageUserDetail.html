@@ -1,0 +1,229 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% load replace %}
+{% block content %}
+<link href="{% static 'admin/css/manageUser.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Kundendaten</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageUser/Edit/{{ user_id }}" class="btn bg-green-300 mr-2"><i class="icon-pencil7 mr-2"></i>  Bearbeiten</a>
+                <a href="/Admin/ManageUser" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i> Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Kundendaten</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-7'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Basisdaten</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Anrede</label>
+                            <div class="col-sm-7">
+                                {{ user_info.salutation }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Vorname</label>
+                            <div class="col-sm-7">
+                                {{ user_info.firstname }} 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Familienname</label>
+                            <div class="col-sm-7">
+                                {{ user_info.lastname }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> E-Mail</label>
+                            <div class="col-sm-7">
+                                <a href="mailto:{{ user_info.email }}">{{ user_info.email }}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Telefonnummer</label>
+                            <div class="col-sm-7">
+                                {{ user_info.phone }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Geburtsdatum</label>
+                            <div class="col-sm-7">
+                                {{ user_info.birthday | date:'d M Y' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Verantwortlich für den Campingplatz</label>
+                            <div class="col-sm-5">
+                                {{ user_info.campingsite_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Rolle</label>
+                            <div class="col-sm-5">
+                                {{ user_info.role_name|addSpace  }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Kundennummer</label>
+                            <div class="col-sm-5">
+                                {{ user_id  }}
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Adresse</label>
+                            <div class="col-sm-7">
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Land</label>
+                                            <div class="col-sm-12">
+                                                {{ user_info.country }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Straße</label>
+                                            <div class="col-sm-12">
+                                                {{ user_info.street }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Postleitzahl</label>
+                                            <div class="col-sm-12">
+                                                {{ user_info.postal }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Ort</label>
+                                            <div class="col-sm-12">
+                                                {{ user_info.city }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Bundesland</label>
+                                            <div class="col-sm-12">
+                                                {{ user_info.state }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Breitengrad</label>
+                                            <div class="col-sm-12">
+                                                {{ user_info.lat }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Längengrad</label>
+                                            <div class="col-sm-12">
+                                                {{ user_info.lon }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-5'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Wohnmobil</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fahrzeugtyp</th>
+                                <th>Kennzeichen</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id='userList'>
+                            {% for vehicle in vehicle_list %}
+                            <tr>
+                                <td>{{ vehicle.v_type }}</td>
+                                <td>{{ vehicle.license }}</td>
+                                <td class='text-right'>
+                                    <a data-popup='tooltip' data-placement='right' data-original-title='Detail' href="/Admin/ManageVehicles/Detail/{{ vehicle.id }}" class="btn bg-indigo-300 btn-icon rounded-round mr-2"><i class="icon-search4"></i> </a>
+                                    <a data-popup='tooltip' data-original-title='Live-tracking' data-placement='left' href="#" brand_id="7" class="btn bg-teal-300 btn-icon rounded-round"><i class="icon-car"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<!-- <script src="{% static 'admin/js/manageUserDetail.js' %}"></script> -->
+{% endblock %}

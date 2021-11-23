@@ -1,0 +1,341 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageMerchant.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Händler-Details</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageMerchant/Edit/{{ merchant_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-pencil7 mr-2"></i>  Bearbeiten</a>
+                <a href="/Admin/ManageMerchant" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i> Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Einzelhändler</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-5'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Allgemeine</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Name</label>
+                            <div class="col-sm-6">
+                                {{ merchant_info.name }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Adresse</label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Straße</label>
+                                            <div class="col-sm-12">
+                                                {{ merchant_info.address_street }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Postleitzahl</label>
+                                            <div class="col-sm-12">
+                                                {{ merchant_info.address_postal }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Ort</label>
+                                            <div class="col-sm-12">
+                                                {{ merchant_info.address_city }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Bundesland</label>
+                                            <div class="col-sm-12">
+                                                {{ merchant_info.address_state }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Land</label>
+                                            <div class="col-sm-12">
+                                                {{ merchant_info.address_country }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Breitengrad</label>
+                                            <div class="col-sm-12">
+                                                {{ merchant_info.address_latitude }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Längengrad</label>
+                                            <div class="col-sm-12">
+                                                {{ merchant_info.address_longitude }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> ist Aktive</label>
+                            <div class="col-sm-6">
+                                {% if merchant_info.isactive %}<i class="icon-checkmark4 text-success"></i>{% else %}<i class="icon-blocked text-danger"></i>{% endif %} 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> E-Mail</label>
+                            <div class="col-sm-6">
+                                {{ merchant_info.dealeremail }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Website</label>
+                            <div class="col-sm-6">
+                                {{ merchant_info.website }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Telefonnummer</label>
+                            <div class="col-sm-6">
+                                {{ merchant_info.phone }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Fax</label>
+                            <div class="col-sm-6">
+                                {{ merchant_info.fax }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Montage Pauschale</label>
+                            <div class="col-sm-6">
+                                {{ merchant_info.installationflatrate }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Unterstützten Marken</label>
+                            <div class="col-sm-6">
+                                {% for brand in brand_list %}
+                                    {% if brand.id|slugify in merchant_brands %} 
+                                    <span class="badge badge-dark badge-pill">{{ brand.name }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Besitzer</label>
+                            <div class="col-sm-6">
+                                {{ user_info.firstname }} {{ user_info.lastname }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-7'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Mitarbeiter</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    Keine Mitarbeiter
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Öffnungszeiten</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive" style='min-height:auto;'>
+                    <table class="table season-table">
+                        <thead>
+                            <tr>
+                                <th>Jahreszeit</th>
+                                <th>Montag</th>
+                                <th>Dienstag</th>
+                                <th>Mittwoch</th>
+                                <th>Donnerstag</th>
+                                <th>Freitag</th>
+                                <th>Samstag</th>
+                                <th>Sonntag</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Winter</td>
+                                <td>
+                                    {% if merchant_info.winter_monday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.opentimes_opentimes_mondaystart }} ~ {{ merchant_info.opentimes_opentimes_mondayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.winter_tuseday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.opentimes_opentimes_tuesdaystart }} ~ {{ merchant_info.opentimes_opentimes_tuesdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.winter_wednessday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.opentimes_opentimes_wednesdaystart }} ~ {{ merchant_info.opentimes_opentimes_wednesdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.winter_thursday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.opentimes_opentimes_thursdaystart }} ~ {{ merchant_info.opentimes_opentimes_thursdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.winter_friday_cloas == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.opentimes_opentimes_fridaystart }} ~ {{ merchant_info.opentimes_opentimes_fridayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.winter_saturday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.opentimes_opentimes_saturdaystart }} ~ {{ merchant_info.opentimes_opentimes_saturdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.winter_sunday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.opentimes_opentimes_sundaystart }} ~ {{ merchant_info.opentimes_opentimes_sundayend }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sommer</td>
+                                <td>
+                                    {% if merchant_info.summer_monday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.summer_opentimes_opentimes_mondaystart }} ~ {{ merchant_info.summer_opentimes_opentimes_mondayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.summer_tuseday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.summer_opentimes_opentimes_tuesdaystart }} ~ {{ merchant_info.summer_opentimes_opentimes_tuesdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.summer_wednessday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.summer_opentimes_opentimes_wednesdaystart }} ~ {{ merchant_info.summer_opentimes_opentimes_wednesdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.summer_thursday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.summer_opentimes_opentimes_thursdaystart }} ~ {{ merchant_info.summer_opentimes_opentimes_thursdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.summer_friday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.summer_opentimes_opentimes_fridaystart }} ~ {{ merchant_info.summer_opentimes_opentimes_fridayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.summer_saturday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.summer_opentimes_opentimes_saturdaystart }} ~ {{ merchant_info.summer_opentimes_opentimes_saturdayend }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if merchant_info.summer_sunday_close == 1 %}
+                                    <span class="badge badge-danger">CLOSE</span>
+                                    {% else %}
+                                    {{ merchant_info.summer_opentimes_opentimes_sundaystart }} ~ {{ merchant_info.summer_opentimes_opentimes_sundayend }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageMerchantDetail.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,2600 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageCampingPlace.css' %}" rel="stylesheet" type="text/css">
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/widgets.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/effects.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Campingplatz Informationen</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if campingplace_info %}<a href="/Admin/ManageCampingPlaces/Edit/{{ campingplace_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-pencil7 mr-2"></i>  Bearbeiten</a>{% endif %}
+                <a href="/Admin/ManageCampingPlace" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Campingplatz Informationen</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Campingplatz erstellen</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id='campingplace_form' action="{% if not campingplace_info %}/Admin/ManageCampingPlace/Create{% else %}/Admin/ManageCampingPlaces/Edit/{{ campingplace_info.id }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-4 control-label">Name</label>
+                                <div class="col-sm-8">
+                                    {{ campingplace_info.name }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-4 control-label">Besitzer</label>
+                                <div class="col-sm-8">
+                                    {{ user_info.firstname }} {{ user_info.lastname}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="jui-accordion-collapsible" data-fouc>
+                    <span class="font-weight-semibold">Vorschriften</span>
+                    <div class="panel-body">
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">ACSI-Club-Karte als Ausweis akzeptiert</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_acsiclubcardacceptedasproofofidentity == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Reisepass / Personalausweis erforderlich</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_passportidentitycardrequired == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Senioren Rabatt</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_seniorcitizendiscount == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">AZahlung per Kreditkarte möglich</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_paymentbycreditcardpossible == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Zahlung per EC-Karte / Maestro möglich</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_paymentbydebitcard_maestropossible == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Während der Mittagszeit Pause ist die Einfahrt verboten</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_duringthenoonbreakentranceprohibited == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Kostenlose PKW-Stellplatz</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_carfreeparkingspace == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Keine Hunde in der Nebensaison</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_nodogsallowedinlowseason == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Nur 1 Hund (angeleint) erlaubt in Nebensaison</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_only1dog_leashed_allowedinlowseason == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Mehrere Hunde (angeleint) erlaubt in der Nebensaison</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_severaldogs_leashed_allowedinlowseason == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Keine Hunde in der Hochsaison</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_nodogsallowedinhighseason == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Nur 1 Hund (angeleint) erlaubt in der Hochsaison</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_only1dog_leashed_allowedinthehighseason == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Mehrere Hunde (angeleint) erlaubt in der Hochsaison</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_severaldogs_leashed_allowedinthehighseason == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Zelten erlaubt</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_tentsallowed == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Wohnwagen gestattet</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_caravanallowed == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Auch geeignet für Wohnwagen &gt; 5, 5m exklusive Deichsel</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_alsosuitableforcaravans_5_5mexclusivedrawbar == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Wohnmobile erlaubt</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_motorhomesallowed == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Auch Wohnmobile geeignet &gt; 8m und &gt; 4000kg</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_alsomotorhomessuitable8mand4000kg == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Kleines zusätzliches Zelt erlaubt</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_smalladditionaltentallowed == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">ADAC Camping Card akzeptiert</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_adaccampingcardaccepted == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">ADAC Key Europa-Karte akzeptiert&gt; 8m und &gt; 4000kg</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_adackeyeuropecardaccepted == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">ACSI Card akzeptiert</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_acsicardakzeptiert == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">CCI-Karte akzeptiert</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_ccicardaccepted == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">My Place Card akzeptiert</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_myplacecardaccepted == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Best Deal Camping Card</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_bestdealcampingcard == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">Top Camping Card</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regulations_topcampingcard == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-8 control-label">ANWB Camping Card</label>
+                                        <div class="col-sm-4">
+                                            {% if campingplace_info.regualtions_anwbdetectivecampingcard == 1 %}Not fixed{% else %}true{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Adresse</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-4'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Straße</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.address_road is not None %}{{ campingplace_info.address_road }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-4'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Postleitzahl</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.address_postcode is not None %}{{ campingplace_info.address_postcode }}{% endif %}
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-4'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Ort</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.address_city is not None %}{{ campingplace_info.address_city }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Bundesland</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.address_state is not None %}{{ campingplace_info.address_state }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Land</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.address_Country is not None %}{{ campingplace_info.address_Country }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Breitengrad</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.address_degreeoflatitude is not None %}{{ campingplace_info.address_degreeoflatitude }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Längengrad</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.address_degreeoflongitude is not None %}{{ campingplace_info.address_degreeoflongitude }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Kontaktdaten</span>
+                    <div class="panel-body">
+                        <div class='row'>
+                            <div class='col-sm-6'>
+                                <div class="row">
+                                    <label class="col-sm-4 control-label">Telefonnummer</label>
+                                    <div class="col-sm-8">
+                                        {% if campingplace_info.contactdetails_phone is not None %}{{ campingplace_info.contactdetails_phone }}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-6'>
+                                <div class="row">
+                                    <label class="col-sm-4 control-label">E-Mail</label>
+                                    <div class="col-sm-8">
+                                        {% if campingplace_info.contactdetails_email is not None %}{{ campingplace_info.contactdetails_email }}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Basisdaten</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">WLAN</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="basedata_wlan" value="{{ campingplace_info.basedata_wlan }}">
+                                            <input name="basedata_wlan" type="hidden" value="{{ campingplace_info.basedata_wlan }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">ACSI Karte verfügbar</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="basedata_acsicardavailable" value="{{ campingplace_info.basedata_acsicardavailable }}">
+                                            <input name="basedata_acsicardavailable" type="hidden" value="{{ campingplace_info.basedata_acsicardavailable }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">winter camping</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="basedata_wintercamping" value="{{ campingplace_info.basedata_wintercamping }}">
+                                            <input name="basedata_wintercamping" type="hidden" value="{{ campingplace_info.basedata_wintercamping }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wheelchair accessible</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="basedata_wheelchairaccessible" value="{{ campingplace_info.basedata_wheelchairaccessible }}">
+                                            <input name="basedata_wheelchairaccessible" type="hidden" value="{{ campingplace_info.basedata_wheelchairaccessible }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">ACSI-Club ID</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.basedata_acsiclubid is not None %}{{ campingplace_info.basedata_acsiclubid }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Beschreibung der Route</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.basedata_routedescription is not None %}{{ campingplace_info.basedata_routedescription }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-4'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">FKK Campingplatz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="basedata_fkk" value="{{ campingplace_info.basedata_fkk }}">
+                                            <input name="basedata_fkk" type="hidden" value="{{ campingplace_info.basedata_fkk }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-4'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Stromanschluß in A</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="basedata_powerprotectionina" value="{{ campingplace_info.basedata_powerprotectionina }}">
+                                            <input name="basedata_powerprotectionina" type="hidden" value="{{ campingplace_info.basedata_powerprotectionina }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-4'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Euro-Stecker</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="basedata_europlug" value="{{ campingplace_info.basedata_europlug }}">
+                                            <input name="basedata_europlug" type="hidden" value="{{ campingplace_info.basedata_europlug }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Höhe des Campingplatzes</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.basedata_heightofthecampsite is not None %}{{ campingplace_info.basedata_heightofthecampsite }}{% endif %}
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-4 control-label">Bereich des Campingplatzes</label>
+                                        <div class="col-sm-8">
+                                            {% if campingplace_info.basedata_areaofthecampsite is not None %}{{ campingplace_info.basedata_areaofthecampsite }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-6 control-label">Anzahl der Touristenstellplätze</label>
+                                        <div class="col-sm-6">
+                                            {% if campingplace_info.basedata_numberoftouristplaces is not None %}{{ campingplace_info.basedata_numberoftouristplaces }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class="row">
+                                        <label class="col-sm-6 control-label">Anzahl der Mietobjekte / feste Stellplätze</label>
+                                        <div class="col-sm-6">
+                                            {% if campingplace_info.basedata_numberofrentalproperties_permanentcampers is not None %}{{ campingplace_info.basedata_numberofrentalproperties_permanentcampers }}{% endif %}
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Lage, Boden, Pflanzen</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">In der Nähe einer Autobahnausfahrt (&lt; 10km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_nearamotorwayexit_10km" value="{{ campingplace_info.locationsoilplants_nearamotorwayexit_10km }}">
+                                            <input name="locationsoilplants_nearamotorwayexit_10km" type="hidden" value="{{ campingplace_info.locationsoilplants_nearamotorwayexit_10km }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Das Hotel liegt im Wald</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_locatedintheforest" value="{{ campingplace_info.locationsoilplants_locatedintheforest }}">
+                                            <input name="locationsoilplants_locatedintheforest" type="hidden" value="{{ campingplace_info.locationsoilplants_locatedintheforest }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Gelegen an einem See (max. 0,1 km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsiloplants_locatedonarecreationallake_maxkm" value="{{ campingplace_info.locationsiloplants_locatedonarecreationallake_maxkm }}">
+                                            <input name="locationsiloplants_locatedonarecreationallake_maxkm" type="hidden" value="{{ campingplace_info.locationsiloplants_locatedonarecreationallake_maxkm }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Direkt am Meer gelegen (ca. 0,5 km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_locatedbythesea_within_km" value="{{ campingplace_info.locationsoilplants_locatedbythesea_within_km }}">
+                                            <input name="locationsoilplants_locatedbythesea_within_km" type="hidden" value="{{ campingplace_info.locationsoilplants_locatedbythesea_within_km }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Panorama</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_panorama" value="{{ campingplace_info.locationsoilplants_panorama }}">
+                                            <input name="locationsoilplants_panorama" type="hidden" value="{{ campingplace_info.locationsoilplants_panorama }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Rasen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_lawn" value="{{ campingplace_info.locationsoilplants_lawn }}">
+                                            <input name="locationsoilplants_lawn" type="hidden" value="{{ campingplace_info.locationsoilplants_lawn }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Sandstrand</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_sandybeach" value="{{ campingplace_info.locationsoilplants_sandybeach }}">
+                                            <input name="locationsoilplants_sandybeach" type="hidden" value="{{ campingplace_info.locationsoilplants_sandybeach }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Strandbereich</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_beacharea" value="{{ campingplace_info.locationsoilplants_beacharea }}">
+                                            <input name="locationsoilplants_beacharea" type="hidden" value="{{ campingplace_info.locationsoilplants_beacharea }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kiesstrand</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_gravelbeach" value="{{ campingplace_info.locationsoilplants_gravelbeach }}">
+                                            <input name="locationsoilplants_gravelbeach" type="hidden" value="{{ campingplace_info.locationsoilplants_gravelbeach }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Steiniger Strand</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationssoilplants_stonybeach" value="{{ campingplace_info.locationssoilplants_stonybeach }}">
+                                            <input name="locationssoilplants_stonybeach" type="hidden" value="{{ campingplace_info.locationssoilplants_stonybeach }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Künstlich befestigter Strand</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_artificiallyfortifiedbeach" value="{{ campingplace_info.locationsoilplants_artificiallyfortifiedbeach }}">
+                                            <input name="locationsoilplants_artificiallyfortifiedbeach" type="hidden" value="{{ campingplace_info.locationsoilplants_artificiallyfortifiedbeach }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">felsige Küste</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_rockycoast" value="{{ campingplace_info.locationsoilplants_rockycoast }}">
+                                            <input name="locationsoilplants_rockycoast" type="hidden" value="{{ campingplace_info.locationsoilplants_rockycoast }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Für Wohnwagen / Wohnmobile schwer zugänglich</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_forcaravans_motorhomesdifficulttoaccess" value="{{ campingplace_info.locationsoilplants_forcaravans_motorhomesdifficulttoaccess }}">
+                                            <input name="locationsoilplants_forcaravans_motorhomesdifficulttoaccess" type="hidden" value="{{ campingplace_info.locationsoilplants_forcaravans_motorhomesdifficulttoaccess }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">öffentliche Verkehrsmittel in kurzer Entfernung (max. 0, 5km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_public_transportwithinashortdistance_maxkm" value="{{ campingplace_info.locationsoilplants_public_transportwithinashortdistance_maxkm }}">
+                                            <input name="locationsoilplants_public_transportwithinashortdistance_maxkm" type="hidden" value="{{ campingplace_info.locationsoilplants_public_transportwithinashortdistance_maxkm }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Grass</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_grass" value="{{ campingplace_info.locationsoilplants_grass }}">
+                                            <input name="locationsoilplants_grass" type="hidden" value="{{ campingplace_info.locationsoilplants_grass }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">sandiger Boden</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationssoilplants_sandysoil" value="{{ campingplace_info.locationssoilplants_sandysoil }}">
+                                            <input name="locationssoilplants_sandysoil" type="hidden" value="{{ campingplace_info.locationssoilplants_sandysoil }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Harter Boden</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_hardground" value="{{ campingplace_info.locationsoilplants_hardground }}">
+                                            <input name="locationsoilplants_hardground" type="hidden" value="{{ campingplace_info.locationsoilplants_hardground }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Parkplatz auf dem Gelände</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_attachedparkingspace" value="{{ campingplace_info.locationsoilplants_attachedparkingspace }}">
+                                            <input name="locationsoilplants_attachedparkingspace" type="hidden" value="{{ campingplace_info.locationsoilplants_attachedparkingspace }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Terrassengelände</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_terracedsite" value="{{ campingplace_info.locationsoilplants_terracedsite }}">
+                                            <input name="locationsoilplants_terracedsite" type="hidden" value="{{ campingplace_info.locationsoilplants_terracedsite }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Hügel</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_hillside" value="{{ campingplace_info.locationsoilplants_hillside }}">
+                                            <input name="locationsoilplants_hillside" type="hidden" value="{{ campingplace_info.locationsoilplants_hillside }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Parzellen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_parceledpitches" value="{{ campingplace_info.locationsoilplants_parceledpitches }}">
+                                            <input name="locationsoilplants_parceledpitches" type="hidden" value="{{ campingplace_info.locationsoilplants_parceledpitches }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Stellplätze ohne Schatten</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_placeswithoutshade" value="{{ campingplace_info.locationsoilplants_placeswithoutshade }}">
+                                            <input name="locationsoilplants_placeswithoutshade" type="hidden" value="{{ campingplace_info.locationsoilplants_placeswithoutshade }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Stellplätze mit etwas Schatten</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_placeswithsomeshade" value="{{ campingplace_info.locationsoilplants_placeswithsomeshade }}">
+                                            <input name="locationsoilplants_placeswithsomeshade" type="hidden" value="{{ campingplace_info.locationsoilplants_placeswithsomeshade }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Stellplätze mit viel Schatten</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="locationsoilplants_placeswithalotofshade" value="{{ campingplace_info.locationsoilplants_placeswithalotofshade }}">
+                                            <input name="locationsoilplants_placeswithalotofshade" type="hidden" value="{{ campingplace_info.locationsoilplants_placeswithalotofshade }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Sport und Spiele</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Einige Spielgeräte</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_someplaygroundequipment" value="{{ campingplace_info.sportsandgames_someplaygroundequipment }}">
+                                            <input name="sportsandgames_someplaygroundequipment" type="hidden" value="{{ campingplace_info.sportsandgames_someplaygroundequipment }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kinderspielplatz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_childrensplayground" value="{{ campingplace_info.sportsandgames_childrensplayground }}">
+                                            <input name="sportsandgames_childrensplayground" type="hidden" value="{{ campingplace_info.sportsandgames_childrensplayground }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Indoor-Spielplatz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_indoorplayground" value="{{ campingplace_info.sportsandgames_indoorplayground }}">
+                                            <input name="sportsandgames_indoorplayground" type="hidden" value="{{ campingplace_info.sportsandgames_indoorplayground }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Water playground</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_waterplayground" value="{{ campingplace_info.sportsandgames_waterplayground }}">
+                                            <input name="sportsandgames_waterplayground" type="hidden" value="{{ campingplace_info.sportsandgames_waterplayground }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Mulitsportfeld</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_mulitsportfeld" value="{{ campingplace_info.sportsandgames_mulitsportfeld }}">
+                                            <input name="sportsandgames_mulitsportfeld" type="hidden" value="{{ campingplace_info.sportsandgames_mulitsportfeld }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Beach Volleyball</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_beachvolleyball" value="{{ campingplace_info.sportsandgames_beachvolleyball }}">
+                                            <input name="sportsandgames_beachvolleyball" type="hidden" value="{{ campingplace_info.sportsandgames_beachvolleyball }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Reiten</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_horsebackriding" value="{{ campingplace_info.sportsandgames_horsebackriding }}">
+                                            <input name="sportsandgames_horsebackriding" type="hidden" value="{{ campingplace_info.sportsandgames_horsebackriding }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Reiten (Pony)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_riding_pony" value="{{ campingplace_info.sportsandgames_riding_pony }}">
+                                            <input name="sportsandgames_riding_pony" type="hidden" value="{{ campingplace_info.sportsandgames_riding_pony }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Minigolf</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_minigolf" value="{{ campingplace_info.sportsandgames_minigolf }}">
+                                            <input name="sportsandgames_minigolf" type="hidden" value="{{ campingplace_info.sportsandgames_minigolf }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Golfplatz (min. 6 Löcher)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_golfcourse_min6holes" value="{{ campingplace_info.sportsandgames_golfcourse_min6holes }}">
+                                            <input name="sportsandgames_golfcourse_min6holes" type="hidden" value="{{ campingplace_info.sportsandgames_golfcourse_min6holes }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Golfplatz in kurzer Entfernung (max. 10km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_golfcoursewithinashortdistance_max10km" value="{{ campingplace_info.sportsandgames_golfcoursewithinashortdistance_max10km }}">
+                                            <input name="sportsandgames_golfcoursewithinashortdistance_max10km" type="hidden" value="{{ campingplace_info.sportsandgames_golfcoursewithinashortdistance_max10km }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tischtennis</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_tabletennis" value="{{ campingplace_info.sportsandgames_tabletennis }}">
+                                            <input name="sportsandgames_tabletennis" type="hidden" value="{{ campingplace_info.sportsandgames_tabletennis }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tennis</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_tennis" value="{{ campingplace_info.sportsandgames_tennis }}">
+                                            <input name="sportsandgames_tennis" type="hidden" value="{{ campingplace_info.sportsandgames_tennis }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tennisunterricht</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_tennislessons" value="{{ campingplace_info.sportsandgames_tennislessons }}">
+                                            <input name="sportsandgames_tennislessons" type="hidden" value="{{ campingplace_info.sportsandgames_tennislessons }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Squash</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_squash" value="{{ campingplace_info.sportsandgames_squash }}">
+                                            <input name="sportsandgames_squash" type="hidden" value="{{ campingplace_info.sportsandgames_squash }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Bowling und / oder Kegelbahn</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_bowlingand_orbowlingalley" value="{{ campingplace_info.sportsandgames_bowlingand_orbowlingalley }}">
+                                            <input name="sportsandgames_bowlingand_orbowlingalley" type="hidden" value="{{ campingplace_info.sportsandgames_bowlingand_orbowlingalley }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Boccia</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_boccia" value="{{ campingplace_info.sportsandgames_boccia }}">
+                                            <input name="sportsandgames_boccia" type="hidden" value="{{ campingplace_info.sportsandgames_boccia }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Bogenschießen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_archery" value="{{ campingplace_info.sportsandgames_archery }}">
+                                            <input name="sportsandgames_archery" type="hidden" value="{{ campingplace_info.sportsandgames_archery }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">trampoline</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgmaes_trampoline" value="{{ campingplace_info.sportsandgmaes_trampoline }}">
+                                            <input name="sportsandgmaes_trampoline" type="hidden" value="{{ campingplace_info.sportsandgmaes_trampoline }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Hüpfburg</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_bouncy" value="{{ campingplace_info.sportsandgames_bouncy }}">
+                                            <input name="sportsandgames_bouncy" type="hidden" value="{{ campingplace_info.sportsandgames_bouncy }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kletterwand</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgames_climbingwall" value="{{ campingplace_info.sportsandgames_climbingwall }}">
+                                            <input name="sportsandgames_climbingwall" type="hidden" value="{{ campingplace_info.sportsandgames_climbingwall }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Geocaching</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportsandgmaes_geocaching" value="{{ campingplace_info.sportsandgmaes_geocaching }}">
+                                            <input name="sportsandgmaes_geocaching" type="hidden" value="{{ campingplace_info.sportsandgmaes_geocaching }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Erholung und Wellness</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Ausflugsprogramm (mindestens zweimal eine Woche Hochsaison)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_excursionprogram_atleasttwiceaweekhighseason" value="{{ campingplace_info.rw_excursionprogram_atleasttwiceaweekhighseason }}">
+                                            <input name="rw_excursionprogram_atleasttwiceaweekhighseason" type="hidden" value="{{ campingplace_info.rw_excursionprogram_atleasttwiceaweekhighseason }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Animation für Kinder bis 12 Jahre (mindestens zweimal pro Woche in der Hochsaison)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_aniforchildupto12y_atleasttwiceaweekinhighseason" value="{{ campingplace_info.rw_aniforchildupto12y_atleasttwiceaweekinhighseason }}">
+                                            <input name="rw_aniforchildupto12y_atleasttwiceaweekinhighseason" type="hidden" value="{{ campingplace_info.rw_aniforchildupto12y_atleasttwiceaweekinhighseason }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Animation für Kinder 13-18 Jahre (mindestens zweimal pro Woche in der Hochsaison)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_aniforchildupto13_18y_atleasttwiceaweekinhighseason" value="{{ campingplace_info.rw_aniforchildupto13_18y_atleasttwiceaweekinhighseason }}">
+                                            <input name="rw_aniforchildupto13_18y_atleasttwiceaweekinhighseason" type="hidden" value="{{ campingplace_info.rw_aniforchildupto13_18y_atleasttwiceaweekinhighseason }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Animation für Erwachsene (mindestens zweimal pro Woche in der Hochsaison)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_aniforadults_atleasttwiceaweekinhighseason" value="{{ campingplace_info.rw_aniforadults_atleasttwiceaweekinhighseason }}">
+                                            <input name="rw_aniforadults_atleasttwiceaweekinhighseason" type="hidden" value="{{ campingplace_info.rw_aniforadults_atleasttwiceaweekinhighseason }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Geführte Wanderungen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_guidedwalks" value="{{ campingplace_info.rw_guidedwalks }}">
+                                            <input name="rw_guidedwalks" type="hidden" value="{{ campingplace_info.rw_guidedwalks }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Markierte Wanderungen auf dem Campingplatz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_markedfußwandereungenthecampsite" value="{{ campingplace_info.rw_markedfußwandereungenthecampsite }}">
+                                            <input name="rw_markedfußwandereungenthecampsite" type="hidden" value="{{ campingplace_info.rw_markedfußwandereungenthecampsite }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">GPS-Wanderungen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_gpswalks" value="{{ campingplace_info.rw_gpswalks }}">
+                                            <input name="rw_gpswalks" type="hidden" value="{{ campingplace_info.rw_gpswalks }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Auf dem Campingplatz beginnende Radwege</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_amcampingplatzbeginnendefahrradrouten" value="{{ campingplace_info.rw_amcampingplatzbeginnendefahrradrouten }}">
+                                            <input name="rw_amcampingplatzbeginnendefahrradrouten" type="hidden" value="{{ campingplace_info.rw_amcampingplatzbeginnendefahrradrouten }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wohnzimmer</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_sittingroom" value="{{ campingplace_info.rw_sittingroom }}">
+                                            <input name="rw_sittingroom" type="hidden" value="{{ campingplace_info.rw_sittingroom }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kindertagesstätte</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_daycarecenter" value="{{ campingplace_info.rw_daycarecenter }}">
+                                            <input name="rw_daycarecenter" type="hidden" value="{{ campingplace_info.rw_daycarecenter }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tierwiese</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_animalmeadow" value="{{ campingplace_info.rw_animalmeadow }}">
+                                            <input name="rw_animalmeadow" type="hidden" value="{{ campingplace_info.rw_animalmeadow }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Miniclub (mindestens 4 x wöchentlich-Hochsaison)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_miniclub_mind_4x_wöchentlich_hochsaison" value="{{ campingplace_info.rw_miniclub_mind_4x_wöchentlich_hochsaison }}">
+                                            <input name="rw_miniclub_mind_4x_wöchentlich_hochsaison" type="hidden" value="{{ campingplace_info.rw_miniclub_mind_4x_wöchentlich_hochsaison }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Diskothek</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_discotheque" value="{{ campingplace_info.rw_discotheque }}">
+                                            <input name="rw_discotheque" type="hidden" value="{{ campingplace_info.rw_discotheque }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Disco-Abende</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_discoevenings" value="{{ campingplace_info.rw_discoevenings }}">
+                                            <input name="rw_discoevenings" type="hidden" value="{{ campingplace_info.rw_discoevenings }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Gemeinschaftsraum mit Fernseher</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_watchtv" value="{{ campingplace_info.rw_watchtv }}">
+                                            <input name="rw_watchtv" type="hidden" value="{{ campingplace_info.rw_watchtv }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Steckplätze</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_slots" value="{{ campingplace_info.rw_slots }}">
+                                            <input name="rw_slots" type="hidden" value="{{ campingplace_info.rw_slots }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Pool Billiard</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_pool_billiards" value="{{ campingplace_info.rw_pool_billiards }}">
+                                            <input name="rw_pool_billiards" type="hidden" value="{{ campingplace_info.rw_pool_billiards }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Fitness-Studio</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_gym" value="{{ campingplace_info.rw_gym }}">
+                                            <input name="rw_gym" type="hidden" value="{{ campingplace_info.rw_gym }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Solarium</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_solarium" value="{{ campingplace_info.rw_solarium }}">
+                                            <input name="rw_solarium" type="hidden" value="{{ campingplace_info.rw_solarium }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Sauna</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_sauna" value="{{ campingplace_info.rw_sauna }}">
+                                            <input name="rw_sauna" type="hidden" value="{{ campingplace_info.rw_sauna }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">whirlpool</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_whirlpool" value="{{ campingplace_info.rw_whirlpool }}">
+                                            <input name="rw_whirlpool" type="hidden" value="{{ campingplace_info.rw_whirlpool }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Dampfbad</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_steambath" value="{{ campingplace_info.rw_steambath }}">
+                                            <input name="rw_steambath" type="hidden" value="{{ campingplace_info.rw_steambath }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Thermalbäder</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_thermalbaths" value="{{ campingplace_info.rw_thermalbaths }}">
+                                            <input name="rw_thermalbaths" type="hidden" value="{{ campingplace_info.rw_thermalbaths }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Massage</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_massage" value="{{ campingplace_info.rw_massage }}">
+                                            <input name="rw_massage" type="hidden" value="{{ campingplace_info.rw_massage }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Hydromassage</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_hydromassage" value="{{ campingplace_info.rw_hydromassage }}">
+                                            <input name="rw_hydromassage" type="hidden" value="{{ campingplace_info.rw_hydromassage }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Beauty Center</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="rw_beautycenter" value="{{ campingplace_info.rw_beautycenter }}">
+                                            <input name="rw_beautycenter" type="hidden" value="{{ campingplace_info.rw_beautycenter }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Shopping und Restaurants</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Frisches Brot & Brötchen auf dem Campingplatz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_freshbreadavailableatthecampsite" value="{{ campingplace_info.sr_freshbreadavailableatthecampsite }}">
+                                            <input name="sr_freshbreadavailableatthecampsite" type="hidden" value="{{ campingplace_info.sr_freshbreadavailableatthecampsite }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Lebensmittel beschränkt erhältlich</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_foodrestrictedavailable" value="{{ campingplace_info.sr_foodrestrictedavailable }}">
+                                            <input name="sr_foodrestrictedavailable" type="hidden" value="{{ campingplace_info.sr_foodrestrictedavailable }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Große Auswahl der Lebensmittel</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_foodgreatchoice" value="{{ campingplace_info.sr_foodgreatchoice }}">
+                                            <input name="sr_foodgreatchoice" type="hidden" value="{{ campingplace_info.sr_foodgreatchoice }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Snack</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_snack" value="{{ campingplace_info.sr_snack }}">
+                                            <input name="sr_snack" type="hidden" value="{{ campingplace_info.sr_snack }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Speisen zum Mitnehmen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_takeawayfood" value="{{ campingplace_info.sr_takeawayfood }}">
+                                            <input name="sr_takeawayfood" type="hidden" value="{{ campingplace_info.sr_takeawayfood }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Pizzeria</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_pizzeria" value="{{ campingplace_info.sr_pizzeria }}">
+                                            <input name="sr_pizzeria" type="hidden" value="{{ campingplace_info.sr_pizzeria }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Bar</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_bar" value="{{ campingplace_info.sr_bar }}">
+                                            <input name="sr_bar" type="hidden" value="{{ campingplace_info.sr_bar }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">SB-Restaurant</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_sbrestaurant" value="{{ campingplace_info.sr_sbrestaurant }}">
+                                            <input name="sr_sbrestaurant" type="hidden" value="{{ campingplace_info.sr_sbrestaurant }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Restaurant (kleine Karte)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_restaurant_withsmallmenu" value="{{ campingplace_info.sr_restaurant_withsmallmenu }}">
+                                            <input name="sr_restaurant_withsmallmenu" type="hidden" value="{{ campingplace_info.sr_restaurant_withsmallmenu }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Restaurant (mit großen Karte)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_restaurant_withbigmap" value="{{ campingplace_info.sr_restaurant_withbigmap }}">
+                                            <input name="sr_restaurant_withbigmap" type="hidden" value="{{ campingplace_info.sr_restaurant_withbigmap }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Gas zur Verfügung</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_gasavailable" value="{{ campingplace_info.sr_gasavailable }}">
+                                            <input name="sr_gasavailable" type="hidden" value="{{ campingplace_info.sr_gasavailable }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Einfrieren der Kühlelemente möglich</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_freezingthecoolingelements" value="{{ campingplace_info.sr_freezingthecoolingelements }}">
+                                            <input name="sr_freezingthecoolingelements" type="hidden" value="{{ campingplace_info.sr_freezingthecoolingelements }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kühles Eis verfügbar</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sr_cooliceavailable" value="{{ campingplace_info.sr_cooliceavailable }}">
+                                            <input name="sr_cooliceavailable" type="hidden" value="{{ campingplace_info.sr_cooliceavailable }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <span class="font-weight-semibold">Entspannung am Wasser</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Außenpool</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_outdoorpool" value="{{ campingplace_info.relaxationatthewater_outdoorpool }}">
+                                            <input name="relaxationatthewater_outdoorpool" type="hidden" value="{{ campingplace_info.relaxationatthewater_outdoorpool }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Beheiztes Freibad</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_outdoorheatedpool" value="{{ campingplace_info.relaxationatthewater_outdoorheatedpool }}">
+                                            <input name="relaxationatthewater_outdoorheatedpool" type="hidden" value="{{ campingplace_info.relaxationatthewater_outdoorheatedpool }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Hallenschwimmbad</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_sunroofnatatorium" value="{{ campingplace_info.relaxationatthewater_sunroofnatatorium }}">
+                                            <input name="relaxationatthewater_sunroofnatatorium" type="hidden" value="{{ campingplace_info.relaxationatthewater_sunroofnatatorium }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Schwimmbad mit Schiebedachbeheizt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_sunroofswimmingpoolheated" value="{{ campingplace_info.relaxationatthewater_sunroofswimmingpoolheated }}">
+                                            <input name="relaxationatthewater_sunroofswimmingpoolheated" type="hidden" value="{{ campingplace_info.relaxationatthewater_sunroofswimmingpoolheated }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kinderbecken (für 1-3-jährige, &lt; 40cm)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_childrenspool_for1_3yearolds_40cm" value="{{ campingplace_info.relaxationatthewater_childrenspool_for1_3yearolds_40cm }}">
+                                            <input name="relaxationatthewater_childrenspool_for1_3yearolds_40cm" type="hidden" value="{{ campingplace_info.relaxationatthewater_childrenspool_for1_3yearolds_40cm }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Beheizter Pool für Kinder</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_heatedpoolforchildren" value="{{ campingplace_info.relaxationatthewater_heatedpoolforchildren }}">
+                                            <input name="relaxationatthewater_heatedpoolforchildren" type="hidden" value="{{ campingplace_info.relaxationatthewater_heatedpoolforchildren }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wasserrutsche (&gt; 10m)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_waterslide_10m" value="{{ campingplace_info.relaxationatthewater_waterslide_10m }}">
+                                            <input name="relaxationatthewater_waterslide_10m" type="hidden" value="{{ campingplace_info.relaxationatthewater_waterslide_10m }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wasserspielplatz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_waterpark" value="{{ campingplace_info.relaxationatthewater_waterpark }}">
+                                            <input name="relaxationatthewater_waterpark" type="hidden" value="{{ campingplace_info.relaxationatthewater_waterpark }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Swimmen im Fluß / Bach (max 0,1km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_swimmingintheriver_streammaxkm" value="{{ campingplace_info.relaxationatthewater_swimmingintheriver_streammaxkm }}">
+                                            <input name="relaxationatthewater_swimmingintheriver_streammaxkm" type="hidden" value="{{ campingplace_info.relaxationatthewater_swimmingintheriver_streammaxkm }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Swimmen im Meer (max 0,5km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_swimminginthesea_maxkm" value="{{ campingplace_info.relaxationatthewater_swimminginthesea_maxkm }}">
+                                            <input name="relaxationatthewater_swimminginthesea_maxkm" type="hidden" value="{{ campingplace_info.relaxationatthewater_swimminginthesea_maxkm }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Baden in einem Freizeitbadesee (max 0,1km)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_bathinginarecreational_bathinglake_maxkm" value="{{ campingplace_info.relaxationatthewater_bathinginarecreational_bathinglake_maxkm }}">
+                                            <input name="relaxationatthewater_bathinginarecreational_bathinglake_maxkm" type="hidden" value="{{ campingplace_info.relaxationatthewater_bathinginarecreational_bathinglake_maxkm }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Duschen am Strand</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_beachshowers" value="{{ campingplace_info.relaxationatthewater_beachshowers }}">
+                                            <input name="relaxationatthewater_beachshowers" type="hidden" value="{{ campingplace_info.relaxationatthewater_beachshowers }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Angeln</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_fishing" value="{{ campingplace_info.relaxationatthewater_fishing }}">
+                                            <input name="relaxationatthewater_fishing" type="hidden" value="{{ campingplace_info.relaxationatthewater_fishing }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tauchen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_diving" value="{{ campingplace_info.relaxationatthewater_diving }}">
+                                            <input name="relaxationatthewater_diving" type="hidden" value="{{ campingplace_info.relaxationatthewater_diving }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Schnorcheln</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_snorkelling" value="{{ campingplace_info.relaxationatthewater_snorkelling }}">
+                                            <input name="relaxationatthewater_snorkelling" type="hidden" value="{{ campingplace_info.relaxationatthewater_snorkelling }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Windsurfen erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_windsurfingallowed" value="{{ campingplace_info.relaxationatthewater_windsurfingallowed }}">
+                                            <input name="relaxationatthewater_windsurfingallowed" type="hidden" value="{{ campingplace_info.relaxationatthewater_windsurfingallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Windsurf Kurse</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_windsurfingcourse" value="{{ campingplace_info.relaxationatthewater_windsurfingcourse }}">
+                                            <input name="relaxationatthewater_windsurfingcourse" type="hidden" value="{{ campingplace_info.relaxationatthewater_windsurfingcourse }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Segeln erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_sailingallowed" value="{{ campingplace_info.relaxationatthewater_sailingallowed }}">
+                                            <input name="relaxationatthewater_sailingallowed" type="hidden" value="{{ campingplace_info.relaxationatthewater_sailingallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Segelkurs</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_segelkurs" value="{{ campingplace_info.relaxationatthewater_segelkurs }}">
+                                            <input name="relaxationatthewater_segelkurs" type="hidden" value="{{ campingplace_info.relaxationatthewater_segelkurs }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Rafting / Kajak</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_rafting_kayaking_rafting" value="{{ campingplace_info.relaxationatthewater_rafting_kayaking_rafting }}">
+                                            <input name="relaxationatthewater_rafting_kayaking_rafting" type="hidden" value="{{ campingplace_info.relaxationatthewater_rafting_kayaking_rafting }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kajak Kurs</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_kayakingcourse" value="{{ campingplace_info.relaxationatthewater_kayakingcourse }}">
+                                            <input name="relaxationatthewater_kayakingcourse" type="hidden" value="{{ campingplace_info.relaxationatthewater_kayakingcourse }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wasserski erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_waterskiingallowed" value="{{ campingplace_info.relaxationatthewater_waterskiingallowed }}">
+                                            <input name="relaxationatthewater_waterskiingallowed" type="hidden" value="{{ campingplace_info.relaxationatthewater_waterskiingallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Eigenes Boot erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_ownboatallowed" value="{{ campingplace_info.relaxationatthewater_ownboatallowed }}">
+                                            <input name="relaxationatthewater_ownboatallowed" type="hidden" value="{{ campingplace_info.relaxationatthewater_ownboatallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Bootsanlage</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="relaxationatthewater_boatslip" value="{{ campingplace_info.relaxationatthewater_boatslip }}">
+                                            <input name="relaxationatthewater_boatslip" type="hidden" value="{{ campingplace_info.relaxationatthewater_boatslip }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Reinigen und Abwaschen</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Spülmaschine mit kaltem Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_dishwasherwithcoldwater" value="{{ campingplace_info.washingup_dishwasherwithcoldwater }}">
+                                            <input name="washingup_dishwasherwithcoldwater" type="hidden" value="{{ campingplace_info.washingup_dishwasherwithcoldwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Spülmaschine mit Warmwasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_dishwasherwithhotwater" value="{{ campingplace_info.washingup_dishwasherwithhotwater }}">
+                                            <input name="washingup_dishwasherwithhotwater" type="hidden" value="{{ campingplace_info.washingup_dishwasherwithhotwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Spülmaschine</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_dishwasher" value="{{ campingplace_info.washingup_dishwasher }}">
+                                            <input name="washingup_dishwasher" type="hidden" value="{{ campingplace_info.washingup_dishwasher }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wäsche-Waschbecken mit kaltem Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_laundrysinkwithcoldwater" value="{{ campingplace_info.washingup_laundrysinkwithcoldwater }}">
+                                            <input name="washingup_laundrysinkwithcoldwater" type="hidden" value="{{ campingplace_info.washingup_laundrysinkwithcoldwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wäsche-Waschbecken mit Warmwasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_laundrysinkwithhotwater" value="{{ campingplace_info.washingup_laundrysinkwithhotwater }}">
+                                            <input name="washingup_laundrysinkwithhotwater" type="hidden" value="{{ campingplace_info.washingup_laundrysinkwithhotwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Waschmaschine (s)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_washingmachine" value="{{ campingplace_info.washingup_washingmachine }}">
+                                            <input name="washingup_washingmachine" type="hidden" value="{{ campingplace_info.washingup_washingmachine }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wäschetrockner</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_clothesdryer" value="{{ campingplace_info.washingup_clothesdryer }}">
+                                            <input name="washingup_clothesdryer" type="hidden" value="{{ campingplace_info.washingup_clothesdryer }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Bügeleisen /-Brett</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_roningfacilities" value="{{ campingplace_info.washingup_roningfacilities }}">
+                                            <input name="washingup_roningfacilities" type="hidden" value="{{ campingplace_info.washingup_roningfacilities }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Individuelle Kochgelegenheit</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_individualcookingopportunity" value="{{ campingplace_info.washingup_individualcookingopportunity }}">
+                                            <input name="washingup_individualcookingopportunity" type="hidden" value="{{ campingplace_info.washingup_individualcookingopportunity }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kochgelegenheit für Gruppen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_cookingfacilitiesforgroups" value="{{ campingplace_info.washingup_cookingfacilitiesforgroups }}">
+                                            <input name="washingup_cookingfacilitiesforgroups" type="hidden" value="{{ campingplace_info.washingup_cookingfacilitiesforgroups }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Mikrowelle</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="washingup_microwave" value="{{ campingplace_info.washingup_microwave }}">
+                                            <input name="washingup_microwave" type="hidden" value="{{ campingplace_info.washingup_microwave }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Sanitäre Einrichtungen</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Spülbecken: kaltes Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_sink_coldwater" value="{{ campingplace_info.si_sink_coldwater }}">
+                                            <input name="si_sink_coldwater" type="hidden" value="{{ campingplace_info.si_sink_coldwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Spülbecken: warmes Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_sink_warmwater" value="{{ campingplace_info.si_sink_warmwater }}">
+                                            <input name="si_sink_warmwater" type="hidden" value="{{ campingplace_info.si_sink_warmwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Waschkabinen: kaltes Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_singlewashcabins_coldwater" value="{{ campingplace_info.si_singlewashcabins_coldwater }}">
+                                            <input name="si_singlewashcabins_coldwater" type="hidden" value="{{ campingplace_info.si_singlewashcabins_coldwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Waschkabinen: warmes Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_singlewashcabins_warmwater" value="{{ campingplace_info.si_singlewashcabins_warmwater }}">
+                                            <input name="si_singlewashcabins_warmwater" type="hidden" value="{{ campingplace_info.si_singlewashcabins_warmwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Duschen: kaltes Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_showers_coldwater" value="{{ campingplace_info.si_showers_coldwater }}">
+                                            <input name="si_showers_coldwater" type="hidden" value="{{ campingplace_info.si_showers_coldwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Duschen: warmes Wasser</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_showers_warmwater" value="{{ campingplace_info.si_showers_warmwater }}">
+                                            <input name="si_showers_warmwater" type="hidden" value="{{ campingplace_info.si_showers_warmwater }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Familienduschen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_familyshowers" value="{{ campingplace_info.si_familyshowers }}">
+                                            <input name="si_familyshowers" type="hidden" value="{{ campingplace_info.si_familyshowers }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Senior-Dusche (mit zusätzlichen Halterungen)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_seniorshower_withextraholders" value="{{ campingplace_info.si_seniorshower_withextraholders }}">
+                                            <input name="si_seniorshower_withextraholders" type="hidden" value="{{ campingplace_info.si_seniorshower_withextraholders }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Familien Sanitärräume</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_familysanitary" value="{{ campingplace_info.si_familysanitary }}">
+                                            <input name="si_familysanitary" type="hidden" value="{{ campingplace_info.si_familysanitary }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Beheizte Toiletten</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_heatedtoilets" value="{{ campingplace_info.si_heatedtoilets }}">
+                                            <input name="si_heatedtoilets" type="hidden" value="{{ campingplace_info.si_heatedtoilets }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kinder Sanitär</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_childrenssanitary" value="{{ campingplace_info.si_childrenssanitary }}">
+                                            <input name="si_childrenssanitary" type="hidden" value="{{ campingplace_info.si_childrenssanitary }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Privatsanitär</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_privatesanitary" value="{{ campingplace_info.si_privatesanitary }}">
+                                            <input name="si_privatesanitary" type="hidden" value="{{ campingplace_info.si_privatesanitary }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Privattoilette</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_privatetoilet" value="{{ campingplace_info.si_privatetoilet }}">
+                                            <input name="si_privatetoilet" type="hidden" value="{{ campingplace_info.si_privatetoilet }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Toilettensitz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_toiletseat" value="{{ campingplace_info.si_toiletseat }}">
+                                            <input name="si_toiletseat" type="hidden" value="{{ campingplace_info.si_toiletseat }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Senioren Toilette</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_frenchtoilet" value="{{ campingplace_info.si_frenchtoilet }}">
+                                            <input name="si_frenchtoilet" type="hidden" value="{{ campingplace_info.si_frenchtoilet }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Französische Toilette</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_toiletfortheelderly" value="{{ campingplace_info.si_toiletfortheelderly }}">
+                                            <input name="si_toiletfortheelderly" type="hidden" value="{{ campingplace_info.si_toiletfortheelderly }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Toilettenpapier verfügbar</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_toiletpaperavailable" value="{{ campingplace_info.si_toiletpaperavailable }}">
+                                            <input name="si_toiletpaperavailable" type="hidden" value="{{ campingplace_info.si_toiletpaperavailable }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Chemische Toilette</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_spoutforchemicaltoilet" value="{{ campingplace_info.si_spoutforchemicaltoilet }}">
+                                            <input name="si_spoutforchemicaltoilet" type="hidden" value="{{ campingplace_info.si_spoutforchemicaltoilet }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Umkleidekabine</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_changingroom" value="{{ campingplace_info.si_changingroom }}">
+                                            <input name="si_changingroom" type="hidden" value="{{ campingplace_info.si_changingroom }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wasseranschluss am / auf dem Platz (max 15m)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_waterconnectionon_atthepitch_max15m" value="{{ campingplace_info.si_waterconnectionon_atthepitch_max15m }}">
+                                            <input name="si_waterconnectionon_atthepitch_max15m" type="hidden" value="{{ campingplace_info.si_waterconnectionon_atthepitch_max15m }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Abwasserentsorgung am / auf dem Stellplatz (max. 15m)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_wastewaterdischarge_parkingspace_max15m" value="{{ campingplace_info.si_wastewaterdischarge_parkingspace_max15m }}">
+                                            <input name="si_wastewaterdischarge_parkingspace_max15m" type="hidden" value="{{ campingplace_info.si_wastewaterdischarge_parkingspace_max15m }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wasserstelle auf / am Platz (max 15m)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="si_waterpointon_atthepitch_max15m" value="{{ campingplace_info.si_waterpointon_atthepitch_max15m }}">
+                                            <input name="si_waterpointon_atthepitch_max15m" type="hidden" value="{{ campingplace_info.si_waterpointon_atthepitch_max15m }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Sport-Zubehör-Verleih</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Zelte</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_tents" value="{{ campingplace_info.sportaccessoriesrental_tents }}">
+                                            <input name="sportaccessoriesrental_tents" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_tents }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Hütte / Zelt ohne Sanitär</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_lodgetentwithoutplumbing" value="{{ campingplace_info.sportaccessoriesrental_lodgetentwithoutplumbing }}">
+                                            <input name="sportaccessoriesrental_lodgetentwithoutplumbing" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_lodgetentwithoutplumbing }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Hütte / Zelt mit Sanitär</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_lodgetentwithplumbing" value="{{ campingplace_info.sportaccessoriesrental_lodgetentwithplumbing }}">
+                                            <input name="sportaccessoriesrental_lodgetentwithplumbing" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_lodgetentwithplumbing }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Wohnwagen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_caravan" value="{{ campingplace_info.sportaccessoriesrental_caravan }}">
+                                            <input name="sportaccessoriesrental_caravan" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_caravan }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Mobile Homes</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_mobilehomes" value="{{ campingplace_info.sportaccessoriesrental_mobilehomes }}">
+                                            <input name="sportaccessoriesrental_mobilehomes" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_mobilehomes }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kabinen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_cabins" value="{{ campingplace_info.sportaccessoriesrental_cabins }}">
+                                            <input name="sportaccessoriesrental_cabins" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_cabins }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Zimmer</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_room" value="{{ campingplace_info.sportaccessoriesrental_room }}">
+                                            <input name="sportaccessoriesrental_room" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_room }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Studios</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_studios" value="{{ campingplace_info.sportaccessoriesrental_studios }}">
+                                            <input name="sportaccessoriesrental_studios" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_studios }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Apartments</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_apartments" value="{{ campingplace_info.sportaccessoriesrental_apartments }}">
+                                            <input name="sportaccessoriesrental_apartments" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_apartments }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Bungalow / Chalets</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_bungalow_chalets" value="{{ campingplace_info.sportaccessoriesrental_bungalow_chalets }}">
+                                            <input name="sportaccessoriesrental_bungalow_chalets" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_bungalow_chalets }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Lüfter</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_coolingfan" value="{{ campingplace_info.sportaccessoriesrental_coolingfan }}">
+                                            <input name="sportaccessoriesrental_coolingfan" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_coolingfan }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tresore</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_safes" value="{{ campingplace_info.sportaccessoriesrental_safes }}">
+                                            <input name="sportaccessoriesrental_safes" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_safes }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Surfbretter</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_surfboards" value="{{ campingplace_info.sportaccessoriesrental_surfboards }}">
+                                            <input name="sportaccessoriesrental_surfboards" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_surfboards }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Motorboote</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_motorboats" value="{{ campingplace_info.sportaccessoriesrental_motorboats }}">
+                                            <input name="sportaccessoriesrental_motorboats" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_motorboats }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Segelboote</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_sailboats" value="{{ campingplace_info.sportaccessoriesrental_sailboats }}">
+                                            <input name="sportaccessoriesrental_sailboats" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_sailboats }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Ruderboote</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_rowboats" value="{{ campingplace_info.sportaccessoriesrental_rowboats }}">
+                                            <input name="sportaccessoriesrental_rowboats" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_rowboats }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kanus</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_canoes" value="{{ campingplace_info.sportaccessoriesrental_canoes }}">
+                                            <input name="sportaccessoriesrental_canoes" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_canoes }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kajaks</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_kayaks" value="{{ campingplace_info.sportaccessoriesrental_kayaks }}">
+                                            <input name="sportaccessoriesrental_kayaks" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_kayaks }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Vermietung von Tauchausrüstung</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_rentalofexchangeequipment" value="{{ campingplace_info.sportaccessoriesrental_rentalofexchangeequipment }}">
+                                            <input name="sportaccessoriesrental_rentalofexchangeequipment" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_rentalofexchangeequipment }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tretboote</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_pedalboats" value="{{ campingplace_info.sportaccessoriesrental_pedalboats }}">
+                                            <input name="sportaccessoriesrental_pedalboats" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_pedalboats }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Mountainbikes</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_mountainbikes" value="{{ campingplace_info.sportaccessoriesrental_mountainbikes }}">
+                                            <input name="sportaccessoriesrental_mountainbikes" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_mountainbikes }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Fahrräder</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_cycles" value="{{ campingplace_info.sportaccessoriesrental_cycles }}">
+                                            <input name="sportaccessoriesrental_cycles" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_cycles }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">E_Bikes</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_e_bikes" value="{{ campingplace_info.sportaccessoriesrental_e_bikes }}">
+                                            <input name="sportaccessoriesrental_e_bikes" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_e_bikes }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Motorroller</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_scooter" value="{{ campingplace_info.sportaccessoriesrental_scooter }}">
+                                            <input name="sportaccessoriesrental_scooter" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_scooter }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Kettcar / Tretauto</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_kettcar_pedalcar" value="{{ campingplace_info.sportaccessoriesrental_kettcar_pedalcar }}">
+                                            <input name="sportaccessoriesrental_kettcar_pedalcar" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_kettcar_pedalcar }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Autos</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="sportaccessoriesrental_cars" value="{{ campingplace_info.sportaccessoriesrental_cars }}">
+                                            <input name="sportaccessoriesrental_cars" type="hidden" value="{{ campingplace_info.sportaccessoriesrental_cars }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="font-weight-semibold">Allgemeine</span>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Deutsch an der Rezeption (in der Hochsaison)</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_germanspokenatthereception_inhighseason" value="{{ campingplace_info.general_germanspokenatthereception_inhighseason }}">
+                                            <input name="general_germanspokenatthereception_inhighseason" type="hidden" value="{{ campingplace_info.general_germanspokenatthereception_inhighseason }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Reservierung in der Hochsaison empfiehlt sich</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_reservationinhighseasonisrecommended" value="{{ campingplace_info.general_reservationinhighseasonisrecommended }}">
+                                            <input name="general_reservationinhighseasonisrecommended" type="hidden" value="{{ campingplace_info.general_reservationinhighseasonisrecommended }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Reservierung in der Nebensaison wird empfohlen</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_reservationinlowseasonisrecommended" value="{{ campingplace_info.general_reservationinlowseasonisrecommended }}">
+                                            <input name="general_reservationinlowseasonisrecommended" type="hidden" value="{{ campingplace_info.general_reservationinlowseasonisrecommended }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Reservierung möglich mit Campingcard ACSI</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_reservationpossiblewithcampingcardacsi" value="{{ campingplace_info.general_reservationpossiblewithcampingcardacsi }}">
+                                            <input name="general_reservationpossiblewithcampingcardacsi" type="hidden" value="{{ campingplace_info.general_reservationpossiblewithcampingcardacsi }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Stellplätze mit Radio und TV-Anschluss</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_pitcheswithradioandtvconnection" value="{{ campingplace_info.general_pitcheswithradioandtvconnection }}">
+                                            <input name="general_pitcheswithradioandtvconnection" type="hidden" value="{{ campingplace_info.general_pitcheswithradioandtvconnection }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Spezielle Stellplätze für Wohnmobile</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_specialpitchesforcampers" value="{{ campingplace_info.general_specialpitchesforcampers }}">
+                                            <input name="general_specialpitchesforcampers" type="hidden" value="{{ campingplace_info.general_specialpitchesforcampers }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Ver- und Entsorgung-Station für Wohnmobile</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_supplyanddisposalstationformotorhomes" value="{{ campingplace_info.general_supplyanddisposalstationformotorhomes }}">
+                                            <input name="general_supplyanddisposalstationformotorhomes" type="hidden" value="{{ campingplace_info.general_supplyanddisposalstationformotorhomes }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Feld-Beleuchtung</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_fieldlighting" value="{{ campingplace_info.general_fieldlighting }}">
+                                            <input name="general_fieldlighting" type="hidden" value="{{ campingplace_info.general_fieldlighting }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Bewachtes Gelände</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_guardedterrain" value="{{ campingplace_info.general_guardedterrain }}">
+                                            <input name="general_guardedterrain" type="hidden" value="{{ campingplace_info.general_guardedterrain }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Tagsüber und nachts ruhig</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_quietduringthedayandatnight" value="{{ campingplace_info.general_quietduringthedayandatnight }}">
+                                            <input name="general_quietduringthedayandatnight" type="hidden" value="{{ campingplace_info.general_quietduringthedayandatnight }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Nur Nachts Ruhig</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_onlyquietatnight" value="{{ campingplace_info.general_onlyquietatnight }}">
+                                            <input name="general_onlyquietatnight" type="hidden" value="{{ campingplace_info.general_onlyquietatnight }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Separate Jugend Platz</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_separateyouthplace" value="{{ campingplace_info.general_separateyouthplace }}">
+                                            <input name="general_separateyouthplace" type="hidden" value="{{ campingplace_info.general_separateyouthplace }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Hund, Wandergebiet</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_dogwalkingarea" value="{{ campingplace_info.general_dogwalkingarea }}">
+                                            <input name="general_dogwalkingarea" type="hidden" value="{{ campingplace_info.general_dogwalkingarea }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Internet-Zugang</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_internetaccess" value="{{ campingplace_info.general_internetaccess }}">
+                                            <input name="general_internetaccess" type="hidden" value="{{ campingplace_info.general_internetaccess }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">W-Lan/Wifi Hotspot</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_wifi_wifihotspot" value="{{ campingplace_info.general_wifi_wifihotspot }}">
+                                            <input name="general_wifi_wifihotspot" type="hidden" value="{{ campingplace_info.general_wifi_wifihotspot }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">W-Lan/Wifi 80%</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_w_lan_wifi_80" value="{{ campingplace_info.general_w_lan_wifi_80 }}">
+                                            <input name="general_w_lan_wifi_80" type="hidden" value="{{ campingplace_info.general_w_lan_wifi_80 }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Camping Info App</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_campinginfoapp" value="{{ campingplace_info.general_campinginfoapp }}">
+                                            <input name="general_campinginfoapp" type="hidden" value="{{ campingplace_info.general_campinginfoapp }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Jede Art von Grill erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_anykindofbarbecueallowed" value="{{ campingplace_info.general_anykindofbarbecueallowed }}">
+                                            <input name="general_anykindofbarbecueallowed" type="hidden" value="{{ campingplace_info.general_anykindofbarbecueallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Holzkohle Grill erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_charcoalgrillallowed" value="{{ campingplace_info.general_charcoalgrillallowed }}">
+                                            <input name="general_charcoalgrillallowed" type="hidden" value="{{ campingplace_info.general_charcoalgrillallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Gas-Grill erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_gasgrillallowed" value="{{ campingplace_info.general_gasgrillallowed }}">
+                                            <input name="general_gasgrillallowed" type="hidden" value="{{ campingplace_info.general_gasgrillallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Elektro Grill erlaubt</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_electricgrillallowed" value="{{ campingplace_info.general_electricgrillallowed }}">
+                                            <input name="general_electricgrillallowed" type="hidden" value="{{ campingplace_info.general_electricgrillallowed }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Gemeinschaftsgrillstelle</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_commonshaftgrill" value="{{ campingplace_info.general_commonshaftgrill }}">
+                                            <input name="general_commonshaftgrill" type="hidden" value="{{ campingplace_info.general_commonshaftgrill }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Vorwiegend in Freier Natur. Stellplätze ohne Stromanschluß</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_temporarilyoutside_cpslocatedwithoutpower" value="{{ campingplace_info.general_temporarilyoutside_cpslocatedwithoutpower }}">
+                                            <input name="general_temporarilyoutside_cpslocatedwithoutpower" type="hidden" value="{{ campingplace_info.general_temporarilyoutside_cpslocatedwithoutpower }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Vorwiegend in Freier Natur. Stellplätze mit Stromanschluß</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_temporarilyoutside_ofthecpswithelectricity" value="{{ campingplace_info.general_temporarilyoutside_ofthecpswithelectricity }}">
+                                            <input name="general_temporarilyoutside_ofthecpswithelectricity" type="hidden" value="{{ campingplace_info.general_temporarilyoutside_ofthecpswithelectricity }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">ATM / Bargeld Auszahlung möglich</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_atmcashwithdrawalspossible" value="{{ campingplace_info.general_atmcashwithdrawalspossible }}">
+                                            <input name="general_atmcashwithdrawalspossible" type="hidden" value="{{ campingplace_info.general_atmcashwithdrawalspossible }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="row">
+                                        <label class="col-sm-10 control-label">Defibrillator</label>
+                                        <div class="col-sm-2">
+                                            <input type="checkbox" form_name="general_defibrillator" value="{{ campingplace_info.general_defibrillator }}">
+                                            <input name="general_defibrillator" type="hidden" value="{{ campingplace_info.general_defibrillator }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageCampingPlaceDetail.js' %}"></script>
+{% endblock %}

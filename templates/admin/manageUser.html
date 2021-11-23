@@ -1,0 +1,189 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% load replace %}
+{% block content %}
+<link href="{% static 'admin/css/manageUser.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Benutzer verwalten</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageUser/Create" class="btn bg-indigo-300"><i class="icon-plus-circle2 mr-2"></i>  Benutzer hinzufügen </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">User List</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+    <div class="row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body">
+                <div class="media">
+                    <div class="mr-3 align-self-center">
+                        <i class="icon-users2 icon-3x text-success-400"></i>
+                    </div>
+
+                    <div class="media-body text-right">
+                        <h3 class="font-weight-semibold mb-0">{{ users|length }}</h3>
+                        <span class="text-uppercase font-size-sm text-muted">Anzahl der <br>Benutzer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body">
+                <div class="media">
+                    <div class="mr-3 align-self-center">
+                        <i class="fas fa-user-shield fa-3x text-indigo-400"></i>
+                    </div>
+
+                    <div class="media-body text-right">
+                        <h3 class="font-weight-semibold mb-0">{{ admin_users }}</h3>
+                        <span class="text-uppercase font-size-sm text-muted">Anzahl der <br>Administratoren</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="font-weight-semibold mb-0">0</h3>
+                        <span class="text-uppercase font-size-sm text-muted">Anzahl der <br>Operatoren</span>
+                    </div>
+
+                    <div class="ml-3 align-self-center">
+                        <i class="fas fa-user-cog fa-3x text-blue-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="font-weight-semibold mb-0">0</h3>
+                        <span class="text-uppercase font-size-sm text-muted">Anzahl der <br>Gäste</span>
+                    </div>
+
+                    <div class="ml-3 align-self-center">
+                        <i class="fas fa-user-tie fa-3x text-danger-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title"> Benutzerfilter</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class='card-body'>
+            <div class='row'>
+                <div class="col-sm-5">
+                    <label class="control-label" for="customer">Rolle</label>
+                    <select id="roleFilter" class="form-control">
+                        <option value=''>All Role</option>
+                        {% for role in role_list %}
+                        <option value="{{ role.id }}">{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-5">
+                    <label class="control-label" for="customer">Kundennummer</label>
+                    <input id="customerNumberFilter" type="text" class="form-control" placeholder="Kundennummer">
+                </div>
+                <div class="col-sm-2">
+                    <label class="control-label" for="date_modified">&nbsp;</label>
+                    <button class="btn btn-sm btn-primary form-control" onclick="searchUser()">Suche</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">User List</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>E-Mail</th>
+                        <th>Verantwortlich für den Campingplatz</th>
+                        <th>Rolle</th>
+                        <th>Geburtsdatum</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id='userList'>
+                    {% for user in users %}
+                    <tr id="tr_{{ user.id }}" role="{{ user.role_id }}">
+                        <td>{{ user.firstname}} {{ user.lastname}}</td>
+                        <td><a href="mailto:{{ user.email}}">{{ user.email}}</a></td>
+                        <td>{% if user.campingsite_name is not None %}{{ user.campingsite_name }}{% endif %}</td>
+                        <td>{{ user.role_name|addSpace }}</td>
+                        <td>{{ user.birthday|date:"M d, Y" }}</td>
+                        <td>
+                            <div class="list-icons">
+                                <div class="list-icons-item dropdown">
+                                    <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        
+                                        <a href="/Admin/ManageUser/Edit/{{ user.id }}" class="dropdown-item"><i class="icon-pencil7"></i> Bearbeiten</a>
+                                        <a href="/Admin/ManageUser/Detail/{{ user.id }}" class="dropdown-item"><i class="icon-search4"></i> View</a>
+                                        {% if user.lock_status == 1 %}
+                                        <a href="" class="dropdown-item btn-lock" user_id="{{ user.id }}" value='1'><i class="icon-lock2"></i> Sperren</a>
+                                        {% else %}
+                                        <a href="" class="dropdown-item btn-lock" user_id="{{ user.id }}" value='0'><i class="icon-unlocked2"></i> Freigeben</a>
+                                        {% endif %}
+                                        <a href="/Admin/ManageUser/ChangePassword/{{ user.id }}" class="dropdown-item"><i class="icon-key"></i> Passwort ändern</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger user-delete" user_id="{{ user.id }}"><i class="icon-trash"></i> Löschen</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageUser.js' %}"></script>
+{% endblock %}

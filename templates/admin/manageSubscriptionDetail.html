@@ -1,0 +1,370 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageSecurityCompany.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Detail Abonnement</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageSubscription/Edit/{{ subscription_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-pencil7 mr-2"></i>  Bearbeiten</a>
+                <a href="/Admin/ManageSubscriptions" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i> Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Abonnement</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-6'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Basisdaten</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Einmalige Aktivierungsgebühr</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.activationfeeoncepervehicle }} €
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> jedes weitere Fahrzeug</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.eachadditionalvehicle }} €
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Preis gilt pro Fahrzeug pro Jahr inkl. Mobilfunkkarte mit EU Roaming</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.annualpricepervehicle }} €
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> + Schweiz, Norwegen & Island</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.annualpricepervehicle2 == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Händlersuche in Ihrer Nähe</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.dealersearchinyourarea == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Alarm an: Verlassen eines Bereichs (Geofence)</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.alarmonleavinganarea_geofence == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Alarm: SOS-Taste</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.alarmonpresssosbutton == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Alarm: Geschwindigkeit Überschritten</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.alarmonoverspeed == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Alarm bei: Vibration</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.alarmatvibration == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Bring back service from</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.bringbackservicefrom }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Bring back service up</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.bringbackserviceup }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Sofort Austausch des Trackers</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.immediatereplacementserviceofthetracker }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Fehlalarme enthalten</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.alarmincluded_beforevehicleismoved_mustbeswitchedoff }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Echtzeit-Überwachung</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.realtimemonitoring == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Vehicle fleet management (number of vehicles *)</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.vehiclefleetmanagement_numberofvehicles }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> History der Fahrzeugstandorte</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.archivehistoryofvehiclelocations }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Live-tracking</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.livetracking == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Positionsabfrage pro Tag</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.locationqueryperday }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Zahlungsweise monatlich, 1/4 Jahr, 1/2 Jahr, 1 Jahr</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.isallowpayment == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Extrahieren und Lesen der Daten</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.extractingreadingthedata == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Mobile SIM-Karte inkl. Daten roaming EU monatlich</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.mobilesimcardincl_dataroamingeumtl }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Support-Service von</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.support_service_starttime }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Support-Service</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.support_service_endtime }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Urlaubsmodus</label>
+                            <div class="col-sm-6">
+                                {% if subscription_info.holidaymode_vehiclecannotbemonitoredonholidayifdesired == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Preis pro Monat</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.pricemonthly }} €
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Preis für 3 Monate</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.pricequarter }} €
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Preis für 6 Monate</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.pricehalf }} €
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Preis pro Jahr</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.priceoneyear }} €
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Preis für 2 Jahre</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.pricetwoyear }} €
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> On request</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.onrequest_txt }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Sortorder</label>
+                            <div class="col-sm-6">
+                                {{ subscription_info.sortorder }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-6'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Übersicht</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Anzahl der Benutzer</label>
+                            <div class="col-sm-6">
+                                0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+{% endblock %}

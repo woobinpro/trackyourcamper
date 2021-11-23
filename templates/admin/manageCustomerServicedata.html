@@ -1,6 +1,8 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.1/summernote.css" rel="stylesheet">
+<script src="{% static 'admin/global_assets/js/plugins/editors/summernote/summernote.min.js' %}"></script>
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
@@ -26,7 +28,222 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Customer Service Information</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class='card-body'>
+            <form action="/Admin/ManageCustomerServicedata" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <input type='hidden' name='id' value="{{ header_content.id }}">
+                <div class='row'>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-4 control-label">Kundenservice</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" required name="content_1" type="text" value="{{ header_content.content_1 }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-4 control-label">Kontaktnummer</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" required="" name="content_2" type="text" value="{{ header_content.content_2 }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Kopfzeile 1</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="headercontent1">{{ header_content.headercontent1 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Kopfzeile 2</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="headercontent2">{{ header_content.headercontent2 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Bannerzeile</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="headercontent3">{{ header_content.headercontent3 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Händler Inhalt</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="dealercontent">{{ header_content.dealercontetn | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Registrierungszeile 1</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="registrationline1">{{ header_content.registrationline1 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Registrierungszeile 2</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="registrationline2">{{ header_content.registrationline2 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Schnell erklärt</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="headerregisterpart1">{{ header_content.headerregisterpart1 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Händlersuche</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="headerregisterpart2">{{ header_content.headerregisterpart2 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Online-Shop</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="headerregisterpart3">{{ header_content.headerregisterpart3 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Wählen Sie ihr Abonnement</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="purchasepackagedetails">{{ header_content.purchasepackagedetails | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Job-Angebots</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="jobcontentdetails">{{ header_content.jobcontentdetails | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Track Your Camper Details</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="footertrackcontent">{{ header_content.footertrackcontent | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Track Your Camper Address</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="footertrackaddress">{{ header_content.footertrackaddress | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Track Your Camper Info</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="footertrackcontent2">{{ header_content.footertrackcontent2 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">GPS Tracker</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="shopcontentproduct1">{{ header_content.shopcontentproduct1 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Rund um die Sicherheit</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="shopcontentproduct2">{{ header_content.shopcontentproduct2 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Camping</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="shopcontentproduct3">{{ header_content.shopcontentproduct3 | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row float-right">
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary" type="submit">Speichern </button>
+                        <a class="btn btn-warning" href="/Admin/ManageCustomerServicedata">Abrechen</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

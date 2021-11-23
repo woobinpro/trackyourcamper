@@ -1,6 +1,7 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<link href="{% static 'admin/css/manageCustomerGraphics.css' %}" rel="stylesheet" type="text/css">
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
@@ -26,7 +27,104 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Customer Graphics</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class='card-body'>
+            <form id="image_upload" method="post" enctype="multipart/form-data">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <input type='hidden' name='id' value="{{ graphics.id }}">
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label text-right"> Banner Image1</label>
+                        <div class="col-sm-4">
+                            <input accept=".jpg,.jpeg,.png" class="form-control-uniform" name="banner_image1" type="file" value="">
+                        </div>
+                        <div class='col-sm-6 image-item'>
+                            <img src="{% static 'upload/' %}{{ graphics.banner_image1 }}" width="100%" alt="" >
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label text-right"> Banner Image2</label>
+                        <div class="col-sm-4">
+                            <input accept=".jpg,.jpeg,.png" class="form-control-uniform" name="banner_image2" type="file" value="">
+                        </div>
+                        <div class='col-sm-6 image-item'>
+                            <img src="{% static 'upload/' %}{{ graphics.banner_image2 }}" width="100%" alt="" >
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label text-right"> Banner Image3</label>
+                        <div class="col-sm-4">
+                            <input accept=".jpg,.jpeg,.png" class="form-control-uniform" name="banner_image3" type="file" value="">
+                        </div>
+                        <div class='col-sm-6 image-item'>
+                            <img src="{% static 'upload/' %}{{ graphics.banner_image3 }}" width="100%" alt="" >
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label text-right"> Product Image1</label>
+                        <div class="col-sm-4">
+                            <input accept=".jpg,.jpeg,.png" class="form-control-uniform" name="product_image1" type="file" value="">
+                        </div>
+                        <div class='col-sm-6 image-item'>
+                            <img src="{% static 'upload/' %}{{ graphics.product_image1 }}" width="100%" alt="" >
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label text-right"> Product Image2</label>
+                        <div class="col-sm-4">
+                            <input accept=".jpg,.jpeg,.png" class="form-control-uniform" name="product_image2" type="file" value="">
+                        </div>
+                        <div class='col-sm-6 image-item'>
+                            <img src="{% static 'upload/' %}{{ graphics.product_image2 }}" width="100%" alt="" >
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label text-right"> Product Image3</label>
+                        <div class="col-sm-4">
+                            <input accept=".jpg,.jpeg,.png" class="form-control-uniform" name="product_image3" type="file" value="">
+                        </div>
+                        <div class='col-sm-6 image-item'>
+                            <img src="{% static 'upload/' %}{{ graphics.product_image3 }}" width="100%" alt="" >
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label text-right"> Shop Background Image</label>
+                        <div class="col-sm-4">
+                            <input accept=".jpg,.jpeg,.png" class="form-control-uniform"  name="shop_background_image" type="file" value="">
+                        </div>
+                        <div class='col-sm-6 image-item'>
+                            <img src="{% static 'upload/' %}{{ graphics.shop_background_image }}" width="100%" alt="" >
+                        </div>
+                    </div>
+                </div>
+                <div class='row float-right'>
+                    <div class='col-sm-12'>
+                        <button class="btn btn-primary" type='submit'>Auswählen</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

@@ -1,6 +1,9 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switchery.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switch.min.js' %}"></script>
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
@@ -13,7 +16,7 @@
     <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
         <div class="d-flex">
             <div class="breadcrumb">
-                <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
                 <span class="breadcrumb-item active">Shop Category</span>
             </div>
 
@@ -26,7 +29,82 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class='row'>
+        <div class='col-lg-7'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Kategorieliste</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <table class="table datatable-responsive">
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id='category_list'>
+                        {% for category in category_list %}
+                        <tr id="tr_{{ category.id }}">
+                            <td class='name'>{{ category.tracker_category }}</td>
+                            <input type='hidden' class='isactive' value='{{ category.isactive }}'>
+                            <td class='text-right'>
+                                <a href="#" category_id="{{ category.id }}" class="btn bg-green-300 btn-sm category-edit mr-1"><i class="icon-pencil7 mr-2"></i> Bearbeiten</a>
+                                <a href="#" category_id="{{ category.id }}" class="btn bg-danger-300 btn-sm category-delete"><i class="icon-trash mr-2"></i> Löschen</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class='col-lg-5'>
+            <div class='card'>
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title" id='card_title'>Create Category</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <input type='hidden' id='category_id'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label ">Category Name</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" id="ShopCategoryName" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Is Active</label>
+                            <div class="col-sm-8">
+                                <div class="form-check form-check-switchery">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input-switchery" id="isactive" data-fouc>
+                                    
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row float-right">
+                        <div class="col-sm-12">
+                            <button class="btn bg-indigo-300" id="btn_new"><i class="icon-plus-circle2 mr-2"></i> New Category</button>
+                            <button class="btn btn-primary" id="btn_submit">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

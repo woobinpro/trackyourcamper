@@ -1,0 +1,79 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageBrandDetail.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Marken Detail</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageBrands/Edit/{{ brand_id }}" class="btn bg-green-300 mr-2"><i class="icon-pencil7 mr-2"></i>  Bearbeiten</a>
+                <a href="/Admin/ManageBrands" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i> Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Marken</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-7'>
+            <div class='card'>
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Basisdaten</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="row">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-5">
+                            {{ brand_info.name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-5'>
+            <div class='card'>
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Modelle</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    {% for model in model_list %}
+                    <span class="badge badge-pill">{{ model.Name }} <i class="icon-cross3 ml-2" model_id="{{ model.Id }}"></i></span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageBrandDetail.js' %}"></script>
+{% endblock %}

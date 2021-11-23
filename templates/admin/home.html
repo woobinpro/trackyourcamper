@@ -1,6 +1,7 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<link rel="stylesheet" href="{% static 'admin/css/home.css' %}">
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
@@ -13,7 +14,7 @@
     <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
         <div class="d-flex">
             <div class="breadcrumb">
-                <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
                 <span class="breadcrumb-item active">Dashboard</span>
             </div>
 
@@ -26,7 +27,39 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card bg-teal-400 user-count">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h4 class="font-weight-semibold mb-0">Anzahl der Benutzer</h4>
+                        <span class="badge bg-teal-800 badge-pill align-self-center ml-auto">{{ user_count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card bg-pink-400 campsite-count">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h4 class="font-weight-semibold mb-0">Anzahl der Campingplätze</h4>
+                        <span class="badge bg-pink-800 badge-pill align-self-center ml-auto">{{ campingsite_count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card bg-blue-400 campvehicle-count">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h4 class="font-weight-semibold mb-0">Anzahl der Campingfahrzeuge</h4>
+                        <span class="badge bg-blue-800 badge-pill align-self-center ml-auto">{{ vehicle_count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 <!-- /content area -->
 {% endblock %}

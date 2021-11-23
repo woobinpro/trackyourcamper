@@ -1,0 +1,453 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageVehicleDetail.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Erstellen Sie ein Fahrzeug</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageVehicles/Edit/{{ vehicle_id }}" class="btn bg-green-300 mr-2"><i class="icon-pencil7 mr-2"></i>  Bearbeiten</a>
+                <a href="/Admin/ManageVehicles" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i> Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Fahrzeug</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-7'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Basisdaten</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Fahrzeugtyp</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.type_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Farbe</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.Color }} 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Besitzer</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.Firstname }} {{ vehicle_info.Lastname }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Kennzeichen</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.LicensePlate }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Baujahr</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.BuildingYear }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Versicherungsgesellschaft</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.InsucrenceCompany }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Versicherungsnummer</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.InsurenceNumber }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Fahrzeug Icon</label>
+                            <div class="col-sm-5">
+                                {% if vehicle_info.img_name is not None %}
+                                <img src="{% static 'upload/' %}{{ vehicle_info.img_name }}" width="100" alt="" id='vehicle_icon' >
+                                {% else %}
+                                <img src="" width="100" id='vehicle_icon'>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Marke</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.InsurenceNumber }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Modell</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.ModelTypeName }}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Tracker ID</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.TrackerId }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Tracker Mobile Sim Number</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.Tracker_mobilenumber }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Tracker Mobile Sim Number APN</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.Tracker_mobile_apn }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Abmessungen</label>
+                            <div class="col-sm-5">
+                                {{ vehicle_info.Size_Width }} X {{ vehicle_info.Size_Height }} X {{ vehicle_info.Size_Length }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Markise</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Marke</label>
+                                            <div class="col-sm-12">
+                                                {{ vehicle_info.Awning_Brand }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Modell</label>
+                                            <div class="col-sm-12">
+                                                {{ vehicle_info.Awning_Type }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label class="col-sm-12 control-label">Länge</label>
+                                            <div class="col-sm-12">
+                                                {{ vehicle_info.Awning_Length }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Fahrradträger auf Deichsel</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Marke</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.BicycleRackOnDrawbar_Brand }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Modell</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.BicycleRackOnDrawbar_Model }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Anzahl der Fahrräder</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.BicycleRackOnDrawbar_Number }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Fahrradträger am Heck</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Marke</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.BicycleRackOnStern_Brand }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Modell</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.BicycleRackOnStern_Model }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Anzahl der Fahrräder</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.BicycleRackOnStern_Number }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Motorrad Träger hinten</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Marke</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.MotorcycleCarrierOnRear_Brand }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Modell</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.MotorcycleCarrierOnRear_Model }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Roller oder Motorrad am Heck</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Marke</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.MotorcycleOrMotorcycleAtRear_Brand }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Modell</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.MotorcycleOrMotorcycleAtRear_Model }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Kennzeichen</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.MotorcycleOrMotorcycleAtRear_Plate }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Farbe</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.MotorcycleOrMotorcycleAtRear_Color }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Mover</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Marke</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.Mover_Brand }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Modell</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.Mover_Model }}
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Klimaanlage auf dem Dach</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Marke</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.RooftopAirConditioning_Brand }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Modell</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.RooftopAirConditioning_Model }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Sat-Anlage</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Marke</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.SateliteSystem_Brand }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Modell</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.SateliteSystem_Model }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label">Solaranlage</label>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">  Anzahl der Zellen</label>
+                                    <div class="col-sm-12">
+                                        {{ vehicle_info.SolarSystem_NumberOfCells }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-5'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Upload images</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <input type='hidden' id='vehicle_id' value='{{ vehicle_id }}'>
+                    <form id="image_upload" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label"> Fahrzeug Icon auswählen:</label>
+                                <div class="col-sm-12">
+                                    <input accept=".jpg,.jpeg,.png" class="form-control-uniform" id="upload_image" name="image" type="file" value="">
+                                    <br>
+                                    <span>[.jpg,.jpeg,.png Only ]</span>
+                                    <span>[Max. Dateigröße 5MB] </span>
+                                </div>
+                            </div>
+                            <div class='row float-right'>
+                                <div class='col-sm-12'>
+                                    <button class="btn btn-primary" type='submit'>Upload</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageVehicleDetail.js' %}"></script>
+{% endblock %}

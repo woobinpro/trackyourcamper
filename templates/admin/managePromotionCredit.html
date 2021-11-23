@@ -26,7 +26,57 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Katalog Liste</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Land</th>
+                        <th>Ort</th>
+                        <th>E-Mail Adresse</th>
+                        <th>Telefonnummer</th>
+                        <th>geworben durch</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id='catalogList'>
+                    {% for catalog in catalog_list %}
+                    <tr id="tr_{{ catalog.Id }}">
+                        <td>{{ catalog.firstname }} {{ catalog.surname }}</td>
+                        <td>{{ catalog.country }} </td>
+                        <td>{{ catalog.city }} </td>
+                        <td>{{ catalog.regemail }} </td>
+                        <td>{{ catalog.regphoneno }} </td>
+                        <td></td>
+                        <td>
+                            <div class="list-icons">
+                                <div class="list-icons-item dropdown">
+                                    <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="/Admin/ManageSecurityCompany/Edit/{{ catalog.Id }}" class="dropdown-item"><i class="icon-pencil7"></i> Bearbeiten</a>
+                                        <a href="/Admin/ManageSecurityCompany/Detail/{{ catalog.Id }}" class="dropdown-item"><i class="icon-search4"></i> Detail</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger company-delete" company_id="{{ catalog.Id }}"><i class="icon-trash"></i> Löschen</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

@@ -1,12 +1,19 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/extensions/responsive.min.js' %}"></script>
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
         <div class="page-title d-flex">
             <h4><i class="icon-arrow-left52 mr-2"></i> Marken verwalten</h4>
             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageBrand/Create" class="btn bg-indigo-300"><i class="icon-plus-circle2 mr-2"></i>  Marke hinzufügen</a>
+            </div>
         </div>
     </div>
 
@@ -26,7 +33,40 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Markenliste</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <table class="table datatable-responsive">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Anzahl der Modelle</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for brand in brand_list %}
+                {% if brand.Id is not None %}
+                <tr id="tr_{{ brand.Id }}">
+                    <td>{{ brand.Name }}</td>
+                    <td>{% if brand.Count is not None %}{{ brand.Count }}{% else %}0{% endif %}</td>
+                    <td class='text-right'>
+                        <a href="/Admin/ManageBrands/Edit/{{ brand.Id }}" class="btn bg-green-300 btn-sm"><i class="icon-pencil7 mr-2"></i> Bearbeiten</a>
+                        <a href="/Admin/ManageBrands/Detail/{{ brand.Id }}" class="btn bg-indigo-300 btn-sm"><i class="icon-search4 mr-2"></i> Detail</a>
+                        <a href="#" brand_id="{{ brand.Id }}" class="btn bg-danger-300 btn-sm brand-delete"><i class="icon-trash mr-2"></i> Löschen</a>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

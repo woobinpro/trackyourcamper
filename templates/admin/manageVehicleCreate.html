@@ -1,0 +1,524 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageVehicleCreate.css' %}" rel="stylesheet" type="text/css">
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Erstellen Sie ein Fahrzeug</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if vehicle_info %}<a href="/Admin/ManageVehicles/Detail/{{ vehicle_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-search4 mr-2"></i> Detail</a>{% endif %}
+                <a href="/Admin/ManageVehicles" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Fahrzeug</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Erstellen Sie ein Fahrzeug</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id='vehicle_form' action="{% if not vehicle_info %}/Admin/ManageVehicle/Create{% else %}/Admin/ManageVehicles/Edit/{{ vehicle_info.id }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class='row'>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Fahrzeugtyp</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" required data-val="true" data-val-number="The field Vehicle type must be a number." data-val-required=" " id="vehicletype" name="vehicletype"><option value="">Fahrzeugtyp auswählen</option>
+                                        {% for vType in type_list %}
+                                        <option value="{{ vType.id}}" {% if vehicle_info.vehicletype == vType.id %} selected {% endif %}>{{ vType.vehicletype }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Farbe</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  id="color" name="color" type="text" value="{{ vehicle_info.color }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">UserId</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" required  id="userid" name="userid">
+                                        {% for user in user_list %}
+                                        <option value="{{ user.id }}" {% if vehicle_info.userid == user.id %} selected {% endif %}>{{ user.firstname }} {{ user.lastname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Kennzeichen</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  id="licenseplate" name="licenseplate" type="text" value="{{ vehicle_info.licenseplate }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Baujahr</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required placeholder="The field Construction year must be a number."  id="buildingyear" name="buildingyear" type="text" value="{{ vehicle_info.buildingyear }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">  Versicherungsgesellschaft</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required id="insucrencecompany" name="insucrencecompany" type="text" value="{{ vehicle_info.insucrencecompany }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Versicherungsnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  id="insurencenumber" name="insurencenumber" type="text" value="{{ vehicle_info.insurencenumber }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label"> Fahrzeug Icon auswählen:</label>
+                                <div class="col-sm-12">
+                                    <input accept=".jpg,.jpeg,.png" class="form-control-uniform" id="upload_image" name="image" type="file" value="">
+                                    <br>
+                                    <span>[.jpg,.jpeg,.png Only ]</span>
+                                    <span>[Max. Dateigröße 5MB] </span>
+                                    <input type='hidden' name='imageid' value='{% if vehicle_info.imageid is not None %}{{ vehicle_info.imageid }}{% endif %}' id='image_id'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" required placeholder="The field BrandId must be a number."  id="brandid" name="brandid" ><option value="">Fahrzeugmarke wählen</option>
+                                        {% for brand in brand_list %}
+                                        <option value="{{ brand.id }}" {% if vehicle_info.brandid == brand.id %} selected {% endif %}>{{ brand.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required id="modeltypename" name="modeltypename"  list="model_list" value="{{ vehicle_info.modeltypename }}">
+                                    <datalist id="model_list"></datalist>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Tracker ID</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  placeholder="The field Tracker ID must be a number."  id="trackerid" name="trackerid" type="text" value="{{ vehicle_info.trackerid }}"> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Tracker Mobile Sim Number</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required id="tracker_mobilenumber" name="tracker_mobilenumber" type="text" value="{{ vehicle_info.tracker_mobilenumber }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Tracker Mobile Sim Number APN</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required id="tracker_mobile_apn" name="tracker_mobile_apn" type="text" value="{{ vehicle_info.tracker_mobile_apn }}">
+                                     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Abmessungen</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Breite</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  placeholder="The field Size_Width must be a number." id="size_width" name="size_width" type="text" value="{% if vehicle_info and vehicle_info.size_width is not None %}{{ vehicle_info.size_width }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Länge</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" data-val="true" data-val-number="The field Size_Length must be a number." id="size_length" name="size_length" type="text" value="{% if vehicle_info and vehicle_info.size_length is not None %}{{ vehicle_info.size_length }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Höhe</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" data-val="true" data-val-number="The field Size_Height must be a number." id="size_height" name="size_height" type="text" value="{% if vehicle_info and vehicle_info.size_height is not None %}{{ vehicle_info.size_height }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Markise</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="awning_brand" name="awning_brand" type="text" value="{% if vehicle_info and vehicle_info.awning_brand is not None %}{{ vehicle_info.awning_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="awning_type" name="awning_type" type="text" value="{% if vehicle_info and vehicle_info.awning_type is not None %}{{ vehicle_info.awning_type }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Länge</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" data-val="true" data-val-number="The field Awning_Length must be a number." id="awning_length" name="awning_length" type="text" value="{% if vehicle_info and vehicle_info.awning_length is not None %}{{ vehicle_info.awning_length }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label"> Fahrradträger auf Deichsel</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="bicyclerackondrawbar_brand" name="bicyclerackondrawbar_brand" type="text" value="{% if vehicle_info %}{{ vehicle_info.bicyclerackondrawbar_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="bicyclerackondrawbar_model" name="bicyclerackondrawbar_model" type="text" value="{% if vehicle_info %}{{ vehicle_info.bicyclerackondrawbar_model }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Anzahl der Fahrräder</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" data-val="true" data-val-number="The field BicycleRackOnDrawbar_Number must be a number." id="bicyclerackondrawbar_number" name="bicyclerackondrawbar_number" type="text" value="{% if vehicle_info and vehicle_info.bicyclerackondrawbar_number is not None %}{{ vehicle_info.bicyclerackondrawbar_number }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Fahrradträger am Heck</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="bicyclerackonstern_brand" name="bicyclerackonstern_brand" type="text" value="{% if vehicle_info %}{{ vehicle_info.bicyclerackonstern_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="bicyclerackonstern_model" name="bicyclerackonstern_model" type="text" value="{% if vehicle_info %}{{ vehicle_info.bicyclerackonstern_model }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Anzahl der Fahrräder</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" data-val="true" data-val-number="The field BicycleRackOnStern_Number must be a number." id="bicyclerackonstern_number" name="bicyclerackonstern_number" type="text" value="{% if vehicle_info and vehicle_info.bicyclerackonstern_number is not None %}{{ vehicle_info.bicyclerackonstern_number }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Motorrad Träger hinten</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="motorcyclecarrieronrear_brand" name="motorcyclecarrieronrear_brand" type="text" value="{% if vehicle_info %}{{ vehicle_info.motorcyclecarrieronrear_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="motorcyclecarrieronrear_model" name="motorcyclecarrieronrear_model" type="text" value="{% if vehicle_info %}{{ vehicle_info.motorcyclecarrieronrear_model }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Roller oder Motorrad am Heck</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-3'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="motorcycleormotorcycleatrear_brand" name="motorcycleormotorcycleatrear_brand" type="text" value="{% if vehicle_info %}{{ vehicle_info.motorcycleormotorcycleatrear_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="motorcycleormotorcycleatrear_model" name="motorcycleormotorcycleatrear_model" type="text" value="{% if vehicle_info %}{{ vehicle_info.motorcycleormotorcycleatrear_model }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Kennzeichen</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="motorcycleormotorcycleatrear_plate" name="motorcycleormotorcycleatrear_plate" type="text" value="{% if vehicle_info %}{{ vehicle_info.motorcycleormotorcycleatrear_plate }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Farbe</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="motorcycleormotorcycleatrear_color" name="motorcycleormotorcycleatrear_color" type="text" value="{% if vehicle_info %}{{ vehicle_info.motorcycleormotorcycleatrear_color }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row sub-label">
+                    <label class="col-sm-12 control-label">Mover</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="mover_brand" name="mover_brand" type="text" value="{% if vehicle_info %}{{ vehicle_info.mover_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="mover_model" name="mover_model" type="text" value="{% if vehicle_info %}{{ vehicle_info.mover_model }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Klimaanlage auf dem Dach</label>
+                </div>
+                <div class="row">
+                    <div class='col-sm-6'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="rooftopairconditioning_brand" name="rooftopairconditioning_brand" type="text" value="{% if vehicle_info %}{{ vehicle_info.rooftopairconditioning_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class='col-sm-6'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="rooftopairconditioning_model" name="rooftopairconditioning_model" type="text" value="{% if vehicle_info %}{{ vehicle_info.rooftopairconditioning_model }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Sat-Anlage</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Marke</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="satelitesystem_brand" name="satelitesystem_brand" type="text" value="{% if vehicle_info %}{{ vehicle_info.satelitesystem_brand }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Modell</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="satelitesystem_model" name="satelitesystem_model" type="text" value="{% if vehicle_info %}{{ vehicle_info.satelitesystem_model }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row sub-label">
+                    <label class="col-sm-12 control-label">Solaranlage</label>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class='form-group'>
+                            <div class="row">
+                                <label class="col-sm-12 control-label">  Anzahl der Zellen</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" data-val="true" data-val-number="The field SolarSystem_NumberOfCells must be a number." id="solarsystem_numberofcells" name="solarsystem_numberofcells" type="text" value="{% if vehicle_info and vehicle_info.solarsystem_numberofcells is not None %}{{ vehicle_info.solarsystem_numberofcells }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if vehicle_info %}<input name='id' type='hidden' value="{{ vehicle_info.id }}">{% endif %}
+                <div class="row float-right">
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">{% if not vehicle_info %}Erstellen{% else %}Speichern{% endif %}</button>
+                        <a class="btn btn-warning" href="/Admin/ManageVehicles">Abrechen</a>
+                        {% if not vehicle_info %}<a class="btn btn-light" href="/Admin/ManageVehicle/Create">Zurücksetzen</a>{% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageVehicleCreate.js' %}"></script>
+{% endblock %}
+

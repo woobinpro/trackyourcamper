@@ -1,0 +1,583 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageMerchant.css' %}" rel="stylesheet" type="text/css">
+
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/selects/select2.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switchery.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switch.min.js' %}"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM&amp;sensor=false"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> {% if not merchant_info %}Händler anlegen{% else %}Benutzer aktualisieren{% endif %}</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if merchant_info %}<a href="/Admin/ManageMerchant/Detail/{{ merchant_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-search4 mr-2"></i> Detail</a>{% endif %}
+                <a href="/Admin/ManageMerchant" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">{% if not merchant_info %}Einzelhändler{% else %}Benutzer aktualisieren{% endif %}</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Händler anlegen</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id='merchant_form' action="{% if not merchant_info %}/Admin/ManageMerchant/Create{% else %}/Admin/ManageMerchant/Edit/{{ merchant_info.id }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class='row'>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Name</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="name" type="text" value="{{ merchant_info.name }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">E-Mail</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="dealeremail" type="email" value="{{ merchant_info.dealeremail }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Website</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="website" type="text" value="{{ merchant_info.website }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Telefonnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="phone" type="text" value="{{ merchant_info.phone }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Fax</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="fax" type="text" value="{{ merchant_info.fax }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">UserId</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" required  id="userid" name="userid">
+                                        <option value=''>Select User</option>
+                                        {% for user in user_list %}
+                                        <option value="{{ user.id }}" {% if merchant_info.userid == user.id %} selected {% endif %}>{{ user.firstname }} {{ user.lastname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Montage Pauschale</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="installationflatrate" type="text" value="{{ merchant_info.installationflatrate }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label"> Unterstützten Marken</label>
+                                <div class="col-sm-12">
+                                    <select multiple="multiple" class="form-control select" required name="supportedbrand">
+                                        {% for brand in brand_list %}
+                                        <option value="{{ brand.id }}" {% if brand.id|slugify in merchant_brands %} selected {% endif %} >{{ brand.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type='hidden' value='{{ merchant_brands }}' id='merchant_brands' name='merchant_brands'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label"> ist Aktive</label>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-check-switchery">
+                                        <label class="form-check-label">
+                                            {% if merchant_info.isactive == 1 %}
+                                            <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                            {% else %}
+                                            <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                            {% endif %}
+                                            <input type='hidden' name='isactive'>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Adresse</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Straße</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  id="street" name="address_street" type="text" value="{{ merchant_info.address_street }}"> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Postleitzahl</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required name="address_postal" type="text" value="{{ merchant_info.address_postal }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Ort</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_city" type="text" value="{{ merchant_info.address_city }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Bundesland</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_state" type="text" value="{{ merchant_info.address_state }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Land</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_country" type="text" value="{{ merchant_info.address_country }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Breitengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  id='lat_value' required name="address_latitude" type="text" value="{{ merchant_info.address_latitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Längengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  id='lng_value' required name="address_longitude" type="text" value="{{ merchant_info.address_longitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <a href='#' class="btn btn-primary" id='get_coordinate'><i class="icon-location4 mr-2"></i>Koordinaten bekommen</a>
+                        <a href='#' class="btn btn-primary" id='get_coordinate_from_google' data-target="#modal_google_map" data-toggle="modal"><i class="icon-map4 mr-2"></i>von google map</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card border-primary">
+							<div class="card-header bg-primary text-white header-elements-inline">
+								<h6 class="card-title"><i class="icon-snowflake mr-2"></i> Winter</h6>
+								<div class="header-elements">
+									<div class="list-icons">
+				                		<a class="list-icons-item" data-action="collapse"></a>
+				                	</div>
+			                	</div>
+							</div>
+							<div class="table-responsive">
+                                <table class="table season-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Wochentag</th>
+                                            <th>Ist geschlossen</th>
+                                            <th>Öffnungszeit</th>
+                                            <th>Schließzeit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Montag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery" {% if merchant_info.winter_monday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="winter_monday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_mondaystart" value="{{ merchant_info.opentimes_opentimes_mondaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_mondayend" value="{{ merchant_info.opentimes_opentimes_mondayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dienstag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.winter_tuseday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="winter_tuseday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_tuesdaystart" value="{{ merchant_info.opentimes_opentimes_tuesdaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_tuesdayend" value="{{ merchant_info.opentimes_opentimes_tuesdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mittwoch</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.winter_wednessday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="winter_wednessday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_wednesdaystart" value="{{ merchant_info.opentimes_opentimes_wednesdaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_wednesdayend" value="{{ merchant_info.opentimes_opentimes_wednesdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Donnerstag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.winter_thursday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="winter_thursday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_thursdaystart" value="{{ merchant_info.opentimes_opentimes_thursdaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_thursdayend" value="{{ merchant_info.opentimes_opentimes_thursdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Freitag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.winter_friday_cloas == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="winter_friday_cloas">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_fridaystart" value="{{ merchant_info.opentimes_opentimes_fridaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_fridayend" value="{{ merchant_info.opentimes_opentimes_fridayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Samstag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.winter_saturday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="winter_saturday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_saturdaystart" value="{{ merchant_info.opentimes_opentimes_saturdaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_saturdayend" value="{{ merchant_info.opentimes_opentimes_saturdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sonntag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.winter_sunday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="winter_sunday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_sundaystart" value="{{ merchant_info.opentimes_opentimes_sundaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="opentimes_opentimes_sundayend" value="{{ merchant_info.opentimes_opentimes_sundayend }}">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+						</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card border-success">
+							<div class="card-header bg-success text-white header-elements-inline">
+								<h6 class="card-title"><i class="icon-sun3 mr-2"></i> Summer</h6>
+								<div class="header-elements">
+									<div class="list-icons">
+				                		<a class="list-icons-item" data-action="collapse"></a>
+				                	</div>
+			                	</div>
+							</div>
+
+							<div class="table-responsive">
+                                <table class="table season-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Wochentag</th>
+                                            <th>Ist geschlossen</th>
+                                            <th>Öffnungszeit</th>
+                                            <th>Schließzeit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Montag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.summer_monday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="summer_monday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_mondaystart" value="{{ merchant_info.summer_opentimes_opentimes_mondaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_mondayend" value="{{ merchant_info.summer_opentimes_opentimes_mondayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dienstag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.summer_tuseday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="summer_tuseday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_tuesdaystart" value="{{ merchant_info.summer_opentimes_opentimes_tuesdaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_tuesdayend" value="{{ merchant_info.summer_opentimes_opentimes_tuesdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mittwoch</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.summer_wednessday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="summer_wednessday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_wednesdaystart" value="{{ merchant_info.summer_opentimes_opentimes_wednesdaystart }}"> 
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_wednesdayend" value="{{ merchant_info.summer_opentimes_opentimes_wednesdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Donnerstag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.summer_thursday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="summer_thursday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_thursdaystart" value="{{ merchant_info.summer_opentimes_opentimes_thursdaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_thursdayend" value="{{ merchant_info.summer_opentimes_opentimes_thursdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Freitag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.summer_friday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="summer_friday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_fridaystart" value="{{ merchant_info.summer_opentimes_opentimes_fridaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_fridayend" value="{{ merchant_info.summer_opentimes_opentimes_fridayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Samstag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.summer_saturday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="summer_saturday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_saturdaystart" value="{{ merchant_info.summer_opentimes_opentimes_saturdaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_saturdayend" value="{{ merchant_info.summer_opentimes_opentimes_saturdayend }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sonntag</td>
+                                            <td>
+                                                <div class="form-check form-check-switchery">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input-switchery"  {% if merchant_info.summer_sunday_close == 1 %}checked{% endif %} data-fouc>
+                                                        <input type='hidden' name="summer_sunday_close">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_sundaystart" value="{{ merchant_info.summer_opentimes_opentimes_sundaystart }}">
+                                            </td>
+                                            <td>
+                                                <input class="form-control" required type="time" name="summer_opentimes_opentimes_sundayend" value="{{ merchant_info.summer_opentimes_opentimes_sundayend }}">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+						</div>
+                    </div>
+                </div>
+                {% if merchant_info %}<input name='id' type='hidden' value="{{ merchant_info.id }}">{% endif %}
+                <div class="row float-right">
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary" type="submit">{% if not merchant_info %}Erstellen{% else %}Speichern{% endif %}</button>
+                        <a class="btn btn-warning" href="/Admin/ManageMerchant">Abrechen</a>
+                        {% if not merchant_info %}<a class="btn btn-light" href="/Admin/ManageMerchant/Create">Zurücksetzen</a>{% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal_google_map" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h6 class="modal-title">Koordinaten von Google Map abrufen</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div id="map"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                <button type="button" class="btn bg-primary" id="btn_apply_coordinate" data-dismiss="modal">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageMerchantCreate.js' %}"></script>
+{% endblock %}
+

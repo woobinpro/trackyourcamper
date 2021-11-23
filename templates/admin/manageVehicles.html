@@ -1,12 +1,21 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<link href="{% static 'admin/css/manageVehicles.css' %}" rel="stylesheet" type="text/css">
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/uniform.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switchery.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switch.min.js' %}"></script>
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
         <div class="page-title d-flex">
             <h4><i class="icon-arrow-left52 mr-2"></i> Erstellen Sie ein Fahrzeug</h4>
             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageVehicle/Create" class="btn bg-indigo-300"><i class="icon-plus-circle2 mr-2"></i> Erstellen Sie ein Fahrzeug</a>
+            </div>
         </div>
     </div>
 
@@ -26,7 +35,146 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <div class='row'>
+                <div class="col-sm-10">
+                    <div class="form-group">
+                        <label class="control-label" for="customer">Fahrzeug</label>
+                        <input id="vehicleFilter" type="text" class="form-control" placeholder="Kennzeichen">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label" for="date_modified">&nbsp;</label>
+                        <div class="input-group date text-right">
+                            <div class="btn-group-sm">
+                                <button class="btn btn-sm btn-primary form-control" onclick="FunsearchTextrecords()">Suche</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Fahrzeugliste</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fahrzeugtyp</th>
+                        <th>Marke</th>
+                        <th>Modell</th>
+                        <th>Farbe</th>
+                        <th>Besitzer</th>
+                        <th>Kennzeichen</th>
+                        <th>Baujahr</th>
+                        <th>Configuration</th>
+                        <th>Geo zone<br>(100m)</th>
+                        <th>Overspeed<br>(&gt;30km/h)</th>
+                        <th>Low Battery</th>
+                        <th>Power Off</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id='vehicleList'>
+                    {% for vehicle in vehicle_list %}
+                    <tr id="tr_{{ vehicle.id }}">
+                        <td>{{ vehicle.VehicleType }}</td>
+                        <td>{{ vehicle.Name }}</td>
+                        <td>{{ vehicle.ModelTypeName }}</td>
+                        <td>{{ vehicle.Color }}</td>
+                        <td>{{ vehicle.Firstname }} {{ vehicle.Lastname }}</td>
+                        <td>{{ vehicle.LicensePlate }}</td>
+                        <td>{{ vehicle.BuildingYear }}</td>
+                        <td>
+                            <div class="form-check form-check-switchery">
+                                <label class="form-check-label">
+                                    {% if vehicle.Istrackerconfiguration == 1 %}
+                                    <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                    {% else %}
+                                    <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-switchery">
+                                <label class="form-check-label">
+                                    {% if vehicle.Isgeofanceactive == 1 %}
+                                    <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                    {% else %}
+                                    <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-switchery">
+                                <label class="form-check-label">
+                                    {% if vehicle.Isoverspeedactive == 1 %}
+                                    <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                    {% else %}
+                                    <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-switchery">
+                                <label class="form-check-label">
+                                    {% if vehicle.Islowbatteryactive == 1 %}
+                                    <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                    {% else %}
+                                    <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-switchery">
+                                <label class="form-check-label">
+                                    {% if vehicle.Ispoweroffactive == 1 %}
+                                    <input type="checkbox" class="form-check-input-switchery" checked data-fouc>
+                                    {% else %}
+                                    <input type="checkbox" class="form-check-input-switchery" data-fouc>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="list-icons">
+                                <div class="list-icons-item dropdown">
+                                    <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item"><i class="icon-car"></i> Live-tracking</a>
+                                        <a href="/Admin/ManageVehicles/Edit/{{ vehicle.id }}" class="dropdown-item"><i class="icon-pencil7"></i> Bearbeiten</a>
+                                        <a href="/Admin/ManageVehicles/Detail/{{ vehicle.id }}" class="dropdown-item"><i class="icon-search4"></i> Detail</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger vehicle-delete" vehicle_id="{{ vehicle.id }}"><i class="icon-trash"></i> Löschen</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

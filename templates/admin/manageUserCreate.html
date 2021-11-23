@@ -1,0 +1,295 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageUser.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM&amp;sensor=false"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/selects/select2.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> {% if not user_info %}Benutzer erstellen{% else %}Benutzer aktualisieren{% endif %}</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if user_info %}<a href="/Admin/ManageUser/Detail/{{ user_info.UserID }}" class="btn bg-green-300 mr-2"><i class="icon-search4 mr-2"></i> Detail</a>{% endif %}
+                <a href="/Admin/ManageUser" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">{% if not user_info %}Benutzer erstellen{% else %}Benutzer aktualisieren{% endif %}</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Benutzer erstellen</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id='user_form' action="{% if not user_info %}/Admin/ManageUser/Create{% else %}/Admin/ManageUser/Edit/{{ user_info.UserID }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class='row'>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Anrede</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" required name="salutation"><option value=""> Select salutation</option>
+                                        {% for salutation in salutation_list %}
+                                        <option value="{{ salutation.id}}" {% if user_info.salutation == salutation.id %} selected {% endif %}>{{ salutation.salutation }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Vorname</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="firstname" type="text" value="{{ user_info.Firstname }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Familienname</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="lastname" type="text" value="{{ user_info.Lastname }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">E-Mail</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="email" type="text" value="{{ user_info.Email }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Telefonnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="phoneno" type="text" value="{{ user_info.Phoneno }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">  Geburtsdatum</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required name="dob" type="date" value="{{ user_info.DOB|date:'Y-m-d' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Verantwortlich für den Campingplatz</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" name="responsibleforcampingplaceid"><option value=""> wählen</option>
+                                        {% for campingsite in campingsite_list %}
+                                        <option value="{{ campingsite.id}}" {% if user_info.ResponsibleForCampingPlaceId == campingsite.id %} selected {% endif %}>{{ campingsite.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label"> Rolle</label>
+                                <div class="col-sm-12">
+                                    <select multiple="multiple" class="form-control select" required name="user_role">
+                                        {% for role in role_list %}
+                                        <option value="{{ role.id}}" {% if role.id in user_info.role_id %} selected {% endif %}>{{ role.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type='hidden' value='' id='user_roles' name='user_roles'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if not user_info %}
+                <div class="row">
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Passwort</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required id="password" name="password" type="password" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Bestätigen Sie Ihr Passwort</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  type="password" name="confirm_password" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Adresse</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Straße</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  id="street" name="address_street" type="text" value="{{ user_info.Address_Street }}"> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Postleitzahl</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required name="address_postal" type="text" value="{{ user_info.Address_Postal }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Ort</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_city" type="text" value="{{ user_info.Address_City }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Bundesland</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_state" type="text" value="{{ user_info.Address_State }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Land</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_country" type="text" value="{{ user_info.Address_Country }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Breitengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  id='lat_value' required name="address_latitude" type="text" value="{{ user_info.Address_Latitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Längengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  id='lng_value' required name="address_longitude" type="text" value="{{ user_info.Address_Longitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <a href='#' class="btn btn-primary" id='get_coordinate'><i class="icon-location4 mr-2"></i>Koordinaten bekommen</a>
+                        <a href='#' class="btn btn-primary" id='get_coordinate_from_google' data-target="#modal_google_map" data-toggle="modal"><i class="icon-map4 mr-2"></i>von google map</a>
+                    </div>
+                </div>
+                
+                {% if user_info %}<input name='id' type='hidden' value="{{ user_info.id }}">{% endif %}
+                <div class="row float-right">
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary" type="submit">{% if not user_info %}Erstellen{% else %}Speichern{% endif %}</button>
+                        <a class="btn btn-warning" href="/Admin/ManageUser">Abrechen</a>
+                        {% if not user_info %}<a class="btn btn-light" href="/Admin/ManageUser/Create">Zurücksetzen</a>{% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal_google_map" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h6 class="modal-title">Koordinaten von Google Map abrufen</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div id="map"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                <button type="button" class="btn bg-primary" id="btn_apply_coordinate" data-dismiss="modal">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageUserCreate.js' %}"></script>
+{% endblock %}
+

@@ -8,6 +8,11 @@
             <h4><i class="icon-arrow-left52 mr-2"></i> Abonnements</h4>
             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
         </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageSubscription/Create" class="btn bg-indigo-300"><i class="icon-plus-circle2 mr-2"></i>   Abonnements hinzufügen </a>
+            </div>
+        </div>
     </div>
 
     <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
@@ -26,11 +31,46 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Abonnementliste</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <table class="table datatable-responsive">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Zahlungsarten</th>
+                    <th>Aktion</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subscription in subscription_list %}
+                <tr id="tr_{{ subscription.id }}">
+                    <td>{{ subscription.packagename }}</td>
+                    <td>{% if subscription.isallowpayment == 1 %}monatlich,1/4 Jahr,1/2 Jahr,1 Jahr{% endif %}</td>
+                    <td></td>
+                    <td class='text-right'>
+                        <a href="/Admin/ManageSubscription/Edit/{{ subscription.id }}" class="btn bg-green-300 btn-sm"><i class="icon-pencil7 mr-2"></i> Bearbeiten</a>
+                        <a href="/Admin/ManageSubscription/Detail/{{ subscription.id }}" class="btn bg-indigo-300 btn-sm"><i class="icon-search4 mr-2"></i> Detail</a>
+                        <a href="#" subscription_id="{{ subscription.id }}" class="btn bg-brown-300 btn-sm btn-lock">
+                        {% if subscription.isactive == 0 %}<i class="icon-unlocked2"></i>  Aktivieren{% else %}<i class="icon-lock2"></i> Deaktivieren{% endif %}</a>
+                        <a href="#" subscription_id="{{ subscription.id }}" class="btn bg-danger-300 btn-sm subscription-delete"><i class="icon-trash mr-2"></i> Löschen</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'admin/js/manageSubscriptions.js' %}"></script>
+<script src="{% static 'admin/js/manageSubscription.js' %}"></script>
 {% endblock %}

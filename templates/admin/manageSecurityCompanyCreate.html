@@ -1,0 +1,230 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageSecurityCompany.css' %}" rel="stylesheet" type="text/css">
+
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM&amp;sensor=false"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> {% if not company_info %}Security Unternehmen erstellen{% else %}Security-Unternehmen{% endif %}</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if company_info %}<a href="/Admin/ManageSecurityCompany/Detail/{{ company_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-search4 mr-2"></i> Detail</a>{% endif %}
+                <a href="/Admin/ManageSecurityCompany" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Security Company</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Security Company</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id='company_form' action="{% if not company_info %}/Admin/ManageSecurityCompany/Create{% else %}/Admin/ManageSecurityCompany/Edit/{{ company_info.id }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class='row'>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Name</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="name" type="text" value="{{ company_info.name }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Telefonnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="contactphone" type="text" value="{{ company_info.contactphone }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">E-Mail</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="email" type="email" value="{{ company_info.email }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Notfallnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="emergency" type="text" value="{{ company_info.emergency }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">UserId</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" required  id="userid" name="ownerid">
+                                        <option value=''>Select User</option>
+                                        {% for user in user_list %}
+                                        <option value="{{ user.id }}" {% if company_info.ownerid == user.id %} selected {% endif %}>{{ user.firstname }} {{ user.lastname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row sub-label'>
+                    <label class="col-sm-12 control-label">Adresse</label>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Straße</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  id="street" name="address_street" type="text" value="{{ company_info.address_street }}"> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Postleitzahl</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required name="address_postal" type="text" value="{{ company_info.address_postal }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Ort</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_city" type="text" value="{{ company_info.address_city }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Bundesland</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_state" type="text" value="{{ company_info.address_state }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Land</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_country" type="text" value="{{ company_info.address_country }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Breitengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  id='lat_value' required name="address_latitude" type="text" value="{{ company_info.address_latitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Längengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  id='lng_value' required name="address_longitude" type="text" value="{{ company_info.address_longitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <a href='#' class="btn btn-primary" id='get_coordinate'><i class="icon-location4 mr-2"></i>Koordinaten bekommen</a>
+                        <a href='#' class="btn btn-primary" id='get_coordinate_from_google' data-target="#modal_google_map" data-toggle="modal"><i class="icon-map4 mr-2"></i>von google map</a>
+                    </div>
+                </div>
+                {% if company_info %}<input name='id' type='hidden' value="{{ company_info.id }}">{% endif %}
+                <div class="row float-right">
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary" type="submit">{% if not company_info %}Erstellen{% else %}Speichern{% endif %}</button>
+                        <a class="btn btn-warning" href="/Admin/ManageSecurityCompany">Abrechen</a>
+                        {% if not company_info %}<a class="btn btn-light" href="/Admin/ManageSecurityCompany/Create">Zurücksetzen</a>{% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal_google_map" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h6 class="modal-title">Koordinaten von Google Map abrufen</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div id="map"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                <button type="button" class="btn bg-primary" id="btn_apply_coordinate" data-dismiss="modal">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageSecurityCompanyCreate.js' %}"></script>
+{% endblock %}
+

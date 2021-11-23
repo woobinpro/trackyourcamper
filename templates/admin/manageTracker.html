@@ -2,11 +2,17 @@
 {% load static %}  
 {% block content %}
 <!-- Page header -->
+<link href="{% static 'admin/css/manageTracker.css' %}" rel="stylesheet" type="text/css">
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
         <div class="page-title d-flex">
             <h4><i class="icon-arrow-left52 mr-2"></i> Manage All Catalog</h4>
             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageTracker/Create" class="btn bg-indigo-300"><i class="icon-plus-circle2 mr-2"></i>   Add Catalog   </a>
+            </div>
         </div>
     </div>
 
@@ -26,7 +32,60 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Katalog Liste</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Artikel Name</th>
+                        <th>Kategeorie</th>
+                        <th>Artikel Nummer</th>
+                        <th>Original Preis</th>
+                        <th>Angebotspreis</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id='trackerList'>
+                    {% for tracker in tracker_list %}
+                    <tr id="tr_{{ tracker.id }}">
+                        <td>{{ tracker.tracker_name }}</td>
+                        <td>{{ tracker.category_name }}</td>
+                        <td>{{ tracker.article_number }}</td>
+                        <td>{{ tracker.price }}</td>
+                        <td>{{ tracker.discount_price }}</td>
+                        <td>
+                            <div class="list-icons">
+                                <div class="list-icons-item dropdown">
+                                    <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="/Admin/ManageTracker/Edit/{{ tracker.id }}" class="dropdown-item"><i class="icon-plus-circle2"></i>  Auswählen Images   </a>
+                                        <a href="/Admin/ManageTracker/Edit/{{ tracker.id }}" class="dropdown-item"><i class="icon-pencil7"></i> Bearbeiten</a>
+                                        <a href="/Admin/ManageTracker/Detail/{{ tracker.id }}" class="dropdown-item"><i class="icon-search4"></i> Detail</a>
+                                        {% if tracker.isactive == 1 %}
+                                        <a href="" class="dropdown-item btn-lock" tracker_id="{{ tracker.id }}" value='1'><i class="icon-lock2"></i>  Deaktivieren</a>
+                                        {% else %}
+                                        <a href="" class="dropdown-item btn-lock" tracker_id="{{ tracker.id }}" value='0'><i class="icon-unlocked2"></i>  Aktivieren</a>
+                                        {% endif %}
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger tracker-delete" tracker_id="{{ tracker.id }}"><i class="icon-trash"></i> Löschen</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

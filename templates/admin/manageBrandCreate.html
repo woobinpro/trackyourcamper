@@ -1,0 +1,73 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageVehicleCreate.css' %}" rel="stylesheet" type="text/css">
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Marke bearbeiten</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                {% if brand_info %}<a href="/Admin/ManageBrands/Detail/{{ brand_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-search4 mr-2"></i> Detail</a>{% endif %}
+                <a href="/Admin/ManageBrands" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Marken</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">{% if brand_info %}Marke bearbeiten{% else %}Marke hinzufügen{% endif %}</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="{% if not brand_info %}/Admin/ManageBrand/Create{% else %}/Admin/ManageBrands/Edit/{{ brand_info.id }}{% endif %}" enctype="multipart/form-data" method="post">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" required id="Name" name="name" type="text" value="{{ brand_info.name }}">
+                        </div>
+                    </div>
+                </div>
+                {% if brand_info %}<input name='id' type='hidden' value="{{ brand_info.id }}">{% endif %}
+                <div class="row float-right">
+                    <div class="col-sm-12 form-group">
+                        <button class="btn btn-primary" type="submit">{% if not brand_info %}Erstellen{% else %}Speichern{% endif %}</button>
+                        <a class="btn btn-warning" href="/Admin/ManageBrands">Abrechen</a>
+                        {% if not brand_info %}<a class="btn btn-light" href="/Admin/ManageBrand/Create">Zurücksetzen</a>{% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/manageBrandCreate.js' %}"></script>
+{% endblock %}
+

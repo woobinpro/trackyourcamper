@@ -2,11 +2,17 @@
 {% load static %}  
 {% block content %}
 <!-- Page header -->
+<link href="{% static 'admin/css/manageSecurityCompany.css' %}" rel="stylesheet" type="text/css">
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
         <div class="page-title d-flex">
             <h4><i class="icon-arrow-left52 mr-2"></i> Security Unternehmen verwalten</h4>
             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageSecurityCompany/Create" class="btn bg-indigo-300"><i class="icon-plus-circle2 mr-2"></i>   Security Firma hinzufügen</a>
+            </div>
         </div>
     </div>
 
@@ -26,7 +32,100 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card card-collapsed">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title"> security company search</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item rotate-180" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="display: none;">
+            <div class="row">
+                <div class="col-sm-8">
+                    <label class="control-label" for="customer">Postleitzahl</label>
+                    <br>
+                    <input id="postal" type="text" class="form-control" placeholder="Ort, Postleitzahl">
+                    <select class="form-control" id="selectradious" name="selectradious">
+                        <option value="20">&lt; 20 km</option>
+                        <option value="50">&lt; 50 km</option>
+                        <option value="100">&lt; 100 km</option>
+                    </select>
+                    <i><b>Note:</b> <span> Um bessere Suchergebnisse zu erzielen suchen Sie mit Postleitzahl und Stadt <br> e.g. Ort, Postleitzahl</span></i>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label" for="date_modified">&nbsp;</label>
+                        <div class="input-group date text-right">
+                            <div class="btn-group-sm">
+                                <button class="btn btn-sm btn-primary form-control" onclick="FunsearchDaterecords()">Suche</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Liste der Sicherheitsfirmen</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Ort</th>
+                        <th>Land</th>
+                        <th>Straße</th>
+                        <th>Postleitzahl</th>
+                        <th>Bundesland</th>
+                        <th>Koordinate</th>
+                        <th>Besitzer</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id='securityCompanyList'>
+                    {% for security_company in security_company_list %}
+                    <tr id="tr_{{ security_company.Id }}">
+                        <td>{{ security_company.Name }}</td>
+                        <td>{{ security_company.Address_City }} </td>
+                        <td>{{ security_company.Address_Country }} </td>
+                        <td>{{ security_company.Address_Street }} </td>
+                        <td>{{ security_company.Address_Postal }} </td>
+                        <td>{{ security_company.Address_State }} </td>
+                        <td>
+                            <b>Breitengrad</b>: {{ security_company.Address_Latitude }} <br>
+                            <b>Längengrad</b>:{{ security_company.Address_Longitude }}
+                        </td>
+                        <td>{{ security_company.Firstname }} {{ security_company.Lastname }}</td>
+                        <td>
+                            <div class="list-icons">
+                                <div class="list-icons-item dropdown">
+                                    <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="/Admin/ManageSecurityCompany/Edit/{{ security_company.Id }}" class="dropdown-item"><i class="icon-pencil7"></i> Bearbeiten</a>
+                                        <a href="/Admin/ManageSecurityCompany/Detail/{{ security_company.Id }}" class="dropdown-item"><i class="icon-search4"></i> Detail</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger company-delete" company_id="{{ security_company.Id }}"><i class="icon-trash"></i> Löschen</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <input type='hidden' class="latitude" value='{{ security_company.Address_Latitude }}'>
+                        <input type='hidden' class="longitude" value='{{ security_company.Address_Longitude }}'>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}

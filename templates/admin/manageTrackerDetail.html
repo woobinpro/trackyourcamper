@@ -1,0 +1,144 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageTracker.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Catalog Detail</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManageTracker/Edit/{{ tracker_info.id }}" class="btn bg-green-300 mr-2"><i class="icon-pencil7 mr-2"></i>  Bearbeiten</a>
+                <a href="/Admin/ManageBrands" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i> Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Catalog Detail</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-7'>
+            <div class='card'>
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Basisdaten</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Artikel Name</label>
+                            <div class="col-sm-8">
+                                {{ tracker_info.trackername }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Kategeorie</label>
+                            <div class="col-sm-8">
+                                {{ category_name }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Artikel Nummer</label>
+                            <div class="col-sm-8">
+                                {{ tracker_info.articlenumber }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Kurz Beschreibung</label>
+                            <div class="col-sm-8">
+                                {{ tracker_info.trackershortdesc }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Preis</label>
+                            <div class="col-sm-8">
+                                {{ tracker_info.price }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Angebotspreis</label>
+                            <div class="col-sm-8">
+                                {{ tracker_info.dicountprice }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">Menge</label>
+                            <div class="col-sm-8">
+                                {{ tracker_info.original_qty }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-4 control-label">ist Aktive</label>
+                            <div class="col-sm-8">
+                                {% if tracker_info.isactive == 1 %}
+                                <i class="icon-checkmark4 text-success"></i>
+                                {% else %}
+                                <i class="icon-blocked text-danger"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-5'>
+            <div class='card'>
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Bilder</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class='row image-list'>
+                        {% for image in tracker_images %}
+                        <div class='col-sm-12 image-item' image_id="{{ image.id }}">
+                            <img src="{% static 'upload/' %}{{ image.imagename }}" width="100%" alt="" >
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+{% endblock %}

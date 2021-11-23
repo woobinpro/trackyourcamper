@@ -1,0 +1,17 @@
+.control-label {
+    font-weight: bold;
+}
+.badge {
+    font-size: 100%;
+    margin-bottom: 0.5rem;
+    line-height: 1.25;
+    margin-right: 0.4rem;
+}
+.badge-pill {
+    padding-right: 0.6375rem;
+    padding-left: 0.6375rem;
+    border-radius: 10rem;
+}
+.badge i {
+    cursor: pointer;
+}
