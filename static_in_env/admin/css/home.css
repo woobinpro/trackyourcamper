@@ -21,4 +21,5 @@
 .card {
     min-height: 162px;
     background-repeat: no-repeat;
+    background-position-y: 100%;
 }

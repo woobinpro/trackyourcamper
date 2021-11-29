@@ -1,6 +1,11 @@
 {% extends 'admin/base.html' %}
 {% load static %}  
 {% block content %}
+<style>
+    .hidden{
+        display:none;
+    }
+</style>
 <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.1/summernote.css" rel="stylesheet">
 <script src="{% static 'admin/global_assets/js/plugins/editors/summernote/summernote.min.js' %}"></script>
 <!-- Page header -->
@@ -64,6 +69,36 @@
                     </div>
                 </div>
                 <div class='row'>
+                    <div class='col-sm-12 hidden'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Kopfzeile 1</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="termsofservice">{{ header_content.termsofservice | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12 hidden'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Kopfzeile 1</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="privacypolicy">{{ header_content.privacypolicy | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-12 hidden'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Kopfzeile 1</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="imprint">{{ header_content.imprint | safe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class='col-sm-12'>
                         <div class="form-group">
                             <div class="row">

@@ -1,0 +1,112 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/manageSecurityCompany.css' %}" rel="stylesheet" type="text/css">
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> Review & Rating</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/Reviewratting" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i> Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Review & Rating</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-6'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Basisdaten</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Name</label>
+                            <div class="col-sm-6">
+                                {{ review_info.firstname }} {{ review_info.lastname }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> E-Mail</label>
+                            <div class="col-sm-6">
+                                {{ review_info.email }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Telefonnummer</label>
+                            <div class="col-sm-6">
+                                {{ review_info.phonenumber }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Bewertung</label>
+                            <div class="col-sm-6">
+                                {{ review_info.rate_star }}
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Kommentar</label>
+                            <div class="col-sm-6">
+                                {{ review_info.shortdescription }} 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-5 control-label"> Display Rating</label>
+                            <div class="col-sm-6">
+                                {% if review_info.isdisplay == 1 %}
+                                <i class="icon-eye text-success "></i>
+                                {% else %} 
+                                <i class="icon-eye-blocked text-warning "></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-6'>
+           
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+{% endblock %}

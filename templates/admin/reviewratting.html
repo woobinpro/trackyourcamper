@@ -2,6 +2,8 @@
 {% load static %}  
 {% block content %}
 <!-- Page header -->
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/extensions/responsive.min.js' %}"></script>
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
         <div class="page-title d-flex">
@@ -13,7 +15,7 @@
     <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
         <div class="d-flex">
             <div class="breadcrumb">
-                <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
                 <span class="breadcrumb-item active">Review & Rating</span>
             </div>
 
@@ -26,11 +28,60 @@
 
 <!-- Content area -->
 <div class="content">
-
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Rezension & Bewertung liste</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <table class="table datatable-responsive">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>E-Mail</th>
+                    <th>Telefonnummer</th>
+                    <th>Kommentar</th>
+                    <th>Bewertung</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in review_list %}
+                <tr id="tr_{{ review.id }}">
+                    <td>{{ review.firstname }} {{ review.lastname }}</td>
+                    <td>{{ review.email }}</td>
+                    <td>{{ review.phonenumber }}</td>
+                    <td>{{ review.shortdescription }}</td>
+                    <td>{{ review.rate_star }}</td>
+                    <td>
+                        <div class="list-icons">
+                            <div class="list-icons-item dropdown">
+                                <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="/Admin/Reviewratting/Detail/{{ review.id }}" class="dropdown-item"><i class="icon-search4"></i> Detail</a>
+                                    {% if review.isdisplay == 1 %}
+                                    <a href="" class="dropdown-item btn-lock" review_id="{{ review.id }}" value="1"><i class="icon-unlocked2"></i> Deaktivieren </a>
+                                    {% else %}
+                                    <a href="" class="dropdown-item btn-lock" review_id="{{ review.id }}" value="0"><i class="icon-lock2"></i> Aktivieren </a>
+                                    {% endif %}
+                                    <div class="dropdown-divider"></div>
+                                    <a href="#" class="dropdown-item text-danger review-delete" review_id="{{ review.id }}"><i class="icon-trash"></i> Löschen</a>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 <!-- /content area -->
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'admin/js/reviewratting.js' %}"></script>
+<script src="{% static 'admin/js/reviewrating.js' %}"></script>
 {% endblock %}

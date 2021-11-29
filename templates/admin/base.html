@@ -4,7 +4,9 @@
     {% include 'admin/header.html' %}
     <!-- Page content -->
 	<div class="page-content">
+        {% if url != "login" %}
         {% include 'admin/sidebar.html' %}
+        {% endif %}
         <div class="content-wrapper">
             {% block content %}
             {% endblock %}

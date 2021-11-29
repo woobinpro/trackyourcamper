@@ -1,4 +1,3 @@
-// Validation config
 var _componentValidation = function() {
     if (!$().validate) {
         console.warn('Warning - validate.min.js is not loaded.');
@@ -6,7 +5,7 @@ var _componentValidation = function() {
     }
 
     // Initialize
-    var validator = $('#user_form').validate({
+    var validator = $('#promotion_form').validate({
         ignore: 'input[type=hidden]', // ignore hidden fields
         errorClass: 'validation-invalid-label',
         successClass: 'validation-valid-label',
@@ -45,11 +44,12 @@ var _componentValidation = function() {
             }
         },
         rules: {
-            password: {
-                minlength: 5
+            credit: {
+                number: true
             },
-            confirm_password: {
-                equalTo: '#password'
+           
+            userid: {
+                number: true
             }
         },
         messages: {

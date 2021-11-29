@@ -26,7 +26,7 @@
                 <!-- Main -->
                 <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
                 <li class="nav-item">
-                    <a href="/Admin" class="nav-link active">
+                    <a href="/Admin" class="nav-link {% if url == 'admin' %}active{% endif %}">
                         <i class="icon-home4"></i>
                         <span>
                             Dashboard
@@ -34,47 +34,47 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManageTrackerAlarm" class="nav-link">
+                    <a href="/Admin/ManageTrackerAlarm" class="nav-link {% if url == 'manageTrackerAlarm' %}active{% endif %}">
                         <i class="icon-bell2"></i>
                         <span>
                             Überwachungszentrale
                         </span>
                     </a>
                 </li>
-                <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link"><i class="icon-bus"></i> <span>Fahrzeug</span></a>
+                <li class="nav-item nav-item-submenu {% if url == 'manageVehicles' or url == 'manageTrackerLocationHistory' or url == 'manageBrands' %}nav-item-open{% endif %}">
+                    <a href="#" class="nav-link {% if url == 'manageVehicles' or url == 'manageTrackerLocationHistory' or url == 'manageBrands' %}active{% endif %}"><i class="icon-bus"></i> <span>Fahrzeug</span></a>
 
-                    <ul class="nav nav-group-sub" data-submenu-title="Layouts">
-                        <li class="nav-item"><a href="/Admin/ManageVehicles" class="nav-link active">Alle anzeigen</a></li>
-                        <li class="nav-item"><a href="/Admin/ManageTrackerLoctionHistory" class="nav-link">Tracker location history</a></li>
-                        <li class="nav-item"><a href="/Admin/ManageBrands" class="nav-link">Marken</a></li>
+                    <ul class="nav nav-group-sub" data-submenu-title="Layouts" {% if url == 'manageVehicles' or url == 'manageTrackerLocationHistory' or url == 'manageBrands' %}style="display:block" {% endif %}>
+                        <li class="nav-item"><a href="/Admin/ManageVehicles" class="nav-link {% if url == 'manageVehicles' %}active{% endif %}">Alle anzeigen</a></li>
+                        <li class="nav-item"><a href="/Admin/ManageTrackerLocationHistory" class="nav-link {% if url == 'manageTrackerLocationHistory' %}active{% endif %}">Tracker location history</a></li>
+                        <li class="nav-item"><a href="/Admin/ManageBrands" class="nav-link {% if url == 'manageBrands' %}active{% endif %}">Marken</a></li>
                     </ul>
                 </li>
-                <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link"><i class="icon-home2"></i> <span>Campingpl&#228;tze</span></a>
+                <li class="nav-item nav-item-submenu {% if url == 'manageCampingPlace' %}nav-item-open{% endif %}">
+                    <a href="#" class="nav-link {% if url == 'manageCampingPlace' %}active{% endif %}"><i class="icon-home2"></i> <span>Campingpl&#228;tze</span></a>
 
-                    <ul class="nav nav-group-sub" data-submenu-title="Themes">
-                        <li class="nav-item"><a href="/Admin/ManageCampingPlace" class="nav-link active">Alle anzeigen</a></li>
+                    <ul class="nav nav-group-sub" data-submenu-title="Themes" {% if url == 'manageCampingPlace' %}style="display:block"{% endif %}>
+                        <li class="nav-item"><a href="/Admin/ManageCampingPlace" class="nav-link {% if url == 'manageCampingPlace' %}active{% endif %}">Alle anzeigen</a></li>
                     </ul>
                 </li>
-                <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link"><i class="icon-cart2"></i> <span>Shop</span></a>
-                    <ul class="nav nav-group-sub" data-submenu-title="Layouts">
-                        <li class="nav-item"><a href="/Admin/ManageOrders" class="nav-link active">Bestellungen</a></li>
-                        <li class="nav-item"><a href="/Admin/ManageTracker" class="nav-link">Shop Artikel</a></li>
-                        <li class="nav-item"><a href="/Admin/ShopCategory" class="nav-link">Shop Kategorie</a>
+                <li class="nav-item nav-item-submenu {% if url == 'manageOrders' or url == 'manageTracker' or url == 'shopCategory' %}nav-item-open{% endif %}">
+                    <a href="#" class="nav-link {% if url == 'manageOrders' or url == 'manageTracker' or url == 'shopCategory' %}active{% endif %}"><i class="icon-cart2"></i> <span>Shop</span></a>
+                    <ul class="nav nav-group-sub" data-submenu-title="Layouts" {% if url == 'manageOrders' or url == 'manageTracker' or url == 'shopCategory' %}style="display:block"{% endif %}>
+                        <li class="nav-item"><a href="/Admin/ManageOrders" class="nav-link {% if url == 'manageOrders' %}active{% endif %}">Bestellungen</a></li>
+                        <li class="nav-item"><a href="/Admin/ManageTracker" class="nav-link {% if url == 'manageTracker' %}active{% endif %}">Shop Artikel</a></li>
+                        <li class="nav-item"><a href="/Admin/ShopCategory" class="nav-link {% if url == 'shopCategory' %}active{% endif %}">Shop Kategorie</a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link"><i class="icon-users2"></i> <span>User</span></a>
+                <li class="nav-item nav-item-submenu {% if url == 'manageUser' %}nav-item-open{% endif %}">
+                    <a href="#" class="nav-link {% if url == 'manageUser' %}active{% endif %}"><i class="icon-users2"></i> <span>User</span></a>
 
-                    <ul class="nav nav-group-sub" data-submenu-title="Starter kit">
-                        <li class="nav-item"><a href="/Admin/ManageUser" class="nav-link">Alle anzeigen</a></li>
+                    <ul class="nav nav-group-sub" data-submenu-title="Starter kit" {% if url == 'manageUser' %}style="display:block"{% endif %}>
+                        <li class="nav-item"><a href="/Admin/ManageUser" class="nav-link {% if url == 'manageUser' %}active{% endif %}">Alle anzeigen</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManageMerchant" class="nav-link">
+                    <a href="/Admin/ManageMerchant" class="nav-link {% if url == 'manageMerchant' %}active{% endif %}">
                         <i class="icon-office"></i>
                         <span>
                             H&#228;ndler
@@ -82,7 +82,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManageSecurityCompany" class="nav-link">
+                    <a href="/Admin/ManageSecurityCompany" class="nav-link {% if url == 'manageSecurityCompany' %}active{% endif %}">
                         <i class="icon-user-tie"></i>
                         <span>
                             Sicherheitsdienste
@@ -90,7 +90,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManageSubscriptions" class="nav-link">
+                    <a href="/Admin/ManageSubscriptions" class="nav-link {% if url == 'manageSubscriptions' %}active{% endif %}">
                         <i class="icon-file-empty2"></i>
                         <span>
                             Abonnements
@@ -98,7 +98,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManageSubscriptionInvoice" class="nav-link">
+                    <a href="/Admin/ManageSubscriptionInvoice" class="nav-link {% if url == 'manageSubscriptionInvoice' %}active{% endif %}">
                         <i class="icon-cash2"></i>
                         <span>
                             Abonnement Abrechnung
@@ -107,7 +107,7 @@
                 </li>
                 
                 <li class="nav-item">
-                    <a href="/Admin/ManageForms" class="nav-link">
+                    <a href="/Admin/ManageForms" class="nav-link {% if url == 'manageForms' %}active{% endif %}">
                         <i class="icon-file-pdf"></i>
                         <span>
                             Formulare
@@ -115,7 +115,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManageCustomerServicedata" class="nav-link">
+                    <a href="/Admin/ManageCustomerServicedata" class="nav-link {% if url == 'manageCustomerServicedata' %}active{% endif %}">
                         <i class="icon-info22"></i>
                         <span>
                             Kundeninformationen
@@ -123,7 +123,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManageCustomerServicedata/CustomerGraphics" class="nav-link">
+                    <a href="/Admin/ManageCustomerServicedata/CustomerGraphics" class="nav-link {% if url == 'manageCustomerGraphics' %}active{% endif %}">
                         <i class="icon-info22"></i>
                         <span>
                             Grafiken
@@ -131,7 +131,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/ManagePromotionCredit" class="nav-link">
+                    <a href="/Admin/ManagePromotionCredit" class="nav-link {% if url == 'managePromotionCredit' %}active{% endif %}">
                         <i class="icon-file-empty2"></i>
                         <span>
                             Promotion Credit
@@ -139,7 +139,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/Reviewratting" class="nav-link">
+                    <a href="/Admin/Reviewratting" class="nav-link {% if url == 'reviewratting' %}active{% endif %}">
                         <i class="icon-office"></i>
                         <span>
                             Kundenbewertungen
@@ -147,7 +147,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/TermsOfService" class="nav-link">
+                    <a href="/Admin/TermsOfService" class="nav-link {% if url == 'termsOfService' %}active{% endif %}">
                         <i class="icon-office"></i>
                         <span>
                             Allgemeine Geschäftsbedingungen
@@ -155,7 +155,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/AdminPrivacypolicy" class="nav-link">
+                    <a href="/Admin/AdminPrivacypolicy" class="nav-link {% if url == 'privacypolicy' %}active{% endif %}">
                         <i class="icon-office"></i>
                         <span>
                             Datenschutzerklärung
@@ -163,7 +163,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/AdminImprint" class="nav-link">
+                    <a href="/Admin/AdminImprint" class="nav-link {% if url == 'imprint' %}active{% endif %}">
                         <i class="icon-office"></i>
                         <span>
                             Impressum
@@ -171,7 +171,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Admin/Adminchangepassword" class="nav-link">
+                    <a href="/Admin/Adminchangepassword" class="nav-link {% if url == 'adminChangePassword' %}active{% endif %}">
                         <i class="icon-lock2"></i>
                         <span>
                             Passwort &#228;ndern 

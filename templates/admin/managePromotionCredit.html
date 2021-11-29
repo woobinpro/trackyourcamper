@@ -5,7 +5,7 @@
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
         <div class="page-title d-flex">
-            <h4><i class="icon-arrow-left52 mr-2"></i> Manage All Catalog</h4>
+            <h4><i class="icon-arrow-left52 mr-2"></i> Manage Promotion Credit</h4>
             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
         </div>
     </div>
@@ -14,7 +14,7 @@
         <div class="d-flex">
             <div class="breadcrumb">
                 <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
-                <span class="breadcrumb-item active">All Catalog</span>
+                <span class="breadcrumb-item active">Promotion Credit</span>
             </div>
 
             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -26,55 +26,101 @@
 
 <!-- Content area -->
 <div class="content">
-    <div class="card">
-        <div class="card-header header-elements-inline">
-            <h5 class="card-title">Katalog Liste</h5>
-            <div class="header-elements">
-                <div class="list-icons">
-                    <a class="list-icons-item" data-action="collapse"></a>
+    <div class='row'>
+        <div class='col-lg-7'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Abonnementliste</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a href="/Admin/ManagePromotionCredit/Create" class="btn bg-indigo-300 mr-3"><i class="icon-plus-circle2 mr-2"></i>   Add Subscription   </a>
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Land</th>
+                                <th>Ort</th>
+                                <th>E-Mail Adresse</th>
+                                <th>Telefonnummer</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id='subscriptionList'>
+                            {% for subscription in subscription_list %}
+                            <tr id="tr_subscription_{{ subscription.id }}">
+                                <td>{{ subscription.firstname }} {{ subscription.surname }}</td>
+                                <td>{{ subscription.country }} </td>
+                                <td>{{ subscription.city }} </td>
+                                <td>{{ subscription.regemail }} </td>
+                                <td>{{ subscription.regphoneno }} </td>
+                                <td>
+                                    <div class="list-icons">
+                                        <div class="list-icons-item dropdown">
+                                            <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="/Admin/ManagePromotionCredit/Edit/{{ subscription.id }}" class="dropdown-item"><i class="icon-pencil7"></i> Add Promotion Credit</a>
+                                               
+                                                <div class="dropdown-divider"></div>
+                                                <a href="#" class="dropdown-item text-danger subscription-delete" subscription_id="{{ subscription.id }}"><i class="icon-trash"></i> Löschen</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Land</th>
-                        <th>Ort</th>
-                        <th>E-Mail Adresse</th>
-                        <th>Telefonnummer</th>
-                        <th>geworben durch</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id='catalogList'>
-                    {% for catalog in catalog_list %}
-                    <tr id="tr_{{ catalog.Id }}">
-                        <td>{{ catalog.firstname }} {{ catalog.surname }}</td>
-                        <td>{{ catalog.country }} </td>
-                        <td>{{ catalog.city }} </td>
-                        <td>{{ catalog.regemail }} </td>
-                        <td>{{ catalog.regphoneno }} </td>
-                        <td></td>
-                        <td>
-                            <div class="list-icons">
-                                <div class="list-icons-item dropdown">
-                                    <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a href="/Admin/ManageSecurityCompany/Edit/{{ catalog.Id }}" class="dropdown-item"><i class="icon-pencil7"></i> Bearbeiten</a>
-                                        <a href="/Admin/ManageSecurityCompany/Detail/{{ catalog.Id }}" class="dropdown-item"><i class="icon-search4"></i> Detail</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a href="#" class="dropdown-item text-danger company-delete" company_id="{{ catalog.Id }}"><i class="icon-trash"></i> Löschen</a>
+        <div class='col-lg-5'>
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Promotion-Guthabenliste</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Credit Amount</th>
+                                <th>Debit Amount</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id='promotionList'>
+                            {% for promotion in promotion_list %}
+                            <tr id="tr_promotion_{{ promotion.id }}">
+                                <td>{{ promotion.firstname }} {{ promotion.surname }}</td>
+                                <td>{{ promotion.credit }} </td>
+                                <td>{{ promotion.debit }} </td>
+                                <td>
+                                    <div class="list-icons">
+                                        <div class="list-icons-item dropdown">
+                                            <a href="#" class="list-icons-item dropdown-toggle caret-0" data-toggle="dropdown"><i class="icon-menu7"></i></a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#" class="dropdown-item text-danger promotion-delete" promotion_id="{{ promotion.id }}"><i class="icon-trash"></i> Löschen</a>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </td>
-                        
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                                </td>
+                                
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

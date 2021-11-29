@@ -1,0 +1,163 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link href="{% static 'admin/css/managePromotionCredit.css' %}" rel="stylesheet" type="text/css">
+
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> ManagePromotionalCredit</h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <a href="/Admin/ManagePromotionCredit" class="btn bg-indigo-300"><i class="icon-arrow-left8 mr-2"></i>  Zurück zur Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">ManagePromotionalCredit</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">ManagePromotionalCredit</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id='promotion_form' action="{% if promotion_info %}/Admin/ManagePromotionCredit/Edit/{{ promotion_info.id }}{% else %}/Admin/ManagePromotionCredit/Create{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                <div class='row'>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">FirstName</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" name="firstname" type="text" value="{{ promotion_info.firstname }}" {% if promotion_info %}disabled{% else %}required{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Familienname</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="surname" type="text" value="{{ promotion_info.surname }}" {% if promotion_info %}disabled{% else %}required{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">E-Mail</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="regemail" type="text" value="{{ promotion_info.regemail }}" {% if promotion_info %}disabled{% else %}required{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Telefonnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="regphoneno" type="text" value="{{ promotion_info.regphoneno }}" {% if promotion_info %}disabled{% else %}required{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Land</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="country" type="text" value="{{ promotion_info.country }}" {% if promotion_info %}disabled{% else %}required{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Ort</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"   name="city" type="text" value="{{ promotion_info.city }}" {% if promotion_info %}disabled{% else %}required{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">user</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" {% if promotion_info %}required{% endif %}  name="userid">
+                                        <option value=''>Select User</option>
+                                        {% for user in user_list %}
+                                        <option value="{{ user.id }}" >{{ user.firstname }} {{ user.lastname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">AdvertisedAmount</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  {% if promotion_info %}required{% endif %}  name="credit" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if promotion_info %}<input name='id' type='hidden' value="{{ promotion_info.id }}">{% endif %}
+                
+                <div class="row float-right">
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary" type="submit">Absenden</button>
+                        <a class="btn btn-warning" href="/Admin/ManagePromotionCredit">Abrechen</a>
+                    
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/managePromotionCreditEdit.js' %}"></script>
+{% endblock %}
+
