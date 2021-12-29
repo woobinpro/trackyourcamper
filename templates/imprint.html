@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/shop.css' %}">
+<div class="container mt-5  mb-5">
+{{ header_content.imprint  | safe }}
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/shop.js' %}"></script>
+{% endblock %}

@@ -20,7 +20,7 @@ class Migrationhistory(models.Model):
 
 
 class Aspnetroles(models.Model):
-    id = models.CharField(db_column='Id', max_length=128, db_collation='utf8_general_ci', primary_key=True)  # Field name made lowercase.
+    id = models.CharField(db_column='Id', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=256, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -59,7 +59,7 @@ class Aspnetuserroles(models.Model):
 
 
 class Aspnetusers(models.Model):
-    id = models.CharField(db_column='Id', max_length=128, db_collation='utf8_general_ci', primary_key=True)  # Field name made lowercase.
+    id = models.CharField(db_column='Id', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     email = models.CharField(db_column='Email', max_length=256, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     emailconfirmed = models.IntegerField(db_column='EmailConfirmed', blank=True, null=True)  # Field name made lowercase.
     passwordhash = models.TextField(db_column='PasswordHash', blank=True, null=True)  # Field name made lowercase.
@@ -147,7 +147,7 @@ class AuthUserUserPermissions(models.Model):
 
 
 class Billingaddressmaster(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(blank=True, null=True)
     userid = models.CharField(db_column='UserID', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     salutation = models.IntegerField(blank=True, null=True)
     firstname = models.CharField(db_column='Firstname', max_length=150, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
@@ -740,7 +740,7 @@ class Securitycompanies(models.Model):
 
 
 class Shippingaddressmaster(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(blank=True, null=True)
     userid = models.CharField(db_column='UserID', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     salutation = models.IntegerField(blank=True, null=True)
     firstname = models.CharField(db_column='Firstname', max_length=150, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.

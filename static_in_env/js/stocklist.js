@@ -1,6 +1,7 @@
-var markers;
-markers = JSON.parse('[{"Merchant_Name":"TYC","latitude":"49,7032737","longtitude":"8,2458955","Address_City":"Westhofen","Address_Country":"Deutschland","Address_Street":"Altbachgasse, 5","Address_Postal":"67593","Address_State":"Rheinland-Pfalz","Dealeremail":"trackyourcamper@gmail.com","Website":null,"Phone":"01725193694","Fax":null,"Oppning_Monday_summer":"Geschlossen","Oppning_Tuesday_summer":"Geschlossen","Oppning_Wednesday_summer":"Geschlossen","Oppning_Thursday_summer":"Geschlossen","Oppning_Friday_summer":"Geschlossen","Oppning_Saturday_summer":"Geschlossen","Oppning_Sunday_summer":"Geschlossen","Oppning_Monday_winter":"08:00 - 17:00","Oppning_Tuesday_winter":"Geschlossen","Oppning_Wednesday_winter":"Geschlossen","Oppning_Thursday_winter":"Geschlossen","Oppning_Friday_winter":"Geschlossen","Oppning_Saturday_winter":"Geschlossen","Oppning_Sunday_winter":"Geschlossen","OpenTimes_OpenTimes_MondayStart":null,"OpenTimes_OpenTimes_MondayEnd":null,"OpenTimes_OpenTimes_TuesdayStart":null,"OpenTimes_OpenTimes_TuesdayEnd":null,"OpenTimes_OpenTimes_WednesdayStart":null,"OpenTimes_OpenTimes_WednesdayEnd":null,"OpenTimes_OpenTimes_ThursdayStart":null,"OpenTimes_OpenTimes_ThursdayEnd":null,"OpenTimes_OpenTimes_FridayStart":null,"OpenTimes_OpenTimes_FridayEnd":null,"OpenTimes_OpenTimes_SaturdayStart":null,"OpenTimes_OpenTimes_SaturdayEnd":null,"OpenTimes_OpenTimes_SundayStart":null,"OpenTimes_OpenTimes_SundayEnd":null,"Summer_OpenTimes_OpenTimes_MondayStart":null,"Summer_OpenTimes_OpenTimes_MondayEnd":null,"Summer_OpenTimes_OpenTimes_TuesdayStart":null,"Summer_OpenTimes_OpenTimes_TuesdayEnd":null,"Summer_OpenTimes_OpenTimes_WednesdayStart":null,"Summer_OpenTimes_OpenTimes_WednesdayEnd":null,"Summer_OpenTimes_OpenTimes_ThursdayStart":null,"Summer_OpenTimes_OpenTimes_ThursdayEnd":null,"Summer_OpenTimes_OpenTimes_FridayStart":null,"Summer_OpenTimes_OpenTimes_FridayEnd":null,"Summer_OpenTimes_OpenTimes_SaturdayStart":null,"Summer_OpenTimes_OpenTimes_SaturdayEnd":null,"Summer_OpenTimes_OpenTimes_SundayStart":null,"Summer_OpenTimes_OpenTimes_SundayEnd":null,"Winter_Monday_close":null,"Winter_tuseday_close":null,"Winter_wednessday_close":null,"Winter_thursday_close":null,"Winter_friday_cloas":null,"Winter_saturday_close":null,"Winter_sunday_close":null,"Summer_Monday_close":null,"Summer_tuseday_close":null,"Summer_wednessday_close":null,"Summer_thursday_close":null,"Summer_friday_close":null,"Summer_saturday_close":null,"Summer_sunday_close":null,"Installationcharges":99.00},{"Merchant_Name":"Haber WOWA","latitude":"49,6106869","longtitude":"8,3203301","Address_City":"Worms","Address_Country":"Deutschland","Address_Street":"Untere Hauptstr., 51","Address_Postal":"67551","Address_State":"Rheinland-Pfalz","Dealeremail":"futurestrike75@googlemail.com","Website":null,"Phone":"01725193694","Fax":null,"Oppning_Monday_summer":"Geschlossen","Oppning_Tuesday_summer":"Geschlossen","Oppning_Wednesday_summer":"Geschlossen","Oppning_Thursday_summer":"Geschlossen","Oppning_Friday_summer":"Geschlossen","Oppning_Saturday_summer":"Geschlossen","Oppning_Sunday_summer":"Geschlossen","Oppning_Monday_winter":"16:00 - 17:00","Oppning_Tuesday_winter":"Geschlossen","Oppning_Wednesday_winter":"Geschlossen","Oppning_Thursday_winter":"Geschlossen","Oppning_Friday_winter":"Geschlossen","Oppning_Saturday_winter":"Geschlossen","Oppning_Sunday_winter":"Geschlossen","OpenTimes_OpenTimes_MondayStart":null,"OpenTimes_OpenTimes_MondayEnd":null,"OpenTimes_OpenTimes_TuesdayStart":null,"OpenTimes_OpenTimes_TuesdayEnd":null,"OpenTimes_OpenTimes_WednesdayStart":null,"OpenTimes_OpenTimes_WednesdayEnd":null,"OpenTimes_OpenTimes_ThursdayStart":null,"OpenTimes_OpenTimes_ThursdayEnd":null,"OpenTimes_OpenTimes_FridayStart":null,"OpenTimes_OpenTimes_FridayEnd":null,"OpenTimes_OpenTimes_SaturdayStart":null,"OpenTimes_OpenTimes_SaturdayEnd":null,"OpenTimes_OpenTimes_SundayStart":null,"OpenTimes_OpenTimes_SundayEnd":null,"Summer_OpenTimes_OpenTimes_MondayStart":null,"Summer_OpenTimes_OpenTimes_MondayEnd":null,"Summer_OpenTimes_OpenTimes_TuesdayStart":null,"Summer_OpenTimes_OpenTimes_TuesdayEnd":null,"Summer_OpenTimes_OpenTimes_WednesdayStart":null,"Summer_OpenTimes_OpenTimes_WednesdayEnd":null,"Summer_OpenTimes_OpenTimes_ThursdayStart":null,"Summer_OpenTimes_OpenTimes_ThursdayEnd":null,"Summer_OpenTimes_OpenTimes_FridayStart":null,"Summer_OpenTimes_OpenTimes_FridayEnd":null,"Summer_OpenTimes_OpenTimes_SaturdayStart":null,"Summer_OpenTimes_OpenTimes_SaturdayEnd":null,"Summer_OpenTimes_OpenTimes_SundayStart":null,"Summer_OpenTimes_OpenTimes_SundayEnd":null,"Winter_Monday_close":null,"Winter_tuseday_close":null,"Winter_wednessday_close":null,"Winter_thursday_close":null,"Winter_friday_cloas":null,"Winter_saturday_close":null,"Winter_sunday_close":null,"Summer_Monday_close":null,"Summer_tuseday_close":null,"Summer_wednessday_close":null,"Summer_thursday_close":null,"Summer_friday_close":null,"Summer_saturday_close":null,"Summer_sunday_close":null,"Installationcharges":149.00},{"Merchant_Name":"Rhein WOMO","latitude":"49,6321577","longtitude":"8,3666022","Address_City":"Worms","Address_Country":"Deutschland","Address_Street":"Rheinstraße 12","Address_Postal":"67547","Address_State":"Rheinland-Pfalz","Dealeremail":"futurestrike75@googlemail.com","Website":null,"Phone":"01725193694","Fax":null,"Oppning_Monday_summer":"Geschlossen","Oppning_Tuesday_summer":"Geschlossen","Oppning_Wednesday_summer":"Geschlossen","Oppning_Thursday_summer":"Geschlossen","Oppning_Friday_summer":"Geschlossen","Oppning_Saturday_summer":"Geschlossen","Oppning_Sunday_summer":"Geschlossen","Oppning_Monday_winter":"16:00 - 17:00","Oppning_Tuesday_winter":"Geschlossen","Oppning_Wednesday_winter":"Geschlossen","Oppning_Thursday_winter":"Geschlossen","Oppning_Friday_winter":"Geschlossen","Oppning_Saturday_winter":"Geschlossen","Oppning_Sunday_winter":"Geschlossen","OpenTimes_OpenTimes_MondayStart":null,"OpenTimes_OpenTimes_MondayEnd":null,"OpenTimes_OpenTimes_TuesdayStart":null,"OpenTimes_OpenTimes_TuesdayEnd":null,"OpenTimes_OpenTimes_WednesdayStart":null,"OpenTimes_OpenTimes_WednesdayEnd":null,"OpenTimes_OpenTimes_ThursdayStart":null,"OpenTimes_OpenTimes_ThursdayEnd":null,"OpenTimes_OpenTimes_FridayStart":null,"OpenTimes_OpenTimes_FridayEnd":null,"OpenTimes_OpenTimes_SaturdayStart":null,"OpenTimes_OpenTimes_SaturdayEnd":null,"OpenTimes_OpenTimes_SundayStart":null,"OpenTimes_OpenTimes_SundayEnd":null,"Summer_OpenTimes_OpenTimes_MondayStart":null,"Summer_OpenTimes_OpenTimes_MondayEnd":null,"Summer_OpenTimes_OpenTimes_TuesdayStart":null,"Summer_OpenTimes_OpenTimes_TuesdayEnd":null,"Summer_OpenTimes_OpenTimes_WednesdayStart":null,"Summer_OpenTimes_OpenTimes_WednesdayEnd":null,"Summer_OpenTimes_OpenTimes_ThursdayStart":null,"Summer_OpenTimes_OpenTimes_ThursdayEnd":null,"Summer_OpenTimes_OpenTimes_FridayStart":null,"Summer_OpenTimes_OpenTimes_FridayEnd":null,"Summer_OpenTimes_OpenTimes_SaturdayStart":null,"Summer_OpenTimes_OpenTimes_SaturdayEnd":null,"Summer_OpenTimes_OpenTimes_SundayStart":null,"Summer_OpenTimes_OpenTimes_SundayEnd":null,"Winter_Monday_close":null,"Winter_tuseday_close":null,"Winter_wednessday_close":null,"Winter_thursday_close":null,"Winter_friday_cloas":null,"Winter_saturday_close":null,"Winter_sunday_close":null,"Summer_Monday_close":null,"Summer_tuseday_close":null,"Summer_wednessday_close":null,"Summer_thursday_close":null,"Summer_friday_close":null,"Summer_saturday_close":null,"Summer_sunday_close":null,"Installationcharges":99.00}]');
-
+var markers, searchResult = [];
+var host_url = location.protocol + "//" + location.host;
+var merchant_list_coordinates = ""; 
+var collapse_flag = false;
 $(document).ready(function () {
     Loader(1);
     $('.nav-item').removeClass('active');
@@ -9,7 +10,11 @@ $(document).ready(function () {
     });
     $("#successfullsend").fadeOut(20000);
     $("#txtzipcode").val('');
+    $('.list-icons-item').click();
+    getMerchantList();
 
+});
+function setMap() {
     var mapOptions = {
         center: new google.maps.LatLng(0, 0),
         zoom: 15,
@@ -19,11 +24,13 @@ $(document).ready(function () {
     var latlngbounds = new google.maps.LatLngBounds();
     var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
     var lineCoordinates = [];
-
+    $('#map_div').addClass('wide');
+    $('#detail_div').addClass('hide');
     if (markers.length > 0) {
         for (i = 0; i < markers.length; i++) {
+            if(searchResult[i]==false)continue;
             var data = markers[i]
-            var myLatlng = new google.maps.LatLng(data.latitude.replace(',', '.'), data.longtitude.replace(',', '.'));
+            var myLatlng = new google.maps.LatLng(data.address_latitude, data.address_longitude);
             var marker = new google.maps.Marker({
                 position: myLatlng,
                 map: map,
@@ -34,12 +41,112 @@ $(document).ready(function () {
 
             (function (marker, data) {
                 google.maps.event.addListener(marker, "mouseover", function (e) {
-                    infoWindow.setContent("<div><b>Name: </b>" + data.Merchant_Name + "</div>");
+                    infoWindow.setContent("<div><b>Name: </b>" + data.name + "</div>");
                     infoWindow.open(map, marker);
                 });
 
                 google.maps.event.addListener(marker, "mouseout", function (e) {
                     infoWindow.close();
+                });
+
+                google.maps.event.addListener(marker, "click", function (e) {
+                    $('#map_div').removeClass('wide');
+                    $('#detail_div').removeClass('hide');
+                    $('.card-title').html(data.name);
+                    var html_main_info = "<b>Adresse :</b><br>" + data.address_street + "<br>" + data.address_postal + " " + data.address_state + "<br>" + data.address_country+"<br><b>Telefon: </b>" + data.phone + "<br><b>E-Mail: </b>" + data.dealeremail + "<br><b>Montage Pauschale: </b>"+ data.installationflatrate + " €";
+                    var open_time = "<div class='row open-time'><div class='col-sm-6'>";
+                    open_time += "<h4>Öffnungszeiten im Sommer</h4>";
+                    open_time += "<span>Mo</span> <p>";
+                    if(data.summer_monday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.summer_opentimes_opentimes_mondaystart.substring(0,5)+" ~ "+data.summer_opentimes_opentimes_mondayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Di</span> <p>";
+                    if(data.summer_tuseday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.summer_opentimes_opentimes_tuesdaystart.substring(0,5)+" ~ "+data.summer_opentimes_opentimes_tuesdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Mi</span> <p>";
+                    if(data.summer_wednessday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.summer_opentimes_opentimes_wednesdaystart.substring(0,5)+" ~ "+data.summer_opentimes_opentimes_wednesdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Do</span> <p>";
+                    if(data.summer_thursday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.summer_opentimes_opentimes_thursdaystart.substring(0,5)+" ~ "+data.summer_opentimes_opentimes_thursdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Fr</span> <p>";
+                    if(data.summer_friday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.summer_opentimes_opentimes_fridaystart.substring(0,5)+" ~ "+data.summer_opentimes_opentimes_fridayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Sa</span> <p>";
+                    if(data.summer_saturday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.summer_opentimes_opentimes_saturdaystart.substring(0,5)+" ~ "+data.summer_opentimes_opentimes_saturdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>So</span> <p>";
+                    if(data.summer_sunday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.summer_opentimes_opentimes_sundaystart.substring(0,5)+" ~ "+data.summer_opentimes_opentimes_sundayend.substring(0,5);
+                    }
+                    open_time += "</p></div><div class='col-sm-6'><h4>Öffnungszeiten im Winter</h4>";
+                    open_time += "<span>Mo</span> <p>";
+                    if(data.winter_monday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.opentimes_opentimes_mondaystart.substring(0,5)+" ~ "+data.opentimes_opentimes_mondayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Di</span> <p>";
+                    if(data.winter_tuseday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.opentimes_opentimes_tuesdaystart.substring(0,5)+" ~ "+data.opentimes_opentimes_tuesdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Mi</span> <p>";
+                    if(data.winter_wednessday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.opentimes_opentimes_wednesdaystart.substring(0,5)+" ~ "+data.opentimes_opentimes_wednesdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Do</span> <p>";
+                    if(data.winter_thursday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.opentimes_opentimes_thursdaystart.substring(0,5)+" ~ "+data.opentimes_opentimes_thursdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Fr</span> <p>";
+                    if(data.winter_friday_cloas == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.opentimes_opentimes_fridaystart.substring(0,5)+" ~ "+data.opentimes_opentimes_fridayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>Sa</span> <p>";
+                    if(data.winter_saturday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.opentimes_opentimes_saturdaystart.substring(0,5)+" ~ "+data.opentimes_opentimes_saturdayend.substring(0,5);
+                    }
+                    open_time += "</p><br><span>So</span> <p>";
+                    if(data.winter_sunday_close == 1){
+                        open_time += "<span class='badge badge-danger'>CLOSE</span>";
+                    }else {
+                        open_time += data.opentimes_opentimes_sundaystart.substring(0,5)+" ~ "+data.opentimes_opentimes_sundayend.substring(0,5);
+                    }
+                    open_time += "</p></div></div>";
+                    $('.card-body').html(html_main_info+"<hr>"+open_time);
+                    if(collapse_flag==false){
+                        collapse_flag = true;
+                        $('.list-icons-item').click();
+                    }
                 });
 
             })(marker, data);
@@ -50,9 +157,7 @@ $(document).ready(function () {
     //Center map and adjust Zoom based on the position of all markers.
     map.setCenter(latlngbounds.getCenter());
     map.fitBounds(latlngbounds);
-
-});
-
+}
 function Loader(val) {
     if (val == 0) {
         $('#status').fadeIn();
@@ -64,20 +169,47 @@ function Loader(val) {
         $('body').delay(50).css({ 'overflow': 'visible' });
     }
 }
-
+function getMerchantList() {
+    $.ajax({
+        url: host_url + '/Admin/getMerchantList',
+        type: 'get',
+        success: function(data) {
+            markers = data.list;
+            for (i = 0; i < markers.length; i++){
+                if(merchant_list_coordinates!="")merchant_list_coordinates += "$";
+                merchant_list_coordinates += markers[i].address_latitude + "," + markers[i].address_longitude;
+                searchResult[i] = true;
+            }
+            setMap();
+        }
+    }); 
+}
 function Bindzipcodedata() {
-    Loader(0);
     var zipcode = $("#txtzipcode").val();
+    if(zipcode==''){
+        for (i = 0; i < markers.length; i++){
+            searchResult[i] = true;
+        }
+        setMap();
+        return;
+    }
     var radious = $("#selectradious").val();
 
     $.ajax({
-        url: 'https://tyc.azurewebsites.net/Stocklist/Zipcodedata',
-        data: { zipcode: zipcode, postalcoderange: radious },
-        beforeSend: function () { },
-        success: function (response) {
-            $('#bindallmapdata').empty();
-            $('#bindallmapdata').append(response);
-            Loader(1);
+        url: host_url + '/Admin/searchFromCoordinate',
+        type: 'get',
+        data: "center_address="+zipcode+"&radius="+radious+"&list_coordinates="+merchant_list_coordinates,
+        success: function(data) {
+            if(data.result!='error'){
+            searchResult = data.result;
+            setMap();
+            }else{
+                new Noty({
+                    text: 'Please input correct address',
+                    type: 'warning',
+                    closeWith: ['button']
+                }).show();
+            }
         }
-    });
+    }); 
 }

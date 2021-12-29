@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
-from .models import Aspnetusers, Vehicleset, Vehicletypemaster, Users, Brandset, Vehicleimages, Campingplaces, CamperRegulationansmaster, Brandmodeltypeset, Aspnetroles, Salutationmaster, Aspnetuserroles, Merchants, Merchantbrands, Securitycompanies, Packagelist, Trackerlisitem, Trackercategory, Trackeritemimages, TblHeadercontent, Websitegraphics, TblTempsubscriptiongocardlessdata, Promotioncredit, TblCustomerreviewratting
+from .models import Aspnetusers, Vehicleset, Vehicletypemaster, Users, Brandset, Vehicleimages, Campingplaces, CamperRegulationansmaster, Brandmodeltypeset, Aspnetroles, Salutationmaster, Aspnetuserroles, Merchants, Merchantbrands, Securitycompanies, Packagelist, Trackerlisitem, Trackercategory, Trackeritemimages, TblHeadercontent, Websitegraphics, TblTempsubscriptiongocardlessdata, Promotioncredit, TblCustomerreviewratting, Billingaddressmaster, Shippingaddressmaster
 from django.db import connection
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -21,67 +21,239 @@ gmaps = googlemaps.Client(key="AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM")
 # Create your views here.
 
 def home(request):
-    return render(request, "home.html")
-
+    header_content = TblHeadercontent.objects.all()
+    graphics = Websitegraphics.objects.all()
+    packagelist = Packagelist.objects.all()
+    review_list = TblCustomerreviewratting.objects.all()
+    return render(request, "home.html",{"header_content":header_content[0],"graphics":graphics[0],"packagelist":packagelist,"review_list":review_list[:5]})
+def getMerchantList(request):
+    merchant = Merchants.objects.all().values()
+    return JsonResponse({'list':list(merchant)})
 def stocklist(request):
-    return render(request, "stocklist.html")
+    header_content = TblHeadercontent.objects.all()
+    return render(request, "stocklist.html",{"header_content":header_content[0]})
 
 def shop(request, id):
+    header_content = TblHeadercontent.objects.all()
+    tracker_list = Trackerlisitem.objects.all()
+    image_list = Trackeritemimages.objects.all()
     context = {
         "id":id,
+        "header_content":header_content[0],
+        "tracker_list":tracker_list,
+        "image_list":image_list
     }
     return render(request,"shop.html",context)
 def tracker(request, id):
+    if request.method == "POST":
+        if 'cart_list' not in request.session.keys():
+            request.session['cart_list'] = []
+        saveCartQty(request, id, int(request.POST['qty']))
+        return redirect('/Cart')
+    header_content = TblHeadercontent.objects.all()
+    tracker = Trackerlisitem.objects.get(id=id)
+    image_list = Trackeritemimages.objects.filter(trackerid=id)
+    tracker_category = Trackercategory.objects.get(id=tracker.trackercategory)
     context = {
         "id":id,
+        "tracker":tracker,
+        "image_list":image_list,
+        "header_content":header_content[0],
+        "tracker_category":tracker_category
     }
     return render(request,"tracker.html",context)
 def cart(request):
-    return render(request,"cart.html")
-def login(request):
-    return render(request,"login.html")
-def subscription(request):
-    return render(request,"subscription.html")
-def contactus(request):
-    return render(request,"contactUs.html")
-
+    if 'cart_list' not in request.session.keys():
+        request.session['cart_list'] = []
+    tracker = get_list_from_sql("select trackerlisitem.Id as id, trackerlisitem.Articlenumber as articlenumber, trackerlisitem.Trackername as trackername, trackerlisitem.DicountPrice as price, trackercategory.Tracker_Category as categoryname, trackeritemimages.Imagename as img from trackerlisitem left join trackercategory on trackercategory.Id = trackerlisitem.TrackerCategory left join trackeritemimages on trackeritemimages.Id = (select Id from trackeritemimages where TrackerId = trackerlisitem.Id limit 1)")
+    header_content = TblHeadercontent.objects.all()
+    return render(request,"cart.html",{"tracker_list":tracker,"cart_list":request.session['cart_list'],"header_content":header_content[0]})
+def checkoutAddress(request):
+    if request.method == "POST":
+        try:
+            result = Billingaddressmaster.objects.get(userid=request.session['user_id'])
+        except:
+            result = Billingaddressmaster()
+            result.id = Billingaddressmaster.objects.latest('id').id
+        result.userid = request.session['user_id']
+        result.salutation = request.POST['Billing_salutation']
+        result.firstname = request.POST['Billing_Firstname']
+        result.lastname = request.POST['Billing_Lastname']
+        result.email = request.POST['Billing_ShopEmail']
+        result.phoneno = request.POST['Billing_ShopPhoneno']
+        result.company = request.POST['Billing_Company']
+        result.company_addition = request.POST['Billing_Company_Addition']
+        result.road = request.POST['Billing_Road']
+        result.housenumber = request.POST['Billing_HouseNumber']
+        result.additionaladdress = request.POST['Billing_Additionaladdress']
+        result.country = request.POST['Billing_Country']
+        result.state = request.POST['Billing_State']
+        result.postcode = request.POST['Billing_Postcode']
+        result.place = request.POST['Billing_place']
+        result.vatnumber = request.POST['Billing_VATnumber']
+        result.save()
+        try:
+            s_result = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
+        except:
+            s_result = Shippingaddressmaster()
+            s_result.id = Shippingaddressmaster.objects.latest('id').id
+        if request.POST['Issameshipaddress'] == "true":
+            s_result.userid = request.session['user_id']
+            s_result.salutation = request.POST['Billing_salutation']
+            s_result.firstname = request.POST['Billing_Firstname']
+            s_result.lastname = request.POST['Billing_Lastname']
+            s_result.email = request.POST['Billing_ShopEmail']
+            s_result.phoneno = request.POST['Billing_ShopPhoneno']
+            s_result.company = request.POST['Billing_Company']
+            s_result.company_addition = request.POST['Billing_Company_Addition']
+            s_result.road = request.POST['Billing_Road']
+            s_result.housenumber = request.POST['Billing_HouseNumber']
+            s_result.additionaladdress = request.POST['Billing_Additionaladdress']
+            s_result.country = request.POST['Billing_Country']
+            s_result.state = request.POST['Billing_State']
+            s_result.postcode = request.POST['Billing_Postcode']
+            s_result.place = request.POST['Billing_place']
+            s_result.vatnumber = request.POST['Billing_VATnumber']
+        else:
+            s_result.userid = request.session['user_id']
+            s_result.salutation = request.POST['Shiiping_salutation']
+            s_result.firstname = request.POST['Shiiping_Firstname']
+            s_result.lastname = request.POST['Shiiping_Lastname']
+            s_result.email = request.POST['Shipping_ShopEmail']
+            s_result.phoneno = request.POST['Shipping_ShopPhoneno']
+            s_result.company = request.POST['Shiiping_Company']
+            s_result.company_addition = request.POST['Shiiping_Company_Addition']
+            s_result.road = request.POST['Shiiping_Road']
+            s_result.housenumber = request.POST['Shiiping_HouseNumber']
+            s_result.additionaladdress = request.POST['Shiiping_Additionaladdress']
+            s_result.country = request.POST['Shiiping_Country']
+            s_result.state = request.POST['Shiiping_State']
+            s_result.postcode = request.POST['Shiiping_Postcode']
+            s_result.place = request.POST['Shiiping_place']
+        s_result.save()
+        return redirect('/Checkout/Checkoutconfirm')
+def checkoutConfirm(request):
+    header_content = TblHeadercontent.objects.all()
+    billing_address = Billingaddressmaster.objects.get(userid=request.session['user_id'])
+    shipping_address = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
+    return render(request,"checkoutconfirm.html",{"header_content":header_content[0],"billing_address":billing_address,"shipping_address":shipping_address})     
+def checkout(request):
+    header_content = TblHeadercontent.objects.all()
+    salutation_list = Salutationmaster.objects.all()
+    try:
+        billing_address = Billingaddressmaster.objects.get(userid=request.session['user_id'])
+        shipping_address = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
+        return render(request,"checkout.html",{"header_content":header_content[0],"billing_address":billing_address,"shipping_address":shipping_address,"salutation_list":salutation_list})
+    except:
+        return render(request,"checkout.html",{"header_content":header_content[0],"salutation_list":salutation_list})
+def removeCart(request):
+    temp_cartList = []
+    for cart in request.session['cart_list']:
+        if cart['product_id'] != int(request.POST['product_id']):
+            temp_cartList.append(cart)
+    request.session['cart_list'] = temp_cartList
+    request.session.modified = True
+    return JsonResponse({'result':'success'})
+def saveCartQty(request,product_id, qty):
+    temp_cartList = []
+    exist_flag = False
+    for cart in request.session['cart_list']:
+        if cart['product_id'] == product_id:
+            cart['qty'] = qty
+            exist_flag = True
+        temp_cartList.append(cart)
+    if exist_flag == False:
+        temp_cartList.append({"product_id":product_id,"qty":qty})
+    request.session['cart_list'] = temp_cartList
+    request.session.modified = True
+    print(request.session['cart_list'])
+def setCartQty(request):
+    saveCartQty(request, int(request.POST['product_id']), int(request.POST['qty']))
+    return JsonResponse({'result':'success'})
 def login(request):
     if "user_id" in request.session:
+        if request.session['user_role'] == "Admin":
+            return redirect('/Admin')
+        else:
+            return redirect('/')
+    if request.method == 'POST':
+        try:
+            aspuser = Aspnetusers.objects.get(email=request.POST["Username"])
+            if check_password(aspuser.passwordhash, request.POST['Password']):
+                user_role = get_list_from_sql("select RoleId as roleid from aspnetuserroles where UserId = '"+aspuser.id+"'")
+                role = Aspnetroles.objects.get(id=user_role[0]['roleid'])
+                request.session['user_id'] = aspuser.id
+                request.session['login_status'] = True
+                request.session['user_role'] = role.name
+                if request.session['user_role'] == "Admin":
+                    return redirect('/Admin')
+                else:
+                    return redirect('/')
+        except:
+            return redirect('/Login')
+    return render(request,"login.html")
+def subscription(request):
+    header_content = TblHeadercontent.objects.all()
+    packagelist = Packagelist.objects.all()
+    tracker_list = Trackerlisitem.objects.all()
+    image_list = Trackeritemimages.objects.all()
+    return render(request,"subscription.html",{"header_content":header_content[0],"packagelist":packagelist,"tracker_list":tracker_list,"image_list":image_list})
+def contactus(request):
+    return render(request,"contactUs.html")
+def conditions(request):
+    header_content = TblHeadercontent.objects.all()
+    return render(request,"conditions.html",{"header_content":header_content[0]})
+def privacypolicy(request):
+    header_content = TblHeadercontent.objects.all()
+    return render(request,"privacypolicy.html",{"header_content":header_content[0]})
+def imprint(request):
+    header_content = TblHeadercontent.objects.all()
+    return render(request,"imprint.html",{"header_content":header_content[0]})
+def admin_login(request):
+    if "user_id" in request.session and "user_role" in request.session and request.session['user_role']=="Admin":
         return redirect('/Admin')
     if request.method == 'POST':
-        aspuser = Aspnetusers.objects.get(email=request.POST["email"])
-        if check_password(aspuser.passwordhash, request.POST['password']):
-            user_role = get_list_from_sql("select RoleId as roleid from aspnetuserroles where UserId = '"+aspuser.id+"'")
-            role = Aspnetroles.objects.get(id=user_role[0]['roleid'])
-            if role.name == "Admin":
-                request.session['user_id'] = aspuser.id
-                return redirect('/Admin')
+        try:
+            aspuser = Aspnetusers.objects.get(email=request.POST["email"])
+            if check_password(aspuser.passwordhash, request.POST['password']):
+                user_role = get_list_from_sql("select RoleId as roleid from aspnetuserroles where UserId = '"+aspuser.id+"'")
+                role = Aspnetroles.objects.get(id=user_role[0]['roleid'])
+                if role.name == "Admin":
+                    request.session['user_id'] = aspuser.id
+                    request.session['user_role'] = role.name
+                    request.session['login_status'] = True
+                    return redirect('/Admin')
+        except:
+            return redirect('/Admin/Login')
     return render(request,"admin/login.html",{"url":'login'})
 def logout(request):
     try:
         del request.session['user_id']
+        del request.session['user_role']
+        del request.session['login_status']
+        del request.session['cart_list']
     except KeyError:
         pass
     return redirect('/Admin')
 def admin(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or "user_role" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     users = get_list_from_sql("select count(*) as count from users inner join aspnetusers on users.UserID = aspnetusers.Id")
     vehicle_count = Vehicleset.objects.count()
     campingsite_count = Campingplaces.objects.count()
     return render(request,"admin/home.html",{ "user_count": users[0]['count'], "vehicle_count": vehicle_count, "campingsite_count": campingsite_count, "url":"admin"})
 def manageTrackerAlarm(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     alarm_list = get_list_from_sql("select trackeralarms.Location_Date, trackeralarms.Location_time, trackeralarms.Command, trackeralarms.Response, trackeralarms.CommandStatus, new.LicensePlate, new.Firstname, new.Lastname from trackeralarms inner join (select vehicleset.LicensePlate, users.Firstname, users.Lastname, vehicleset.TrackerId from vehicleset left join users on users.ID = vehicleset.UserId) as new on trackeralarms.TrackerID = new.TrackerID order by trackeralarms.ID desc")
     return render(request,"admin/manageTrackerAlarm.html",{"alarm_list":alarm_list, "url":"manageTrackerAlarm"})
 def manageVehicles(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     vehicle_list = get_list_from_sql("select vehicletypemaster.VehicleType, brandset.Name, vehicleset.ModelTypeName, vehicleset.Color, users.Firstname, users.Lastname, vehicleset.LicensePlate, vehicleset.BuildingYear, vehicleset.id, vehicleset.Istrackerconfiguration, vehicleset.Isgeofanceactive, vehicleset.Isoverspeedactive, vehicleset.Islowbatteryactive, vehicleset.Ispoweroffactive from vehicleset left join vehicletypemaster on vehicleset.VehicleType = vehicletypemaster.Id left join brandset on brandset.Id = vehicleset.BrandId left join users on users.ID = vehicleset.UserId")
     return render(request,"admin/manageVehicles.html", {"vehicle_list":vehicle_list, "url":"manageVehicles"})
 def manageVehicleEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         instance = Vehicleset.objects.get(id=id)
@@ -99,13 +271,13 @@ def manageVehicleEdit(request, id):
     brand_list = Brandset.objects.all()
     return render(request,"admin/manageVehicleCreate.html",{"vehicle_info":vehicle_info,"type_list":vehicle_type_list,"user_list":user_list,"brand_list":brand_list, "url":"manageVehicles"})
 def manageVehicleDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     vehicle_info = Vehicleset.objects.get(id=id)
     vehicle_info.delete()
     return JsonResponse({'result':'success'})
 def manageVehicleImageUpload(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST' and request.FILES['image']:
         myfile = request.FILES['image']
@@ -127,7 +299,7 @@ def manageVehicleImageUpload(request, id):
             return JsonResponse({'result':'success','image_id':Vehicleimages.objects.latest('id').id})
     return JsonResponse({'result':'fail','message':'Datei ist nicht vorhanden.'})
 def manageVehicleDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     vehicle_info = get_list_from_sql("select vehicletypemaster.VehicleType as type_name, brandset.Name, vehicleset.*, users.Firstname, users.Lastname, vehicleimages.Image as img_name from vehicleset left join vehicletypemaster on vehicleset.VehicleType = vehicletypemaster.Id left join brandset on brandset.Id = vehicleset.BrandId left join users on users.ID = vehicleset.UserId left join vehicleimages on vehicleset.ImageId = vehicleimages.Id where vehicleset.id = " + str(id))
     # print(vehicle_info[0])
@@ -138,7 +310,7 @@ def saveModelId(model, brandId):
         new_model = Brandmodeltypeset(brandid=brandId, name=model)
         new_model.save()
 def manageVehicleCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         form = VehicleForm(request.POST)
@@ -151,27 +323,27 @@ def manageVehicleCreate(request):
     brand_list = Brandset.objects.all()
     return render(request,"admin/manageVehicleCreate.html",{"type_list":vehicle_type_list,"user_list":user_list,"brand_list":brand_list, "url":"manageVehicles"})
 def manageTrackerLocationHistory(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     return render(request,"admin/manageTrackerLocationHistory.html", {"url":"manageTrackerLocationHistory"})
 def manageBrands(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     brand_list = get_list_from_sql("select brandset.Name, brandset.Id, brand_model.count as Count from brandset left join (select count(BrandId) as count, BrandId from brandmodeltypeset group by BrandId) as brand_model on brand_model.BrandId = brandset.Id")
     return render(request,"admin/manageBrands.html",{"brand_list":brand_list, "url":"manageBrands"})
 def getModelList(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     model_list = Brandmodeltypeset.objects.filter(brandid=id).values()
     return JsonResponse({"result":list(model_list)})
 def manageBrandDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     brand_info = Brandset.objects.get(id=id)
     model_list = get_list_from_sql("select * from brandmodeltypeset where BrandId =" + str(id))
     return render(request,"admin/manageBrandDetail.html",{"brand_info":brand_info,"model_list":model_list, "brand_id":id, "url":"manageBrands"})
 def manageBrandEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         instance = Brandset.objects.get(id=id)
@@ -182,19 +354,19 @@ def manageBrandEdit(request, id):
     brand_info = Brandset.objects.get(id=id)
     return render(request,"admin/manageBrandCreate.html",{"brand_info":brand_info, "url":"manageBrands"})
 def manageBrandDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     brand = Brandset.objects.get(id=id)
     brand.delete()
     return JsonResponse({'result':'success'})
 def modelDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     model = Brandmodeltypeset.objects.get(id=id)
     model.delete()
     return JsonResponse({'result':'success'})
 def manageBrandCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         form = BrandForm(request.POST)
@@ -206,25 +378,25 @@ def manageBrandCreate(request):
             print(forms.errors())
     return render(request,"admin/manageBrandCreate.html",{"url":"manageBrands"})
 def manageCampingPlace(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     campingPlace_list = get_list_from_sql("select campingplaces.ID, campingplaces.Name, campingplaces.address_city, campingplaces.address_road, campingplaces.address_degreeoflatitude, campingplaces.address_degreeoflongitude, users.Firstname, users.Lastname from campingplaces left join users on users.id = campingplaces.QwnerId order by campingplaces.ID")
     return render(request,"admin/manageCampingPlace.html",{"campingplace_list":campingPlace_list, "url":"manageCampingPlace"})
 def manageCampingPlaceDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     campingplace = Campingplaces.objects.get(id=id)
     campingplace.delete()
     return JsonResponse({'result':'success'})
 def manageCampingPlaceDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     campingplace_info = Campingplaces.objects.get(id=id)
     print(campingplace_info.qwnerid)
     user_info = Users.objects.get(id=campingplace_info.qwnerid)
     return render(request,"admin/manageCampingPlaceDetail.html",{"campingplace_info":campingplace_info,"user_info":user_info, "url":"manageCampingPlace"})
 def manageCampingPlaceEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         instance = Campingplaces.objects.get(id=id)
@@ -239,7 +411,7 @@ def manageCampingPlaceEdit(request, id):
     campingplace_info = Campingplaces.objects.get(id=id)
     return render(request,"admin/manageCampingPlaceCreate.html",{"campingplace_info":campingplace_info,"camping_status":camping_status,'user_list':user_list,"url":"manageCampingPlace"})
 def manageCampingPlaceCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         form = CampingplaceForm(request.POST)
@@ -250,11 +422,11 @@ def manageCampingPlaceCreate(request):
     user_list = Users.objects.all()
     return render(request,"admin/manageCampingPlaceCreate.html", {"camping_status":camping_status,'user_list':user_list,"url":"manageCampingPlace"})
 def manageOrders(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     return render(request,"admin/manageOrders.html",{"url":"manageOrders"})
 def manageuser(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     users = get_list_from_sql("select users.UserID as id, users.Firstname as firstname, users.Lastname as lastname, users.Email as email, campingplaces.Name as campingsite_name, GROUP_CONCAT(aspnetroles.Name) as role_name, users.DOB as birthday, aspnetusers.LockoutEnabled as lock_status, aspnetuserroles.RoleId as role_id from users inner join aspnetusers on users.UserID = aspnetusers.Id left join aspnetuserroles on aspnetuserroles.UserId = users.UserID left join aspnetroles on aspnetuserroles.RoleId like CONCAT('%', CONCAT(aspnetroles.Id, '%')) left join campingplaces on users.ResponsibleForCampingPlaceId = campingplaces.ID group by id, firstname, lastname, email, campingsite_name, birthday, lock_status, role_id, users.ID order by users.ID desc")
     admin_users = get_list_from_sql("select count(*) as count from users inner join aspnetusers on users.UserID = aspnetusers.Id left join aspnetuserroles on aspnetuserroles.UserId = users.UserID left join aspnetroles on aspnetuserroles.RoleId like CONCAT('%', CONCAT(aspnetroles.Id, '%')) where aspnetroles.Name like 'Admin'")
@@ -289,7 +461,7 @@ def check_password(hash, password):
     generated_hash = make_password(password)
     return hash == generated_hash
 def manageUserDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     aspuser = Aspnetusers.objects.get(id=id)
     aspuser.delete()
@@ -298,13 +470,13 @@ def manageUserDelete(request, id):
     execute_sql("Delete from aspnetuserroles where UserId like '" + id + "'")
     return JsonResponse({'result':'success'})
 def manageUserDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     user_info = get_list_from_sql("select users.ID as id, users.Firstname as firstname, users.Lastname as lastname, users.Email as email, users.Phoneno as phone, users.Address_City as city, users.Address_Country as country, users.Address_State as state, users.Address_Street as street, users.Address_Postal as postal, users.Address_Latitude as lat, users.Address_Longitude as lon, campingplaces.Name as campingsite_name, GROUP_CONCAT(aspnetroles.Name) as role_name, users.DOB as birthday, aspnetusers.LockoutEnabled as lock_status, aspnetuserroles.RoleId as role_id, salutationmaster.salutation as salutation from users inner join aspnetusers on users.UserID = aspnetusers.Id left join aspnetuserroles on aspnetuserroles.UserId = users.UserID left join aspnetroles on aspnetuserroles.RoleId like CONCAT('%', CONCAT(aspnetroles.Id, '%')) left join campingplaces on users.ResponsibleForCampingPlaceId = campingplaces.ID left join salutationmaster on salutationmaster.ID = users.salutation where users.UserID like '"+ id +"' group by id, firstname, lastname, email, phone, city, country, state, street, postal, lat, lon, campingsite_name, birthday, lock_status, role_id, salutation")
     vehicle_list = get_list_from_sql("select vehicletypemaster.VehicleType as v_type, vehicleset.LicensePlate as license, vehicleset.Id as id from vehicleset left join vehicletypemaster on vehicletypemaster.Id = vehicleset.VehicleType where vehicleset.UserId = "+str(user_info[0]['id']))
     return render(request,"admin/manageUserDetail.html",{"user_info":user_info[0], "vehicle_list":vehicle_list, "user_id":id,"url":"manageUser"})
 def manageUserChangePassword(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         aspuser = Aspnetusers.objects.get(id=id)
@@ -314,7 +486,7 @@ def manageUserChangePassword(request, id):
     user_info = Users.objects.get(userid=id)
     return render(request,"admin/manageUserChangePassword.html",{'user_info':user_info,"url":"manageUser"})
 def manageUserEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         aspuser = Aspnetusers.objects.get(id=id)
@@ -347,7 +519,7 @@ def manageUserEdit(request, id):
     role_list = Aspnetroles.objects.all()
     return render(request,"admin/manageUserCreate.html",{"salutation_list":salutation_list,"campingsite_list":campingsite_list,"role_list":role_list,"user_info":user_info[0],"url":"manageUser"})
 def manageUserCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         new_user = Users(salutation=request.POST['salutation'],firstname=request.POST['firstname'],lastname=request.POST['lastname'],email=request.POST['email'],phoneno=request.POST['phoneno'],dob=request.POST['dob'],responsibleforcampingplaceid=request.POST['responsibleforcampingplaceid'], address_city=request.POST['address_city'],address_country=request.POST['address_country'],address_street=request.POST['address_street'],address_postal=request.POST['address_postal'],address_state=request.POST['address_state'],address_latitude=request.POST['address_latitude'],address_longitude=request.POST['address_longitude'],createdon=datetime.datetime.now())
@@ -367,58 +539,53 @@ def manageUserCreate(request):
     role_list = Aspnetroles.objects.all()
     return render(request,"admin/manageUserCreate.html",{"salutation_list":salutation_list,"campingsite_list":campingsite_list,"role_list":role_list,"url":"manageUser"})
 def manageUserChangeRock(request, user_id, value):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     user = Aspnetusers.objects.get(id=user_id)
     user.lockoutenabled = value
     user.save()
     return JsonResponse({'result':'success'})
 def manageMerchant(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     merchant_list = Merchants.objects.all()
     return render(request,"admin/manageMerchant.html",{"merchant_list":merchant_list,"url":"manageMerchant"})
 def manageMerchantChangeActiveStatus(request, merchant_id, value):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     merchant = Merchants.objects.get(id=merchant_id)
     merchant.isactive = value
     merchant.save()
     return JsonResponse({'result':'success'})
 def getIncludingStatus(lat1, lng1, lat2, lng2, radius):
-    # distance = math.acos(math.sin(float(lat1)) *  math.sin(float(lat2)) + math.cos(float(lat1)) * math.cos(float(lat2)) * math.cos(float(lng2) - float(lng1))) * 6371
-    R = 6373.0
-    lat1 = math.radians(float(lat1))
-    lon1 = math.radians(float(lng1))
-    lat2 = math.radians(float(lat2))
-    lon2 = math.radians(float(lng2))
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    distance = R * c
+    
+    distance_ = gmaps.distance_matrix([str(lat1) + " " + str(lng1)], [str(lat2) + " " + str(lng2)], mode='walking')['rows'][0]['elements'][0]
+    distance = distance_['distance']['value']/ 1000
     print(distance)
     return distance < float(radius)
 def searchFromCoordinate(request):
     loc = gmaps.geocode(request.GET["center_address"].replace("+"," "))
-    response = loc[0]['geometry']['location'] 
-    coordinate_list = request.GET["list_coordinates"].split("$")
-    result = []
-    for coordinate in coordinate_list:
-        latLng = coordinate.split(",")
-        if latLng[0]=="None" or latLng[1]=="None":
-            result.append(False)
-        else:
-            result.append(getIncludingStatus(response["lat"],response["lng"],latLng[0],latLng[1],request.GET['radius']))
-    return JsonResponse({'result':result})
+    try:
+        response = loc[0]['geometry']['location'] 
+        coordinate_list = request.GET["list_coordinates"].split("$")
+        result = []
+        for coordinate in coordinate_list:
+            latLng = coordinate.split(",")
+            if latLng[0]=="None" or latLng[1]=="None":
+                result.append(False)
+            else:
+                result.append(getIncludingStatus(response["lat"],response["lng"],latLng[0],latLng[1],request.GET['radius']))
+        return JsonResponse({'result':result})
+    except:
+        return JsonResponse({'result':'error'})
 def manageMerchantDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     merchant = Merchants.objects.get(id=id)
     merchant.delete()
     return JsonResponse({'result':'success'})
 def manageMerchantDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     merchant_info = Merchants.objects.get(id=id)
     user_info = Users.objects.get(id=merchant_info.userid)
@@ -426,7 +593,7 @@ def manageMerchantDetail(request, id):
     merchant_brands = get_list_from_sql("select GROUP_CONCAT(BrandId) as brands from merchantbrands where MerchantId = "+str(id)+" group by MerchantId")
     return render(request,"admin/manageMerchantDetail.html",{"merchant_info":merchant_info,"user_info":user_info,"brand_list":brand_list,"merchant_brands":merchant_brands[0]['brands'],"url":"manageMerchant"})
 def manageMerchantEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         instance = Merchants.objects.get(id=id)
@@ -447,7 +614,7 @@ def manageMerchantEdit(request, id):
     brand_list = Brandset.objects.all()
     return render(request,"admin/manageMerchantCreate.html",{"merchant_info":merchant_info,"user_list":user_list,"brand_list":brand_list,"merchant_brands":merchant_brands[0]['brands'],"url":"manageMerchant"})
 def manageMerchantCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         form = MerchantForm(request.POST)
@@ -464,18 +631,18 @@ def manageMerchantCreate(request):
     brand_list = Brandset.objects.all()
     return render(request,"admin/manageMerchantCreate.html",{"user_list":user_list,"brand_list":brand_list,"url":"manageMerchant"})
 def manageSecurityCompany(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     company_list = get_list_from_sql("select securitycompanies.*, users.Firstname, users.Lastname from securitycompanies left join users on users.ID = securitycompanies.OwnerId")
     return render(request,"admin/manageSecurityCompany.html",{"security_company_list":company_list,"url":"manageSecurityCompany"})
 def manageSecurityCompanyDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     company_info = Securitycompanies.objects.get(id=id)
     user_info = Users.objects.get(id=company_info.ownerid)
     return render(request,"admin/manageSecurityCompanyDetail.html",{"user_info":user_info,"company_info":company_info,"url":"manageSecurityCompany"})
 def manageSecurityCompanyEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         instance = Securitycompanies.objects.get(id=id)
@@ -487,7 +654,7 @@ def manageSecurityCompanyEdit(request, id):
     company_info = Securitycompanies.objects.get(id=id)
     return render(request,"admin/manageSecurityCompanyCreate.html",{"user_list":user_list,"company_info":company_info,"url":"manageSecurityCompany"})
 def manageSecurityCompanyCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         form = SecurityCompanyForm(request.POST)
@@ -499,13 +666,13 @@ def manageSecurityCompanyCreate(request):
     user_list = Users.objects.all()
     return render(request,"admin/manageSecurityCompanyCreate.html",{"user_list":user_list,"url":"manageSecurityCompany"})
 def manageSecurityCompanyDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     company_info = Securitycompanies.objects.get(id=id)
     company_info.delete()
     return JsonResponse({'result':'success'})
 def manageSubscriptionEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         instance = Packagelist.objects.get(id=id)
@@ -518,12 +685,12 @@ def manageSubscriptionEdit(request, id):
     subscription_info = Packagelist.objects.get(id=id)
     return render(request,"admin/manageSubscriptionCreate.html",{"subscription_info":subscription_info,"url":"manageSubscriptions"})
 def manageSubscriptionDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     subscription_info = Packagelist.objects.get(id=id)
     return render(request,"admin/manageSubscriptionDetail.html",{"subscription_info":subscription_info,"url":"manageSubscriptions"})
 def manageSubscriptionCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         form = PackagelistForm(request.POST)
@@ -534,34 +701,34 @@ def manageSubscriptionCreate(request):
             print(form.errors)
     return render(request,"admin/manageSubscriptionCreate.html",{"url":"manageSubscriptions"})
 def manageSubscriptions(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     subscription_list = Packagelist.objects.all()
     return render(request, "admin/manageSubscriptions.html",{"subscription_list":subscription_list,"url":"manageSubscriptions"})
 def manageSubscriptionChangeActiveStatus(request, id, value):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     subscription = Packagelist.objects.get(id=id)
     subscription.isactive = value
     subscription.save()
     return JsonResponse({'result':'success'})
 def manageSubscriptionDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     subscription = Packagelist.objects.get(id=id)
     subscription.delete()
     return JsonResponse({'result':'success'})
 def manageSubscriptionInvoice(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     return render(request,"admin/manageSubscriptionInvoice.html",{"url":"manageSubscriptionInvoice"})
 def manageTracker(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     tracker_list = get_list_from_sql("select trackerlisitem.Id as id, trackercategory.Tracker_Category as category_name, trackerlisitem.Trackername as tracker_name, trackerlisitem.Articlenumber as article_number, trackerlisitem.Price as price, trackerlisitem.DicountPrice as discount_price, trackerlisitem.Isactive as isactive from trackerlisitem left join trackercategory on trackerlisitem.TrackerCategory = trackercategory.Id order by id")
     return render(request,"admin/manageTracker.html",{"tracker_list":tracker_list,"url":"manageTracker"})
 def manageTrackerImageUpload(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST' and request.FILES['image']:
         myfile = request.FILES['image']
@@ -577,14 +744,14 @@ def manageTrackerImageUpload(request, id):
         return JsonResponse({'result':'success','image_name':new_name,'image_id':Trackeritemimages.objects.latest('id').id})
     return JsonResponse({'result':'fail','message':'Datei ist nicht vorhanden.'})
 def manageTrackerImageDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     image = Trackeritemimages.objects.get(id=id)
     image.delete()
     return JsonResponse({'result':'success'})
 
 def manageTrackerEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         instance = Trackerlisitem.objects.get(id=id)
@@ -599,7 +766,7 @@ def manageTrackerEdit(request, id):
     tracker_images = Trackeritemimages.objects.filter(trackerid=id)
     return render(request,"admin/manageTrackerCreate.html",{"category_list":category_list,"tracker_info":tracker,"tracker_images":tracker_images,"url":"manageTracker"})
 def manageTrackerCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         form = TrackerForm(request.POST)
@@ -611,32 +778,32 @@ def manageTrackerCreate(request):
     category_list = Trackercategory.objects.all()
     return render(request,"admin/manageTrackerCreate.html",{"category_list":category_list,"url":"manageTracker"})
 def manageTrackerDetail(request,id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     tracker = Trackerlisitem.objects.get(id=id)
     category_info = Trackercategory.objects.get(id=tracker.trackercategory)
     tracker_images = Trackeritemimages.objects.filter(trackerid=id)
     return render(request,"admin/manageTrackerDetail.html",{"category_name":category_info.tracker_category,"tracker_info":tracker,"tracker_images":tracker_images,"url":"manageTracker"})
 def manageTrackerChangeActiveStatus(request, id, value):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     tracker = Trackerlisitem.objects.get(id=id)
     tracker.isactive = value
     tracker.save()
     return JsonResponse({'result':'success'})
 def manageTrackerDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     tracker = Trackerlisitem.objects.get(id=id)
     tracker.delete()
     return JsonResponse({'result':'success'})
 def shopCategory(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     category_list = Trackercategory.objects.all()
     return render(request, "admin/shopCategory.html",{"category_list":category_list,"url":"shopCategory"})
 def shopCategorySubmit(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.GET["id"] == 'new':
         category = Trackercategory(tracker_category=request.GET["name"], isactive=request.GET["isactive"])
@@ -649,17 +816,17 @@ def shopCategorySubmit(request):
         category.save()
         return JsonResponse({'result':'success','type':'update'})
 def shopCategoryDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     category = Trackercategory.objects.get(id=id)
     category.delete()
     return JsonResponse({'result':'success'})
 def manageForms(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     return render(request,"admin/manageForms.html",{"url":"manageForms"})
 def manageCustomerServicedata(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         if request.POST["id"] != "":
@@ -684,7 +851,7 @@ def saveFile(file):
     filename = fs.save("static_in_env/upload/"+new_name, file)
     return new_name
 def manageCustomerGraphics(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         if "banner_image1" in request.FILES: banner_image1 = request.FILES['banner_image1']
@@ -712,13 +879,13 @@ def manageCustomerGraphics(request):
     else:
         return render(request, "admin/manageCustomerGraphics.html",{"url":"manageCustomerGraphics"})
 def managePromotionCredit(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     subscriptionList = get_list_from_sql("select s.Firstname as firstname, s.Surname as surname, s.Country as country, s.City as city, s.RegEmail as regemail, s.RegPhoneno as regphoneno, s.Id as id from tbl_tempsubscriptiongocardlessdata as s where id not in (select SubscriptionId from promotioncredit)")
     promotionCreditList = get_list_from_sql("select u.Firstname as firstname, u.Lastname as surname, p.CreditAmt as credit, p.DebitAmt as debit, p.Id as id from promotioncredit as p left join users as u on p.UserId = u.ID")
     return render(request,"admin/managePromotionCredit.html",{"subscription_list":subscriptionList,"promotion_list":promotionCreditList,"url":"managePromotionCredit"})
 def managePromotionCreditCreate(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == "POST":
         promotion_subscription = TblTempsubscriptiongocardlessdata(firstname=request.POST['firstname'],surname=request.POST['surname'],regemail=request.POST['regemail'],regphoneno=request.POST["regphoneno"],country=request.POST['country'],city=request.POST['city'])
@@ -730,7 +897,7 @@ def managePromotionCreditCreate(request):
     user_list = Users.objects.all()
     return render(request,"admin/managePromotionCreditEdit.html",{"user_list":user_list,"url":"managePromotionCredit"})
 def managePromotionCreditEdit(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == "POST":
         promotion_credit = Promotioncredit(userid=request.POST['userid'],subscriptionid=id,creditamt=request.POST["credit"],debitamt=0)
@@ -740,43 +907,43 @@ def managePromotionCreditEdit(request, id):
     user_list = Users.objects.all()
     return render(request,"admin/managePromotionCreditEdit.html",{"promotion_info":promotion_info,"user_list":user_list,"url":"managePromotionCredit"})
 def managePromotionCreditSubscriptionDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     subscription = TblTempsubscriptiongocardlessdata.objects.get(id=id)
     subscription.delete()
     return JsonResponse({'result':'success'})
 def managePromotionCreditDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     promotion_credit = Promotioncredit.objects.get(id=id)
     promotion_credit.delete()
     return JsonResponse({'result':'success'})
 def reviewratting(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     review_list = TblCustomerreviewratting.objects.all()
     return render(request,"admin/reviewratting.html",{"review_list":review_list,"url":"reviewratting"})
 def reviewRattingDelete(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     review_info = TblCustomerreviewratting.objects.get(id=id)
     review_info.delete()
     return JsonResponse({'result':'success'})
 def reviewRattingDetail(request, id):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     review_info = TblCustomerreviewratting.objects.get(id=id)
     return render(request,"admin/reviewRattingDetail.html",{"review_info":review_info,"url":"reviewratting"})
 
 def reviewRattingChangeLockStatus(request, id, value):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     review_info = TblCustomerreviewratting.objects.get(id=id)
     review_info.isdisplay = value
     review_info.save()
     return JsonResponse({'result':'success'})
 def termsOfService(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         if request.POST["id"] != "":
@@ -796,7 +963,7 @@ def termsOfService(request):
     else:
         return render(request, "admin/termsOfService.html",{"url":"termsOfService"})
 def adminPrivacypolicy(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         if request.POST["id"] != "":
@@ -816,7 +983,7 @@ def adminPrivacypolicy(request):
     else:
         return render(request, "admin/adminPrivacypolicy.html",{"url":"privacypolicy"})
 def adminImprint(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
         if request.POST["id"] != "":
@@ -836,7 +1003,7 @@ def adminImprint(request):
     else:
         return render(request, "admin/adminImprint.html",{"url":"imprint"})
 def adminChangePassword(request):
-    if "user_id" not in request.session:
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == "POST":
         current_user = Aspnetusers.objects.get(id=request.session['user_id'])

@@ -97,3 +97,6 @@ hr {
     margin-right: 4px;
     margin-bottom: 10px;
 }
+.media-link img {
+    width: 100px;
+}

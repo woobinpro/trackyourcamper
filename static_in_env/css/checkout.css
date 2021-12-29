@@ -1,0 +1,147 @@
+.navbar {
+    position:  relative !important;
+    background-color: #30353b!important;
+}
+.ck-wizard {
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0px 0px 20px -4px rgb(0 0 0 / 30%);
+    padding: 0.75rem;
+}
+.ck-wizard > .steps {
+    margin: 20px 10px 0;
+    position: relative;
+    clear: both;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+}
+.ck-wizard > .steps > ul {
+    padding-left: 20px;
+    margin-left: 10px;
+}
+.ck-wizard > .steps > ul > li {
+    position: relative;
+}
+.ck-wizard > .actions > ul > li, .ck-wizard > .steps > ul > li {
+    float: left;
+    list-style: none !important;
+    padding: 0;
+    margin: 0;
+}
+.ck-wizard > .steps li .active {
+    background-color: #33363b;
+}
+.ck-wizard > .steps li .active {
+    color: #ffffff;
+}
+.ck-wizard > .steps a {
+    color: #333;
+    background-color: #eee;
+}
+.ck-wizard > .steps a {
+    position: relative;
+    display: block;
+    width: 85%;
+    margin-right: 30px;
+    padding: 10px;
+    float: left;
+    font-size: 14px;
+    line-height: 40px;
+    text-decoration: none;
+    transition: .1s;
+    font-weight: normal;
+}
+
+.ck-wizard > .steps a:after, .ck-wizard > .steps a:before {
+    width: 0;
+    height: 0;
+    position: absolute;
+    content: "";
+    top: 0;
+    transition: .1s;
+}
+.ck-wizard > .steps li .active:before {
+    border-bottom: 30px solid #33363b;
+    border-top: 30px solid #33363b;
+}
+.ck-wizard > .steps a:before {
+    border-top: 30px solid #eee;
+    border-bottom: 30px solid #eee;
+    border-left: 20px solid transparent;
+}
+.ck-wizard > .steps a:before {
+    left: -20px;
+}
+.ck-wizard > .steps li .active:after {
+    border-left: 20px solid #33363b;
+}
+.ck-wizard > .steps a:after {
+    border-top: 30px solid transparent;
+    border-bottom: 30px solid transparent;
+    border-left: 20px solid #eee;
+}
+.ck-wizard > .steps a:after {
+    right: -20px;
+}
+.ck-wizard > .steps li.current span {
+    color: #163038;
+    background-color: #FFF;
+    border-color: #33363b;
+}
+.ck-wizard > .steps li.current span, .ck-wizard > .steps li.current.error span {
+    text-shadow: none;
+    border: 2px solid;
+}
+.ck-wizard > .steps li span {
+    display: block;
+    float: left;
+    font-size: 14px;
+    text-align: center;
+    width: 26px;
+    margin: 5px 5px 5px 0;
+    line-height: 24px;
+    border: 2px solid;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+.ck-wizard > .tab-content {
+    display: block;
+    margin: 0 1%;
+    position: relative;
+    border: 1px solid #eeeeee;
+    padding: 0px 20px;
+    margin: 2em 1em;
+    text-align: left;
+    border-radius: 0px;
+}
+.panel-wrap {
+    padding: 15px 20px;
+}
+.next-step {
+    margin-bottom: 15px;
+}
+.address-card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    width: 90%;
+    margin: 25px auto;
+    padding:0.75rem;
+}
+.address-card .title {
+    margin-top:0.75rem;
+    font-weight: bold;
+    color: #f6ab36;
+}
+.address-card strong {
+    margin-right: 8px;
+}
+a {
+    color: #888;
+}
+a:hover {
+    color: #0088cc;
+}
+a.edit, a.edit:visited {
+    color: #f6ab36;
+}

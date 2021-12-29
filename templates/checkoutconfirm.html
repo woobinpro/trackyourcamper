@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% load mathfilters %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+<div class="container mt-5  mb-5">
+    <div class="row">
+        <div id="checkout-wizard" class="ck-wizard clearfix">
+            <div class="steps clearfix">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="col-xs-2 col-sm-3 col-md-5 col-lg-4 current ">
+                        <a href='/Checkout'>
+                            <span class="number">1</span> Rechnungs- und Lieferadresse
+                        </a>
+                    </li>
+                    <li role="presentation" class="col-xs-2 col-sm-3 col-md-5 col-lg-4">
+                        <a class="active">
+                            <span class="number">2</span> Versand und Zahlung
+                        </a>
+                    </li>
+                    <li role="presentation" class="col-xs-2 col-sm-3 col-md-5 col-lg-4">
+                        <a>
+                            <span class="number">3</span> Zusammenfassung
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="checkout-shipping-payment" class="row tab-pane active" role="tabpanel">
+                <div class="col-xs-6 col-lg-6">
+                    <div class='address-card'>
+                        <address>
+                            <p class="title">Rechnungsadresse:</p>
+                            <p class='salutation'>Herr</p>
+                            <p class='name'><strong>Vorname:</strong>{{ billing_address.firstname }}<strong class='ml-3'>Familienname:</strong>{{ billing_address.lastname }}</p>
+                            <p class='address'>{{ billing_address.housenumber }} {{ billing_address.road }} {{ billing_address.additionaladdress }} {{ billing_address.state }} {{ billing_address.country }} {{ billing_address.postcode }}</p>
+                            <p class='ort'><strong>Ort:</strong>{{ billing_address.place }}</p>
+                            <p class='firma'><strong>Firma:</strong>{{ billing_address.company }}</p>
+                            <p class="company"><strong>Firmen Zusatz:</strong>{{ billing_address.company_addition }}</p>
+                            <p class="vat"><strong>Steuernummer:</strong>{{ billing_address.vatnumber }}</p>
+                            <p class="phone"><strong>Telefon:</strong>{{ billing_address.phoneno }}</p>
+                            <a href="mailto:{{ billing_address.email }}">{{ billing_address.email }}</a>
+                        </address>
+                        <a class="edit" href="/Checkout">
+                            <i class="fas fa-pencil-alt "></i> Rechnungsadresse ändern
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-lg-6 text-right">
+                    <div class='address-card'>
+                        <address>
+                            <p class="title">Shipped To:</p>
+                            <p class='salutation'>Herr</p>
+                            <p class='name'><strong>Vorname:</strong>{{ shipping_address.firstname }}<strong class='ml-3'>Familienname:</strong>{{ shipping_address.lastname }}</p>
+                            <p class='address'>{{ shipping_address.housenumber }} {{ shipping_address.road }} {{ shipping_address.additionaladdress }} {{ shipping_address.state }} {{ shipping_address.country }} {{ shipping_address.postcode }}</p>
+                            <p class='ort'><strong>Ort:</strong>{{ shipping_address.place }}</p>
+                            <p class='firma'><strong>Firma:</strong>{{ shipping_address.company }}</p>
+                            <p class="company"><strong>Firmen Zusatz:</strong>{{ shipping_address.company_addition }}</p>
+                            <p class="vat"><strong>Steuernummer:</strong>{{ shipping_address.vatnumber }}</p>
+                            <p class="phone"><strong>Telefon:</strong>{{ shipping_address.phoneno }}</p>
+                            <a href="mailto:{{ shipping_address.email }}">{{ shipping_address.email }}</a>
+                        </address>
+                        <a class="edit" href="/Checkout">
+                            <i class="fas fa-pencil-alt "></i> Lieferadresse ändern
+                        </a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <hr>
+            <div id="payment_panel" class='pr-3 pl-3'>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <label class="radio-inline">
+                        <input type="radio" name="paymentprocessbind" value="0" checked="checked" onchange="bindpaymentprocessbind(0)"> Pay
+                    </label>
+                    <div class='manual-payment-panel pl-4 pr-4'>
+                        <h4 class='heading'>Wie möchten Sie bezahlen?</h4>
+                        <div id="accordion-group">
+							<div class="card mb-0 rounded-bottom-0">
+								<div class="card-header">
+									<h6 class="card-title">
+										<a data-toggle="collapse" class="text-default collapsed" href="#accordion-item-group1" aria-expanded="false"><i class="far fa-credit-card mr-3"></i> Kreditkarte</a>
+									</h6>
+								</div>
+
+								<div id="accordion-item-group1" class="collapse" data-parent="#accordion-group" style="">
+									<div class="card-body">
+										Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch.
+									</div>
+								</div>
+							</div>
+
+							<div class="card mb-0 rounded-top-0 border-top-0">
+								<div class="card-header">
+									<h6 class="card-title">
+										<a class="text-default collapsed" data-toggle="collapse" href="#accordion-item-group2" aria-expanded="false"><i class="fab fa-paypal mr-3"></i>PayPal</a>
+									</h6>
+								</div>
+
+								<div id="accordion-item-group2" class="collapse" data-parent="#accordion-group" style="">
+									<div class="card-body">
+										Тon cupidatat skateboard dolor brunch. Тesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda.
+									</div>
+								</div>
+							</div>
+						</div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-3">
+                    <label class="radio-inline">
+                        <input type="radio" name="paymentprocessbind" value="1" onchange="bindpaymentprocessbind(1)"> Lastschriftverfahren
+                    </label>
+
+                    <div class="col-sm-12" id="bindbanktransferbindinfo" style="display: none;">
+                        <div class="alert alert-info">
+                            <strong>Information</strong>
+                            <br> Klicken Sie auf Bezahlen um den Zahlungsvorgang abzuschließen
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}

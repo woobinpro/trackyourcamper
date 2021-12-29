@@ -3,13 +3,13 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/stocklist.css' %}">
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM&amp;sensor=false"></script>
-<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/common.js"></script>
+<!-- <script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/common.js"></script>
 <script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/util.js"></script>
 <script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/map.js"></script>
 <script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/marker.js"></script>
 <script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/onion.js"></script>
 <script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/infowindow.js"></script>
-<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/controls.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps-api-v3/api/js/46/9/controls.js"></script> -->
 <div class="container mt-5  mb-5">
     <div class="col-sm-12 text-center">
         <h3 class="page-heading">Händler</h3><div class="horizontal-break"></div>
@@ -24,6 +24,7 @@
         </div>
         <div class="col-sm-3 mt-2">
             <select class="form-control" id="selectradious" name="selectradious">
+                <option value="10">&lt; 10 km</option>
                 <option value="20">&lt; 20 km</option>
                 <option selected="selected" value="50">&lt; 50 km</option>
                 <option value="100">&lt; 100 km</option>
@@ -35,9 +36,23 @@
         
         <div class="col-sm-12 pt-5">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-7 wide" id='map_div'>
                     <div id="mapContainer">
-                        <div id="dvMap" style="height: 500px; max-width: 100%; margin: 0 auto;"></div>
+                        <div id="dvMap" style="height: 600px; max-width: 100%; margin: 0 auto;"></div>
+                    </div>
+                </div>
+                <div class='col-md-5 hide' id="detail_div">
+                    <div class="card">
+                        <div class="card-header header-elements-inline">
+                            <h5 class="card-title"></h5>
+                            <div class="header-elements">
+                                <div class="list-icons">
+                                    <a class="list-icons-item" data-action="collapse"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='card-body'>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,7 +62,7 @@
 
         <div class="col-sm-12">
             <br>
-            <p>Hier finden Sie Händler aus Ihrer Nähe! Wir sind dabei das Händlernetz auszubauen falls in Ihrer Nähe keine Fachwerkstatt zu finden ist werden wir für Sie eine in Ihrem Umkreis suchen. Bitte kontaktieren Sie uns dazu über unser Kontaktformular wir werden uns umgehend darum Kümmern.</p>
+            {{ header_content.dealercontent | safe }}
         </div>
 
         <div id="preloader" style="display: none;"><div id="status" style="display: none;"></div></div>

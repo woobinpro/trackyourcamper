@@ -12,10 +12,7 @@
                     <div id="register-customer" class="row tab-pane active" role="tabpanel">
                         <div id="customer" class="col-xs-12 col-md-12">
                             <form action="/Login" method="post" novalidate="novalidate">
-                                <input name="__RequestVerificationToken" type="hidden" value="">
-                                <div class="validation-summary-valid" data-valmsg-summary="true">
-                                    <ul><li style="display:none"></li></ul>
-                                </div>                                
+                                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
                                 <div class="panel-wrap">
                                     <fieldset>
                                         <h4>Login</h4>

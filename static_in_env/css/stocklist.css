@@ -6,3 +6,25 @@
     width: 100%;
     text-align: center;
 }
+.card-body p {
+    display: inline-block;
+    width:80%;
+    text-align: center;
+}
+.open-time span {
+    min-width: 30px;
+    display: inline-block;
+    font-weight: bold;
+}
+.open-time h4 {
+    font-size: 1.05rem;
+    font-weight: bold;
+    text-align: center;
+}
+.wide {
+    max-width: 100%;
+    flex:auto;
+}
+.hide {
+    display: none;
+}

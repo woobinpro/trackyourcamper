@@ -102,6 +102,18 @@
         function OnFailure(response) {
             alert("Error occured.");
         }
+        var host_url = location.protocol + "//" + location.host;
+        var swalInit = swal.mixin({
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary',
+            cancelButtonClass: 'btn btn-light'
+        });
+        Noty.overrideDefaults({
+            theme: 'limitless',
+            layout: 'topRight',
+            type: 'alert',
+            timeout: 2500
+        });
     </script>
     
     

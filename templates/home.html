@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}  
+{% load replace %}
+{% load mathfilters %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 <div id="header_slide" class="carousel slide" data-ride="carousel">
@@ -10,26 +12,23 @@
     </ol>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="{% static 'upload/slider_1.jpg' %}" class="d-block">
+            <img src="{% static 'upload/' %}{{ graphics.banner_image1 }}" class="d-block">
             <div class="carousel-caption d-none d-md-block">
-                <h3>Unsere 24h Zentrale überwacht Ihre Fahrzeuge in über 40 Ländern Europas!</h3>
-                <h3>(Pro Versionen inkl. Schweiz, Norwegen &amp; Island)</h3>
+                {{ header_content.headercontent3 | safe }}
                 <a class="btn btn-lg btn-primary" href="/Subscription" role="button">Jetzt Anmelden</a>
             </div>
         </div>
         <div class="carousel-item">
-            <img src="{% static 'upload/slider_2.jpg' %}" class="d-block" >
+            <img src="{% static 'upload/' %}{{ graphics.banner_image2 }}" class="d-block" >
             <div class="carousel-caption d-none d-md-block">
-                <h3>Unsere 24h Zentrale überwacht Ihre Fahrzeuge in über 40 Ländern Europas!</h3>
-                <h3>(Pro Versionen inkl. Schweiz, Norwegen &amp; Island)</h3>
+                {{ header_content.headercontent3 | safe }}
                 <a class="btn btn-lg btn-primary" href="/Subscription" role="button">Jetzt Anmelden</a>
             </div>
         </div>
         <div class="carousel-item">
-            <img src="{% static 'upload/slider_3.jpg' %}" class="d-block" >
+            <img src="{% static 'upload/' %}{{ graphics.banner_image3 }}" class="d-block" >
             <div class="carousel-caption d-none d-md-block">
-                <h3>Unsere 24h Zentrale überwacht Ihre Fahrzeuge in über 40 Ländern Europas!</h3>
-                <h3>(Pro Versionen inkl. Schweiz, Norwegen &amp; Island)</h3>
+                {{ header_content.headercontent3 | safe }}
                 <a class="btn btn-lg btn-primary" href="/Subscription" role="button">Jetzt Anmelden</a>
             </div>
         </div>
@@ -66,17 +65,17 @@
             <div class="row">
                     <div class="col-lg-4 mt-2">
                         <div class="style_prevu_kit">
-                            <img src="{% static 'upload/home_img_1.jpg' %}">
+                            <img src="{% static 'upload/' %}{{ graphics.product_image1 }}">
                         </div>
                     </div>
                     <div class="col-lg-4 mt-2 ">
                         <div class="style_prevu_kit">
-                            <img src="{% static 'upload/home_img_2.jpg' %}">
+                            <img src="{% static 'upload/' %}{{ graphics.product_image2 }}">
                         </div>
                     </div>
                     <div class="col-lg-4 mt-2">
                         <div class="style_prevu_kit">
-                            <img src="{% static 'upload/home_img_3.jpg' %}">
+                            <img src="{% static 'upload/' %}{{ graphics.product_image3 }}">
                         </div>
                     </div>
                 <div class="clearboth"></div>
@@ -112,13 +111,14 @@
             <br>
             <div class="product-detail-Home homeagenumber">
                 <h3 class="text-center">Schnell erklärt</h3>
-                <ol>
+                {{ header_content.headerregisterpart1 | safe }}
+                <!-- <ol>
                     <li>Diebstahl wird erkannt</li>
                     <li>Kunde wird informiert</li>
                     <li>Polizei wird informiert</li>
                     <li>Fahrzeug wird von geortet und zusammen mit den Behörden verfolgt und sichergestellt! Europaweit</li>
                     <li>Auf Wunsch bringen wir Ihr Fahrzeug zurück zu Ihnen<br><b>„Bring Back Service“</b></li>
-                </ol>
+                </ol> -->
             </div>
             <p class="text-center">
                 <a class="sf-button standard white sf-icon-reveal  dropshadow" href="/Subscription" target="_self">
@@ -135,14 +135,7 @@
             <br>
             <div class="product-detail-Home homeagenumber">
                 <h3 class="text-center">Händlersuche </h3>
-                <p>Hier finden Sie eine Fachwerkstatt, auch in Ihrer Nähe!</p>
-                <ul>
-                    <li>Plz, Ort eingeben</li>
-                    <li>Umkreis wählen</li>
-                    <li>Werkstatt finden</li>
-                    <li>Termin vereinbaren</li>
-                    <li>Einbauen lassen</li>
-                </ul>                
+                {{ header_content.headerregisterpart2 | safe }}               
             </div>
             <p class="text-center">
                 <a class="sf-button standard white sf-icon-reveal  dropshadow" href="/Stocklist" target="_self">
@@ -158,12 +151,7 @@
             <br>
             <div class="product-detail-Home homeagenumber">
                 <h3 class="text-center"> Online-Shop</h3>
-                <p>Finden Sie in unserem Shop Ihr geeignetes Tracker Paket</p>
-                unterscheiden Sie zwischen
-                <ul>
-                    <li>Fahrzeuge mit Batterie</li>
-                    <li>Fahrzeuge ohne Batterie</li>
-                </ul> 
+                {{ header_content.headerregisterpart3 | safe }}
             </div>
             <p class="text-center">
                 <a class="btn btn-warning" href="/Shop" target="_self">
@@ -186,21 +174,11 @@
                             <th class="text-center">
                                 Optionen
                             </th>
+                            {% for package in packagelist %}
                             <th class="text-center">
-                                Basic
+                                {{ package.packagename }}
                             </th>
-                            <th class="text-center">
-                                Basic PLUS
-                            </th>
-                            <th class="text-center">
-                                Business + Business Plus
-                            </th>
-                            <th class="text-center">
-                                Premium
-                            </th>
-                            <th class="text-center">
-                                Premium Plus
-                            </th>
+                            {% endfor %}
                         </tr>
                     </thead>
                     <tbody>
@@ -208,83 +186,58 @@
                             <td class="option">
                                 Extrahieren und Lesen der Daten
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.extractingreadingthedata == 1 %}
                                 <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
+                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Echtzeit-Überwachung
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.realtimemonitoring == 1 %}
                                 <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
+                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Live-tracking
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.livetracking == 1 %}
                                 <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
+                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Händlersuche in Ihrer Nähe
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.dealersearchinyourarea == 1 %}
                                 <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
+                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
+                            
                         </tr>
                         <tr>
                             <td class="option">
@@ -293,61 +246,46 @@
                                     (Geofence Zone)
                                 </label>
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.alarmonleavinganarea_geofence == 1 %}
                                 <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
+                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
+                           
                         </tr>
                         <tr>
                             <td class="option">
                                 Alarm: SOS-Taste
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.alarmonpresssosbutton == 1 %}
                                 <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
+                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
+                          
                         </tr>
                         <tr>
                             <td class="option">
                                 Alarm: Geschwindigkeit Überschritten
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.alarmonoverspeed == 1 %}
+                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
                                 <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
+                           
                         </tr>
                         <tr>
                             <td class="option">
@@ -356,21 +294,16 @@
                                     (Fahrzeugüberwachung kann im Urlaub abgeschaltet werden)
                                 </label>
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.holidaymode_vehiclecannotbemonitoredonholidayifdesired == 1 %}
+                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
                                 <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
+                           
                         </tr>
                         <tr>
                             <td class="option">
@@ -379,262 +312,148 @@
                                     (bevor das Fahrzeug bewegt wird, muss der Tracker ausgeschaltet werden)
                                 </label>
                             </td>
-                            <td class="text-center">12</td>
-                            <td class="text-center">12</td>
-                            <td class="text-center">9999</td>
-                            <td class="text-center">24</td>
-                            <td class="text-center">24</td>
+                            {% for package in packagelist %}
+                            <td class="text-center">
+                                {{ package.alarmincluded_beforevehicleismoved_mustbeswitchedoff }}
+                            </td>
+                            {% endfor %}
+                           
                         </tr>
                         <tr>
                             <td class="option">
                                 Positionsabfrage pro Tag
                             </td>
-                            <td class="text-center">12</td>
-                            <td class="text-center">12</td>
-                            <td class="text-center">24</td>
-                            <td class="text-center">24</td>
-                            <td class="text-center">24</td>
+                            {% for package in packagelist %}
+                            <td class="text-center">
+                                {{ package.locationqueryperday }}
+                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 History der Fahrzeugstandorte
                             </td>
-                            <td class="text-center">12</td>
-                            <td class="text-center">12</td>
-                            <td class="text-center">24</td>
-                            <td class="text-center">24</td>
-                            <td class="text-center">24</td>
+                            {% for package in packagelist %}
+                            <td class="text-center">
+                                {{ package.archivehistoryofvehiclelocations }}
+                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Sofort Austausch des Trackers
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
-                                kein sofort Austausch
+                                {{ package.immediatereplacementserviceofthetracker }}
                             </td>
-                            <td class="text-center">
-                                kein sofort Austausch
-                            </td>
-                            <td class="text-center">
-                                2 Jahre
-                            </td>
-                            <td class="text-center">
-                                2 Jahre
-                            </td>
-                            <td class="text-center">
-                                2 Jahre
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Anzahl der Fahrzeuge die Verwaltet werden können
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
-                                1 *
+                                {{ package.vehiclefleetmanagement_numberofvehicles }}
                             </td>
-                            <td class="text-center">
-                                1 *
-                            </td>
-                            <td class="text-center">
-                                9999 *
-                            </td>
-                            <td class="text-center">
-                                5 *
-                            </td>
-                            <td class="text-center">
-                                5 *
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Support-Service
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
-                                09:00 - 17:00
+                                {{ package.support_service_starttime|slice:"0:5" }} - {{ package.support_service_endtime|slice:"0:5" }}
                             </td>
-                            <td class="text-center">
-                                09:00-17:00
-                            </td>
-                            <td class="text-center">
-                                09:00 - 17:00
-                            </td>
-                            <td class="text-center">
-                                09:00 - 17:00
-                            </td>
-                            <td class="text-center">
-                                09:00 - 17:00
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Bring Back Service *
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
-                                24/7 * 
+                                {{ package.bringbackservice }}
                             </td>
-                            <td class="text-center">
-                                24/7 * 
-                            </td>
-                            <td class="text-center">
-                                24/7 * 
-                            </td>
-                            <td class="text-center">
-                                24/7 * 
-                            </td>
-                            <td class="text-center">
-                                24/7 * 
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">
                                 Einmalige Aktivierungsgebühr
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
-                                19,90 €
+                                {{ package.activationfeeoncepervehicle }}
                             </td>
-                            <td class="text-center">
-                                19,90 €
-                            </td>
-                            <td class="text-center">
-                                - 
-                            </td>
-                            <td class="text-center">
-                                19,90 €
-                            </td>
-                            <td class="text-center">
-                                19,90 € 
-                            </td>
+                            {% endfor %}
+                            
                         </tr>
                         <tr>
                             <td class="option">
                                 Preis gilt pro Fahrzeug pro Jahr inkl. Mobilfunkkarte mit EU Roaming
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
                                 ab
                                 <h4>
                                     <strong>
-                                        179,00 €
+                                        {{ package.annualpricepervehicle }} €
                                     </strong>
                                 </h4> Pro Jahr
                             </td>
-                            <td class="text-center">
-                                ab
-                                <h4>
-                                    <strong>
-                                        239,00 €
-                                    </strong>
-                                </h4> Pro Jahr
-                            </td>
-                            <td class="text-center">
-                                <h4>
-                                    -
-                                </h4>
-                            </td>
-                            <td class="text-center">
-ab                              <h4>
-                                    <strong>
-                                        199,00 €
-                                    </strong>
-                                </h4> Pro Jahr
-                            </td>
-                            <td class="text-center">
-ab                              <h4>
-                                    <strong>
-                                        259,00 €
-                                    </strong>
-                                </h4> Pro Jahr
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <td class="option">+ Schweiz, Norwegen &amp; Island</td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                {% if package.annualpricepervehicle2 == 1 %}
+                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
+                                {% else %}
                                 <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
+                                {% endif %}
                             </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-times" aria-hidden="true" style="color:#ff6b57"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-check" aria-hidden="true" style="color:#75c199"></i>
-                            </td>
+                            {% endfor %}
+                            
                         </tr>
                         <tr>
                             <td class="option">
                                 jedes weitere Fahrzeug
                             </td>
-                            <td class="text-center">
-                                <h4>-</h4>
-                            </td>
-                            <td class="text-center">
-                                <h4>-</h4>
-                            </td>
-                            <td class="text-center">
-                                <h4>
-                                    -
-                                </h4>
-                            </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
                                 <h4>
                                     <strong>
-                                        159,00 €
+                                        {{ package.eachadditionalvehicle }} €
                                     </strong>
                                 </h4>
                             </td>
-                            <td class="text-center">
-                                <h4>
-                                    <strong>
-                                        219,00 €
-                                    </strong>
-                                </h4>
-                            </td>
+                            {% endfor %}
+                            
                         </tr>
                         <tr>
                             <td class="option">
                                 Zahlung
                             </td>
+                            {% for package in packagelist %}
                             <td class="text-center">
+                                
                             </td>
-                            <td class="text-center">
-                            </td>
-                            <td class="text-center">
-                            </td>
-                            <td class="text-center">
-                            </td>
-                            <td class="text-center">
-                            </td>
+                            {% endfor %}
                         </tr>
                         <tr class="mt-3">
                             <td></td>
+                            {% for package in packagelist %}
                             <td class="text-center">
                                 <a class="btn btn-warning" href="/Subscription">
                                     Jetzt Buchen
                                 </a>
                             </td>
-                            <td class="text-center">
-                                <a class="btn btn-warning" href="/Subscription">
-                                    Jetzt Buchen
-                                </a>
-                            </td>
-                            <td class="text-center">
-                                <a class="btn btn-warning" href="/Contactus">
-                                    Auf Anfrage
-                                </a>
-                            </td>
-                            <td class="text-center">
-                                <a class="btn btn-warning" href="/Subscription">
-                                    Jetzt Buchen
-                                </a>
-                            </td>
-                            <td class="text-center">
-                                <a class="btn btn-warning" href="/Subscription">
-                                    Jetzt Buchen
-                                </a>
-                            </td>
+                            {% endfor %}
+                           
+                           
                         </tr>
                     </tbody>
                 </table>
@@ -649,111 +468,23 @@ ab                              <h4>
                 <div class="container">
                     <div class="row">
                         <div id="rating" class="owl-carousel owl-theme owl-loaded owl-drag">
+                            {% for review in review_list %}
                             <div class="item">
                                 <input type="text" class="rating" value="5" readonly="readonly" style="display: none;">
                                 <ul class="rating">
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">1</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">2</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">3</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">4</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">5</a></li>
+                                    {% for i in 5|getList %}
+                                    <li><a href="javascript:void(0);" title="5 / 5" {% if i <= review.rate_star|sub:1 %}class="full"{% endif %}>{{ i|add:1 }}</a></li>
+                                    {% endfor %}
+                                    
                                 </ul>
                                 <br>
                                 <p style="text-align: center;">
-                                    ich habe das Gerät jetzt schon mehrere Monate verbaut und es funktioniert einwandfrei. Ich kann entspannt und ohne sorgen sein egal wo mein Womo gerade steht. Danke das ich für euch Testen durfte!
+                                    {{ review.shortdescription }}
                                 </p>
-                                <h4>Manfred Wild </h4>
+                                <h4>{{ review.firstname }} {{ review.lastname }}</h4>
                             </div>
-                            <div class="item">
-                                <input type="text" class="rating" value="5" readonly="readonly" style="display: none;">
-                                <ul class="rating">
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">1</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">2</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">3</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">4</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">5</a></li>
-                                </ul>
-                                <br>
-                                <p style="text-align: center;">
-                                    Unser VW T5 wurde im Jahr 2016 gestohlen und nicht mehr aufgefunden. Seit wir Tester bei euch sind können wir wieder ruhiger schlafen.  Danke 
-                                </p>
-                                <h4>Andrea von Allmen </h4>
-                            </div>
-                            <div class="item">
-                                <input type="text" class="rating" value="5" readonly="readonly" style="display: none;">
-                                <ul class="rating">
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">1</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">2</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">3</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">4</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">5</a></li>
-                                </ul>
-                                <br>
-                                <p style="text-align: center;">
-                                    Wir sind froh das wir Tester Sein dürfen. Haben einen Wohnwagen ohne Bordbatterie deswegen das Paket mit Akkupack. Bislang ohne Störung alles Reibungslos. Kann es also nur empfehlen.
-                                </p>
-                                <h4>Thorsten Winkler </h4>
-                            </div>
-                            <div class="item">
-                                <input type="text" class="rating" value="5" readonly="readonly" style="display: none;">
-                                <ul class="rating">
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">1</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">2</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">3</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">4</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">5</a></li>
-                                </ul>
-                                <br>
-                                <p style="text-align: center;">
-                                    Tester seit März 2018, bislang alles ganz Ok einen Fehlalarm durch Eigenverschulden. Erst nach 2 Minuten kam der Kontrollanruf. Finde das muss schneller gehen!
-                                </p>
-                                <h4>Benjamin Fessel </h4>
-                            </div>
-                            <div class="item">
-                                <input type="text" class="rating" value="5" readonly="readonly" style="display: none;">
-                                <ul class="rating">
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">1</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">2</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">3</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">4</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5">5</a></li>
-                                </ul>
-                                <br>
-                                <p style="text-align: center;">
-                                    Sicherer geht es nicht! 
-                                </p>
-                                <h4>Bernhard  Villinger </h4>
-                            </div>
-                            <div class="item">
-                                <input type="text" class="rating" value="5" readonly="readonly" style="display: none;">
-                                <ul class="rating">
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">1</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">2</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">3</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">4</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">5</a></li>
-                                </ul>
-                                <br>
-                                <p style="text-align: center;">
-                                    Wir sind sehr zufrieden alles funktioniert tadellos
-                                </p>
-                                <h4>Hans Peter & Anja  Müller </h4>
-                            </div>
-                            <div class="item">
-                                <input type="text" class="rating" value="5" readonly="readonly" style="display: none;">
-                                <ul class="rating">
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">1</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">2</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">3</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">4</a></li>
-                                    <li><a href="javascript:void(0);" title="5 / 5" class="full">5</a></li>
-                                </ul>
-                                <br>
-                                <p style="text-align: center;">
-                                    Seit Januar 2020 sind wir ausgerüstet uns kann nichts mehr passieren. Danke
-                                </p>
-                                <h4>Manfred  Sippel </h4>
-                            </div>
+                            {% endfor %}
+                            
                         </div>
                     </div>
                     <div class="row">

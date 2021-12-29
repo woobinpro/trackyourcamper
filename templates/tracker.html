@@ -3,25 +3,23 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/tracker.css' %}">
 <div class="container mt-5  mb-5">
-    <form action="/Tracker/Detail/6" enctype="multipart/form-data" method="post" novalidate="novalidate">
-        <input name="__RequestVerificationToken" type="hidden" value="">        
+    <form action="/Tracker/Detail/{{ tracker.id }}" enctype="multipart/form-data" method="post" novalidate="novalidate">
+        <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
         <div class="clearfix layout-1">
             <div class="col-md-5 col-sm-12 prod-slider-wrap">
-                <div class="owl-carousel prod-slider sync1 owl-loaded owl-drag" id="large_img_slider">       
+                <div class="owl-carousel prod-slider sync1 owl-loaded owl-drag" id="large_img_slider">   
+                    {% for image in image_list %}    
                     <div class="item">
-                        <img src="{% static 'upload/product3.png' %}" class="d-block">
+                        <img src="{% static 'upload/' %}{{ image.imagename }}" class="d-block">
                     </div>
-                    <div class="item">
-                        <img src="{% static 'upload/product1.png' %}" class="d-block">
-                    </div>
+                    {% endfor %}
                 </div>
                 <div class="owl-carousel sync2 owl-loaded owl-drag" id="small_img_slider">
+                    {% for image in image_list %}    
                     <div class="item">
-                        <img src="{% static 'upload/product3.png' %}" class="d-block">
+                        <img src="{% static 'upload/' %}{{ image.imagename }}" class="d-block">
                     </div>
-                    <div class="item">
-                        <img src="{% static 'upload/product1.png' %}" class="d-block">
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
             <input data-val="true" data-val-number="The field TrackerId must be a number." data-val-required="The TrackerId field is required." id="TrackerId" name="TrackerId" type="hidden" value="6">
@@ -29,24 +27,24 @@
                 <div class="product-detail">
                     <div class="product-heading">
                         <h2 class="section-title">
-                            GPS Tracker Paket 1
+                           {{ tracker.trackername }}
                         </h2>
                         <p>
                             Artikelnummer:
-                            <span>10002</span>
+                            <span>{{ tracker.articlenumber }}</span>
                         </p>
                     </div>
                     <div class="price">
                         <b>
-                            69,90 €
+                            {{ tracker.dicountprice }} €
                         </b>
                         <del>
-                            99,90 €
+                            {{ tracker.price }} €
                         </del>
                     </div>
                     <div class="product-availability">
                         <ul class="stock-detail list-items black-color">
-                            <li class=""><b>Kategorie:</b> <a style="color:#99cc00!important" class="green-color">GPS Tracker </a></li>
+                            <li class=""><b>Kategorie:</b> <a style="color:#99cc00!important" class="green-color">{{ tracker_category.tracker_category }} </a></li>
                             <li>
                                 <small>
                                     19%
@@ -59,7 +57,7 @@
                     </div>
                     <hr class="divider-2">
                     <div class="product-description">
-                        <p>Für Fahrzeuge mit eigener Bordbatterie (Bilder unserer Tracker werden nicht veröffentlicht)</p>
+                        <p>{{ tracker.trackershortdesc }}</p>
                     </div>
                     <hr class="divider-2">
                     <div class="product-options">
@@ -70,7 +68,7 @@
                             <div class="prod-btns">
                                 <div class="input-group">
                                     <span class="input-group-btn">
-                                        <button type="button" class="quantity-left-minus btn btn-default btn-number" data-type="minus" data-field="">
+                                        <button type="button" class="quantity-left-minus btn btn-default btn-number" id='btn_minus_qty' data-type="minus" data-field="">
                                             <span class="fa fa-minus"></span>
                                         </button>
                                     </span>
@@ -78,7 +76,7 @@
                                     <span class="field-validation-valid" data-valmsg-for="qty" data-valmsg-replace="true"></span>
 
                                     <span class="input-group-btn">
-                                        <button type="button" class="quantity-right-plus btn btn-default btn-number" data-type="plus" data-field="">
+                                        <button type="button" class="quantity-right-plus btn btn-default btn-number" id='btn_plus_qty' data-type="plus" data-field="">
                                             <span class="fa fa-plus"></span>
                                         </button>
                                     </span>
@@ -90,7 +88,7 @@
                             <ul class="list-inline">
                                 <li><button class="theme-btn-1 btn btn-warning" type="submit"> <i class="fa fa-plus"></i>&nbsp;In den Warenkorb </button></li>
                                 <li>
-                                    <a href="/Shop" class="theme-btn-1 btn btn-black"><i class="fa fa-arrow-left"></i>&nbsp;zurück zum Shop</a>
+                                    <a href="/Shop/Index/1" class="theme-btn-1 btn btn-black"><i class="fa fa-arrow-left"></i>&nbsp;zurück zum Shop</a>
                                 </li>
                             </ul>
                         </div>
