@@ -15,6 +15,9 @@ import hashlib
 import requests
 import urllib.parse
 import math
+from paypal.standard.forms import PayPalPaymentsForm
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 import googlemaps
 gmaps = googlemaps.Client(key="AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM")
 
@@ -136,7 +139,34 @@ def checkoutConfirm(request):
     header_content = TblHeadercontent.objects.all()
     billing_address = Billingaddressmaster.objects.get(userid=request.session['user_id'])
     shipping_address = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
-    return render(request,"checkoutconfirm.html",{"header_content":header_content[0],"billing_address":billing_address,"shipping_address":shipping_address})     
+    host = request.get_host()
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': 100,
+        'invoice': "trackyourcamper",
+        'currency_code': 'EUR',
+        'notify_url': 'http://{}{}'.format(host,
+                                           reverse('paypal-ipn')),
+        'return_url': 'http://{}{}'.format(host,
+                                           reverse('track:payment_done')),
+        'cancel_return': 'http://{}{}'.format(host,
+                                              reverse('track:payment_cancelled')),
+    }
+
+    paypal_form = PayPalPaymentsForm(initial=paypal_dict)
+    return render(request,"checkoutconfirm.html",{"header_content":header_content[0],"billing_address":billing_address,"shipping_address":shipping_address,"paypal_form":paypal_form})     
+@csrf_exempt
+def payment_done(request):
+    # users_order = OrderItem.objects.filter(user=request.user, ordered=False)
+    # for order in users_order:
+    #     order.ordered = True
+    #     order.save()
+    # order_qs = Cart.objects.filter(user=request.user, ordered=False)
+    # order_qs.delete()
+    return render(request, 'blog/payment_done.html')
+@csrf_exempt
+def payment_canceled(request):
+    return render(request, 'blog/payment_cancelled.html')
 def checkout(request):
     header_content = TblHeadercontent.objects.all()
     salutation_list = Salutationmaster.objects.all()
