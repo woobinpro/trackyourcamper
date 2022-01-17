@@ -68,6 +68,36 @@ var _componentValidation = function() {
 $(document).ready(function () {
     _componentValidation();
     Onchangecustomercreate();
+
+    var client_token = $('#braintree_token').val();
+    var button = document.querySelector('#submit_button');
+    var csrf_token = $('#csrf_token').val();
+    braintree.dropin.create({
+        authorization: client_token,
+        container: '#bt-dropin',
+        locale: 'de_DE',
+        paypal: {
+            flow: 'vault'
+        }
+    }, function (createErr, instance) {
+        button.addEventListener('click', function () {
+            instance.requestPaymentMethod(function (err, payload) {
+                $.ajax({
+                    type: 'POST',
+                    url: host_url + '/payment',
+                    data: {'paymentMethodNonce': payload.nonce,
+                            'csrfmiddlewaretoken': csrf_token}
+                }).done(function (res) {
+                    if(res.result){
+                        window.location.href = '/Checkout/Receipt';
+                    }else {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+    });
+    bindpaymentprocessbind(0);
 });
 
 function Onchangecustomercreate() {
@@ -89,5 +119,18 @@ function Onchangedeliverycheck() {
         $('#select_shipping_address').slideToggle('slow');
         $("#select_shipping_address .form-control").attr('required','');
         $("#same_address_flag").val("false");
+    }
+}
+function bindpaymentprocessbind(val) {
+ 
+    if (val == 0) {
+        $("#bindcreditdebitpaymethod").show();
+        $("#bindbanktransferbindinfo").hide(); 
+    }
+
+    if (val == 1) {
+        $("#bindcreditdebitpaymethod").hide();
+        $("#bindbanktransferbindinfo").show();
+
     }
 }

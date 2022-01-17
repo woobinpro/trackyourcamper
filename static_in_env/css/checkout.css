@@ -145,3 +145,6 @@ a:hover {
 a.edit, a.edit:visited {
     color: #f6ab36;
 }
+.pull-right {
+    float: right;
+}

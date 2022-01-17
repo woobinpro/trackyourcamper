@@ -11,7 +11,7 @@ function Redirecttoregister() {
 }
 
 function Redirecttologout() {
-    window.location = '/Home/Logout'
+    window.location = '/Admin/Logout'
 }
 
 function Redirecttomyaccount() {

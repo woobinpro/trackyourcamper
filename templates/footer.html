@@ -7,20 +7,17 @@
                     <div class="c-feedback">
                         <h3>Track Your Camper</h3>
                         <div class="c-about">
-                            <p>Sven Wunder</p>
+                            <p>{{ header_content.footertrackcontent | safe }}</p>
                         </div>
                         <h5 style="color:white; text-transform: uppercase;    font-weight: 600;    font-size: 1rem;">
                             Trackyourcamper
                         </h5>
                         <div class="c-contact">
-                            <p>Untere Hauptstraße 51</p>
-                            <p>67551 Worms</p>
-                            <p>Deutschland</p>
-                            <h6>UStId DE 301716629</h6>
+                            {{ header_content.footertrackaddress | safe }}
                         </div>
                         
                         <div class="c-about">
-                            <p>Track your Property Cooperation</p>
+                            <p>{{ header_content.footertrackcontent2 | safe }}</p>
                         </div>
                         
                     </div>

@@ -27,6 +27,7 @@
             </div>
 
             <div id="checkout-shipping-payment" class="row tab-pane active" role="tabpanel">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
                 <div class="col-xs-6 col-lg-6">
                     <div class='address-card'>
                         <address>
@@ -73,37 +74,9 @@
                     <label class="radio-inline">
                         <input type="radio" name="paymentprocessbind" value="0" checked="checked" onchange="bindpaymentprocessbind(0)"> Pay
                     </label>
-                    <div class='manual-payment-panel pl-4 pr-4'>
-                        <h4 class='heading'>Wie möchten Sie bezahlen?</h4>
-                        <div id="accordion-group">
-							<div class="card mb-0 rounded-bottom-0">
-								<div class="card-header">
-									<h6 class="card-title">
-										<a data-toggle="collapse" class="text-default collapsed" href="#accordion-item-group1" aria-expanded="false"><i class="far fa-credit-card mr-3"></i> Kreditkarte</a>
-									</h6>
-								</div>
-
-								<div id="accordion-item-group1" class="collapse" data-parent="#accordion-group" style="">
-									<div class="card-body">
-										Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch.
-									</div>
-								</div>
-							</div>
-
-							<div class="card mb-0 rounded-top-0 border-top-0">
-								<div class="card-header">
-									<h6 class="card-title">
-										<a class="text-default collapsed" data-toggle="collapse" href="#accordion-item-group2" aria-expanded="false"><i class="fab fa-paypal mr-3"></i>PayPal</a>
-									</h6>
-								</div>
-
-								<div id="accordion-item-group2" class="collapse" data-parent="#accordion-group" style="">
-									<div class="card-body text-center">
-										{{ paypal_form.render }}
-									</div>
-								</div>
-							</div>
-						</div>
+                    <input type='hidden' id='braintree_token' value='{{ braintree_client_token }}'>
+                    <div class="col-sm-12" id="bindcreditdebitpaymethod">
+                        <div id="bt-dropin"></div>
                     </div>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-3">
@@ -118,6 +91,10 @@
                         </div>
                     </div>
                 </div>
+                <ul class="list-inline pull-right">
+                                
+                    <li><input id="submit_button" value="bezahlen" class="btn btn-warning"></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -126,5 +103,6 @@
 {% block script %}
 
 <script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
 <script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}

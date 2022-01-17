@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% load mathfilters %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+<div class="container mt-5  mb-5">
+    <div class="row">
+        <div id="checkout-wizard" class="ck-wizard clearfix">
+            <div class="steps clearfix">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="col-xs-2 col-sm-3 col-md-5 col-lg-4 current ">
+                        <a href='/Checkout'>
+                            <span class="number">1</span> Rechnungs- und Lieferadresse
+                        </a>
+                    </li>
+                    <li role="presentation" class="col-xs-2 col-sm-3 col-md-5 col-lg-4">
+                        <a>
+                            <span class="number">2</span> Versand und Zahlung
+                        </a>
+                    </li>
+                    <li role="presentation" class="col-xs-2 col-sm-3 col-md-5 col-lg-4">
+                        <a class="active">
+                            <span class="number">3</span> Zusammenfassung
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="invoice-title">
+                        <h2>Invoice</h2><h3 class="pull-right">Order # {{ order_data.orderid }}</h3>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <address>
+                                <strong>@TYC.Resource_File.Resource.BillingAddress:</strong><br>
+                                @Html.Raw(Model.Billingaddress)
+                            </address>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6 text-right">
+                            <address>
+                                <strong>@TYC.Resource_File.Resource.ShippedTo:</strong><br>
+                                @Html.Raw(Model.Shippingaddress)
+                            </address>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <address>
+                                @if (Model.Paymenttype == "Paypal")
+                                {
+                                    <strong>@TYC.Resource_File.Resource.PaymentMethod:</strong><br>
+                                    @Model.Paymenttype<br>
+
+                                    <strong>@TYC.Resource_File.Resource.Paypaltxnid:</strong><br>
+                                    @Model.Paypaltxtnid<br>
+                                }
+                                else if (Model.Paymenttype == "Cash on delivery")
+                                {
+                                    <strong>@TYC.Resource_File.Resource.PaymentMethod:</strong><br>
+                                    @Model.Paymenttype<br>
+                                }
+                                else
+                                {
+                                    <strong>@TYC.Resource_File.Resource.PaymentMethod:</strong><br>
+                                    @Model.Paymenttype<br>
+
+                                    <strong> txnid:</strong><br>
+                                    @Model.Stripetxtnid<br>
+                                }
+
+                            </address>
+                        </div>
+                        <div class="col-xs-6 col-lg-6 text-right">
+                            <address>
+                                <strong>@TYC.Resource_File.Resource.OrderDate:</strong><br>
+                                @TYC.CommonFunction.SiteFunction.Get_date(Convert.ToString(Model.Orderdate))<br><br>
+                            </address>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+
+{% endblock %}

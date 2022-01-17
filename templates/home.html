@@ -98,8 +98,8 @@
 </div>
 <div class="container mt-5">
     <div class="col-lg-8 mx-auto text-center">
-        <h3 class="page-heading">Registrieren Sie sich jetzt!</h3>
-        <p class="text-faded mb-4">GPS-tracking-Service mit 24h Notrufzentrale, Echtzeit-Tracking und täglicher Funktionskontrolle!</p>
+        <h3 class="page-heading">{{ header_content.registrationline1 | safe }}</h3>
+        <p class="text-faded mb-4">{{ header_content.registrationline2 | safe }}</p>
         <div class="horizontal-break"></div>
     </div>
 
@@ -375,7 +375,7 @@
                             </td>
                             {% for package in packagelist %}
                             <td class="text-center">
-                                {{ package.bringbackservice }}
+                                {{ package.bringbackservicefrom|slice:"0:5" }} - {{ package.bringbackserviceup|slice:"0:5" }}
                             </td>
                             {% endfor %}
                         </tr>
@@ -439,7 +439,7 @@
                             </td>
                             {% for package in packagelist %}
                             <td class="text-center">
-                                
+                                {% if package.isallowpayment == 1 %}monatlich,1/4 Jahr,1/2 Jahr,1 Jahr{% endif %}
                             </td>
                             {% endfor %}
                         </tr>

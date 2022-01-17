@@ -1,0 +1,361 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/myaccount.css' %}">
+<div class="container mt-5 mb-5">
+    <div class="col-sm-12 text-center">
+        <h3 class="page-heading">Mein Konto</h3>
+        <div class="horizontal-break"></div>
+    </div>
+    <div class="row">
+        <div class="myaccount-wizard">
+            <div class='row'>
+                <div class="col-sm-4">
+                    <ul class="account-menu">
+                        <li class='active'>
+                            <a href="/Myaccount">Übersicht</a>
+                        </li>
+                        <li>
+                            <a href="/Usersubscription/detail">Abonnement Rechnungen</a>
+                        </li>
+                        <li>
+                            <a href="/Usersubscription">Abonnement</a>
+                        </li>
+                        <li>
+                            <a href="">Meine Fahrzeuge</a>
+                        </li>
+                        <li>
+                            <a href="">Bestellungen</a>
+                        </li>
+                        <li>
+                            <a href="">Formulare</a>
+                        </li>
+                        <li>
+                            <a href="">Passwort ändern</a>
+                        </li>
+                        <li>
+                            <a href="">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-8">
+                    <h4>Willkommen {{ user.firstname }}</h4>
+                    <hr>
+                    <div class="row">
+                        <div class='col-sm-6'>
+                            <address>
+                                <p class="title">Rechnungsadresse:</p>
+                                {% if billing_address is not None %}
+                                <p class='name'><strong>Vorname:</strong>{{ billing_address.firstname }}<strong class='ml-3'>Familienname:</strong>{{ billing_address.lastname }}</p>
+                                <p class='address'>{{ billing_address.housenumber }} {{ billing_address.road }} {{ billing_address.additionaladdress }} {{ billing_address.state }} {{ billing_address.country }} {{ billing_address.postcode }}</p>
+                                <p class='ort'><strong>Ort:</strong>{{ billing_address.place }}</p>
+                                <p class='firma'><strong>Firma:</strong>{{ billing_address.company }}</p>
+                                <p class="company"><strong>Firmen Zusatz:</strong>{{ billing_address.company_addition }}</p>
+                                <p class="vat"><strong>Steuernummer:</strong>{{ billing_address.vatnumber }}</p>
+                                <p class="phone"><strong>Telefon:</strong>{{ billing_address.phoneno }}</p>
+                                <a href="mailto:{{ billing_address.email }}">{{ billing_address.email }}</a>
+                                {% endif %}
+                            </address>
+                            <a class="edit" href="#" data-toggle="modal" data-target="#billing_modal">
+                                <i class="fas fa-pencil-alt "></i> Rechnungsadresse ändern
+                            </a>
+                        </div>
+                        <div class='col-sm-6'>
+                            <address>
+                                <p class="title">Shipped To:</p>
+                                {% if shipping_address is not None %}
+                                <p class='name'><strong>Vorname:</strong>{{ shipping_address.firstname }}<strong class='ml-3'>Familienname:</strong>{{ shipping_address.lastname }}</p>
+                                <p class='address'>{{ shipping_address.housenumber }} {{ shipping_address.road }} {{ shipping_address.additionaladdress }} {{ shipping_address.state }} {{ shipping_address.country }} {{ shipping_address.postcode }}</p>
+                                <p class='ort'><strong>Ort:</strong>{{ shipping_address.place }}</p>
+                                <p class='firma'><strong>Firma:</strong>{{ shipping_address.company }}</p>
+                                <p class="company"><strong>Firmen Zusatz:</strong>{{ shipping_address.company_addition }}</p>
+                                <p class="vat"><strong>Steuernummer:</strong>{{ shipping_address.vatnumber }}</p>
+                                <p class="phone"><strong>Telefon:</strong>{{ shipping_address.phoneno }}</p>
+                                <a href="mailto:{{ shipping_address.email }}">{{ shipping_address.email }}</a>
+                                {% endif %}
+                            </address>
+                            <a class="edit" href="/Checkout" data-toggle="modal" data-target="#shipping_modal">
+                                <i class="fas fa-pencil-alt "></i> Lieferadresse ändern
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="billing_modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rechnungsadresse</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form id="billing_form" action='/saveBillingAddress' method="post">
+                    <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label for="salutation" class="control-label">Anrede</label>
+                                <select class="form-control" required id="Billing_salutation" name="Billing_salutation">
+                                    <option value="">Select salutation</option>
+                                    {% for salutation in salutation_list %}
+                                    <option value="{{ salutation.id }}" {% if billing_address.salutation == salutation.id %}selected{% endif %}>{{ salutation.salutation }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label for="firstName" class="control-label">Vorname</label>
+                                <input class="form-control" required  id="Billing_Firstname" name="Billing_Firstname" type="text" value="{{ billing_address.firstname }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label for="lastName" class="control-label">Familienname</label>
+                                <input class="form-control" required id="Billing_Lastname" name="Billing_Lastname" type="text" value="{{ billing_address.lastname }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label for="firm" class="control-label">Unternehmen</label>
+                                <input class="form-control" required id="Billing_Company" name="Billing_Company" type="text" value="{{ billing_address.company }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label for="firmext" class="control-label">Firma hinzufügen</label>
+                                <input class="form-control" required id="Billing_Company_Addition" name="Billing_Company_Addition" type="text" value="{{ billing_address.company_addition }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="street">Straße</label>
+                                <input class="form-control" required id="Billing_Road" name="Billing_Road" type="text" value="{{ billing_address.road }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="streetnumber">Hausnummer</label>
+                                <input class="form-control" required id="Billing_HouseNumber" name="Billing_HouseNumber" type="text" value="{{ billing_address.housenumber }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group ">
+                                <label class="control-label" for="street2">Zusätzliche Adresse</label>
+                                <input class="form-control" required id="Billing_Additionaladdress" name="Billing_Additionaladdress" type="text" value="{{ billing_address.additionaladdress }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="country">Land</label>
+                                <input class="form-control" required id="Billing_Country" name="Billing_Country" type="text" value="{{ billing_address.country }}">
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="state">Bundesland</label>
+                                <input class="form-control" required id="Billing_State" name="Billing_State" type="text" value="{{ billing_address.state }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label class="control-label" for="postcode">Postleitzahl</label>
+                                <input class="form-control" required id="Billing_Postcode" name="Billing_Postcode" type="text" value="{{ billing_address.postcode }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label class="control-label" for="city">place</label>
+                                <input class="form-control"  required id="Billing_place" name="Billing_place" type="text" value="{{ billing_address.place }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label class="control-label" for="ustid">VAT number.</label>
+                                <input class="form-control" required id="Billing_VATnumber" name="Billing_VATnumber" type="text" value="{{ billing_address.vatnumber }}">
+                            </div>
+                        </div>
+                    </div>
+                    <h4>
+                        Kontaktdaten
+                    </h4>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="email">E-Mail</label>
+                                <input class="form-control" required id="Billing_ShopEmail" name="Billing_ShopEmail" type="text" value="{{ billing_address.email }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="tel">Telefon</label>
+                                <input class="form-control" required id="Billing_ShopPhoneno" name="Billing_ShopPhoneno" type="text" value="{{ billing_address.phoneno }}">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn bg-primary">Save changes</button>
+            </div>
+            
+        </form>
+        </div>
+    </div>
+</div>
+<div id="shipping_modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lieferadresse</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form id='shipping_form' action='/saveShippingAddress' method="post">
+                    <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" >
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label for="register-shipping_address-salutation" class="control-label">Anrede</label>
+                                <select class="form-control" required id="Shiiping_salutation" name="Shiiping_salutation">
+                                    <option value="">Select salutation</option>
+                                    {% for salutation in salutation_list %}
+                                    <option value="{{ salutation.id }}" {% if shipping_address.salutation == salutation.id %}selected{% endif %}>{{ salutation.salutation }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label">Vorname</label>
+                                <input class="form-control" required id="Shiiping_Firstname" name="Shiiping_Firstname" type="text" value="{{ shipping_address.firstname }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label">Familienname</label>
+                                <input class="form-control" required id="Shiiping_Lastname" name="Shiiping_Lastname" type="text" value="{{ shipping_address.lastname }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label">Unternehmen</label>
+                                <input class="form-control" required id="Shiiping_Company" name="Shiiping_Company" type="text" value="{{ shipping_address.company }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label">Firma hinzufügen</label>
+                                <input class="form-control" required id="Shiiping_Company_Addition" name="Shiiping_Company_Addition" type="text" value="{{ shipping_address.company_addition }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="register-shipping_address-street">Straße</label>
+                                <input class="form-control" required id="Shiiping_Road" name="Shiiping_Road" type="text" value="{{ shipping_address.road }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label">Hausnummer</label>
+                                <input class="form-control" required id="Shiiping_HouseNumber" name="Shiiping_HouseNumber" type="text" value="{{ shipping_address.housenumber }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group ">
+                                <label class="control-label" for="register-shipping_address-street2">Zusätzliche Adresse</label>
+                                <input class="form-control" required id="Shiiping_Additionaladdress" name="Shiiping_Additionaladdress" type="text" value="{{ shipping_address.additionaladdress }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label">Land</label>
+                                <input class="form-control" required id="Shiiping_Country" name="Shiiping_Country" type="text" value="{{ shipping_address.country }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="register-shipping_address-state">Bundesland</label>
+                                <input class="form-control" required id="Shiiping_State" name="Shiiping_State" type="text" value="{{ shipping_address.state }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="register-shipping_address-postcode">Postleitzahl</label>
+                                <input class="form-control" required id="Shiiping_Postcode" name="Shiiping_Postcode" type="text" value="{{ shipping_address.postcode }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="register-shipping_address-city">place</label>
+                                <input class="form-control" required id="Shiiping_place" name="Shiiping_place" type="text" value="{{ shipping_address.place }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="register-shipping_address-postcode">E-Mail</label>
+                                <input class="form-control" required id="Shipping_ShopEmail" name="Shipping_ShopEmail" type="text" value="{{ shipping_address.email }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label" for="register-shipping_address-city">Telefon</label>
+                                <input class="form-control" required id="Shipping_ShopPhoneno" name="Shipping_ShopPhoneno" type="text" value="{{ shipping_address.phoneno }}">
+                            </div>
+                        </div>
+                    </div>
+                
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn bg-primary">Save changes</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+    <script src="{% static 'js/myaccount.js' %}"></script>
+{% endblock %}

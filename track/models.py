@@ -1197,7 +1197,8 @@ class Trackerlist(models.Model):
 
 
 class Trackerorderitems(models.Model):
-    orderitemid = models.IntegerField(db_column='OrderItemID', blank=True, null=True)  # Field name made lowercase.
+    orderitemid = models.IntegerField(db_column='OrderItemID', primary_key=True)  # Field name made lowercase.
+    qty = models.IntegerField(db_column='qty')
     orderid = models.IntegerField(db_column='OrderID', blank=True, null=True)  # Field name made lowercase.
     guid = models.CharField(db_column='Guid', max_length=36, blank=True, null=True)  # Field name made lowercase.
     cartid = models.CharField(db_column='CartID', max_length=50, blank=True, null=True)  # Field name made lowercase.
@@ -1242,7 +1243,7 @@ class Trackerorderpaymenttypemaster(models.Model):
 
 
 class Trackerorders(models.Model):
-    orderid = models.IntegerField(db_column='OrderId', blank=True, null=True)  # Field name made lowercase.
+    orderid = models.IntegerField(db_column='OrderId', primary_key=True)  # Field name made lowercase.
     cartid = models.CharField(db_column='CartId', max_length=50, blank=True, null=True)  # Field name made lowercase.
     orderguid = models.CharField(db_column='OrderGUID', max_length=36, blank=True, null=True)  # Field name made lowercase.
     orderdate = models.DateTimeField(db_column='OrderDate', blank=True, null=True)  # Field name made lowercase.

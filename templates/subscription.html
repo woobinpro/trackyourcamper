@@ -55,7 +55,7 @@
                 </ul>
             </div>
 
-            <form action="/Subscription" id="frmregdetail" method="post" novalidate="novalidate">
+            <form action="/Subscription" id="frmregdetail" method="post" novalidate="novalidate" onsubmit="return false;">
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
                 <div class="validation-summary-valid" data-valmsg-summary="true">
                     <ul><li style="display:none"></li></ul>
@@ -78,24 +78,23 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="inputEmail4">Vorname</label>
-                                    <input autocomplete="off" class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Firstname" maxlength="100" name="Firstname" placeholder="Vorname" type="text" value="">
-                                    <span class="field-validation-valid" data-valmsg-for="Firstname" data-valmsg-replace="true"></span>
+                                    <input class="form-control" required  id="Firstname"  name="Firstname" placeholder="Vorname" type="text" value="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputPassword4">Familienname</label>
-                                    <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Surname" maxlength="100" name="Surname" placeholder="Familienname" type="text" value="">
+                                    <input class="form-control" required id="Surname" maxlength="100" name="Surname" placeholder="Familienname" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="Surname" data-valmsg-replace="true"></span>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="inputAddress">Geburtsdatum</label>
-                                    <input class="form-control" data-val="true" data-val-required=" " id="Datebirth" name="Datebirth" placeholder="Geburtsdatum" type="text" value="">
+                                    <input class="form-control" required id="Datebirth" name="Datebirth" placeholder="Geburtsdatum" type="date" value="">
                                     <span class="field-validation-valid" data-valmsg-for="Datebirth" data-valmsg-replace="true"></span>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputAddress2">E-Mail</label>
-                                    <input class="form-control valid" data-val="true" data-val-email=" " data-val-required=" " id="RegEmail" name="RegEmail" onchange="checkemailexits(this.value)" placeholder="abc@abc.com" type="text" value="">
+                                    <input class="form-control valid" required id="RegEmail" name="RegEmail" placeholder="abc@abc.com" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="RegEmail" data-valmsg-replace="true"></span>
                                     <span id="message" ></span>
                                 </div>
@@ -103,53 +102,53 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="inputCity">Passwort</label>
-                                    <input class="form-control valid" data-val="true" data-val-regex="Das Passwort muss enthalten: Mindestens 8 Zeichen mindestens 1 groß Buchstabe, 1 klein Buchstabe, 1 Nummer und 1 Sonderzeichen" data-val-regex-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&amp;+-])[A-Za-z\d$@$!%*?&amp;+-]{8,}" data-val-required=" " id="Password" maxlength="50" name="Password" placeholder="********" type="password">
+                                    <input class="form-control valid" required  id="Password" maxlength="50" name="Password" placeholder="********" type="password">
                                     <span class="field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="inputState">Bestätigen Sie Ihr Passwort</label>
-                                    <input class="form-control" data-val="true" data-val-equalto="Password and Confirmation Password must match." data-val-equalto-other="*.Password" data-val-required=" " id="ConfirmPassword" maxlength="50" name="ConfirmPassword" placeholder="********" type="password">
+                                    <input class="form-control" required  id="ConfirmPassword" maxlength="50" name="ConfirmPassword" placeholder="********" type="password">
                                     <span class="field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label for="inputZip">Kontakt  Telefon</label>
-                                    <input class="form-control" data-val="true" data-val-required=" " id="RegPhoneno" maxlength="20" name="RegPhoneno" placeholder="Kontakt  Telefon" type="text" value="">
+                                    <input class="form-control" required id="RegPhoneno" maxlength="20" name="RegPhoneno" placeholder="Kontakt  Telefon" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="RegPhoneno" data-valmsg-replace="true"></span>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-2">
                                     <label for="inputZip">Postleitzahl</label>
-                                    <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Postalcode" maxlength="20" name="Postalcode" onchange="fillotheraddressfields(this.value)" placeholder="Postleitzahl" type="text" value="">
+                                    <input class="form-control" required  id="Postalcode" maxlength="20" name="Postalcode"  placeholder="Postleitzahl" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="Postalcode" data-valmsg-replace="true"></span>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="inputState">Ort</label>
-                                    <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="City" maxlength="100" name="City" placeholder="Ort" type="text" value="">
+                                    <input class="form-control" required id="City" maxlength="100" name="City" placeholder="Ort" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="City" data-valmsg-replace="true"></span>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputCity">Land</label>
-                                    <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Country" maxlength="100" name="Country" placeholder="Land" type="text" value="">
+                                    <input class="form-control" required id="Country" maxlength="100" name="Country" placeholder="Land" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="Country" data-valmsg-replace="true"></span>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="inputState">Straße</label>
-                                    <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Road" maxlength="100" name="Road" placeholder="Straße" type="text" value="">
+                                    <input class="form-control" required id="Road" maxlength="100" name="Road" placeholder="Straße" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="Road" data-valmsg-replace="true"></span>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputZip">geworben durch</label>
-                                    <input autocomplete="off" class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" id="Acquiredby" maxlength="100" name="Acquiredby" placeholder="Fahrzeugkennzeichen, Händler ID, Vertriebs ID, Kundennummer, Email" type="text" value="">
+                                    <input autocomplete="off" class="form-control"  id="Acquiredby" maxlength="100" name="Acquiredby" placeholder="Fahrzeugkennzeichen, Händler ID, Vertriebs ID, Kundennummer, Email" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="Acquiredby" data-valmsg-replace="true"></span>
                                 </div>
                             </div>
                         </div>
                         <ul class="list-inline pull-right">
                             <li>
-                                <button type="submit" class="btn btn-warning next-step regcontinue" id="btnstep1" onclick="fbFocusOnTop()">weiter</button>
+                                <button class="btn btn-warning next-step regcontinue" id="btnstep1" onclick="fbFocusOnTop(1)">weiter</button>
                             </li>
                         </ul>
                     </div>
@@ -165,7 +164,7 @@
                                                 Optionen
                                             </th>
                                             {% for package in packagelist %}
-                                            <th class="text-center">
+                                            <th class="text-center" id='packagename_{{ forloop.counter0 }}'>
                                                 {{ package.packagename }}
                                             </th>
                                             {% endfor %}
@@ -365,7 +364,7 @@
                                             </td>
                                             {% for package in packagelist %}
                                             <td class="text-center">
-                                                {{ package.bringbackservice }}
+                                                {{ package.bringbackservicefrom|slice:"0:5" }} - {{ package.bringbackserviceup|slice:"0:5" }}
                                             </td>
                                             {% endfor %}
                                         </tr>
@@ -388,7 +387,7 @@
                                             <td class="text-center">
                                                 ab
                                                 <h4>
-                                                    <strong>
+                                                    <strong id='planprice_{{ forloop.counter0 }}'>
                                                         {{ package.annualpricepervehicle }} €
                                                     </strong>
                                                 </h4> Pro Jahr
@@ -415,7 +414,7 @@
                                             {% for package in packagelist %}
                                             <td class="text-center">
                                                 <h4>
-                                                    <strong>
+                                                    <strong >
                                                         {{ package.eachadditionalvehicle }} €
                                                     </strong>
                                                 </h4>
@@ -429,18 +428,35 @@
                                             </td>
                                             {% for package in packagelist %}
                                             <td class="text-center">
-                                                
+                                                {% if package.isallowpayment == 1 %}monatlich,1/4 Jahr,1/2 Jahr,1 Jahr{% endif %}
                                             </td>
                                             {% endfor %}
                                            
                                         </tr>
+                                        {% for package in packagelist %}
+                                            <div id='payment_method_{{ forloop.counter0 }}' style='display:none'>
+                                                {% if package.pricemonthly > 0 %}
+                                                    <option value='1'>1 Monat - {{ package.pricemonthly }} €</option>
+                                                {% endif %}
+                                                {% if package.pricequarter > 0 %}
+                                                    <option value='2'>3 Monate - {{ package.pricequarter }} €</option>
+                                                {% endif %}
+                                                {% if package.pricehalf > 0 %}
+                                                    <option value='3'>6 Monate - {{ package.pricehalf }} €</option>
+                                                {% endif %}
+                                                {% if package.priceoneyear > 0 %}
+                                                    <option value='4'>1 Jahr - {{ package.priceoneyear }} €</option>
+                                                {% endif %}
+                                                {% if package.pricetwoyear > 0 %}
+                                                    <option value='5'>2 Jahre - {{ package.pricetwoyear }} €</option>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
                                         <tr>
                                             <td class="option"></td>
                                             {% for package in packagelist %}
                                             <td class="text-center ">
-                                                <input type="hidden" id="package_0_name" value="Basic">
-                                                <input type="hidden" id="Annualpricepervehicle_0_price" value="179,00 €">
-                                                <input checked="True" data-val="true" data-val-number="The field Subscriptiontype must be a number." data-val-required=" " id="subscriptiontype1" name="Subscriptiontype" onchange="Bind_onchangepackage(0)" style="height:25px!important;width: 100%;" type="radio" value="12">
+                                                <input {% if forloop.counter == 1 %} checked="True" {% endif %} data-val="true" data-val-number="The field Subscriptiontype must be a number." data-val-required=" " id="subscriptiontype1" name="Subscriptiontype" onchange="Bind_onchangepackage({{ forloop.counter0 }})" style="height:25px!important;width: 100%;" type="radio" value="{{ package.id }}">
                                             </td>
                                             {% endfor %}
 <!--                                             
@@ -456,8 +472,8 @@
                             </div>
                         </div>
                         <ul class="list-inline pull-right mt-4">
-                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="fbFocusOnTop()">zurück</button></li>
-                            <li><button type="submit" class="btn btn-warning next-step regcontinue" onclick="fbFocusOnTop()">weiter</button></li>
+                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="prevTab()">zurück</button></li>
+                            <li><button type="submit" class="btn btn-warning next-step regcontinue" onclick="fbFocusOnTop(2)">weiter</button></li>
                         </ul>
                     </div>
 
@@ -478,7 +494,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-body col-md-12 " id="displayfullpaymentdetail" style="display: none;">
+                            <!-- <div class="form-body col-md-12 " id="displayfullpaymentdetail" style="display: none;">
                                 <div class="form-group ">
                                     <label class="col-md-3">Payment ammount </label>
                                     <div id="paymentPeriods" class="col-md-5">
@@ -486,7 +502,7 @@
                                         <input id="Payment_Interval" name="Payment_Interval" type="hidden" value="0">
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="row mt-4">
                             <h3 class="col-md-12">
@@ -538,8 +554,8 @@
                         </div>
                         <br>
                         <ul class="list-inline pull-right">
-                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="fbFocusOnTop()">zurück</button></li>
-                            <li><button type="submit" class="btn btn-warning btn-info-full next-step regcontinue" onclick="fbFocusOnTop()">weiter</button></li>
+                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="prevTab()">zurück</button></li>
+                            <li><button type="submit" class="btn btn-warning btn-info-full next-step regcontinue" onclick="fbFocusOnTop(3)">weiter</button></li>
                         </ul>
                     </div>
 
@@ -606,7 +622,7 @@
                                                                     </strong>
                                                                 </h3>
                                                                 <label>
-                                                                    <input checked="True" data-val="true" data-val-number="The field Tracker_Type must be a number." data-val-required="The Tracker_Type field is required." id="TrackerType1" name="Tracker_Type" type="radio" value="6">                                                                      <span class="label-text">Option 1</span>
+                                                                    <input {% if forloop.counter == 1 %}checked="True"{% endif %} data-val="true" data-val-number="The field Tracker_Type must be a number." data-val-required="The Tracker_Type field is required."  name="Tracker_Type" type="radio" value="{{ tracker.id }}">                                                                      <span class="label-text">Option {{ forloop.counter }}</span>
                                                                 </label>
                                                             </div>
                                                         </div>
@@ -622,8 +638,8 @@
                             </div>
                         </div>
                         <ul class="list-inline pull-right">
-                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="fbFocusOnTop()">zurück</button></li>
-                            <li><button type="submit" class="btn btn-warning btn-info-full next-step regcontinue" onclick="fbFocusOnTop()">weiter</button></li>
+                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="prevTab()">zurück</button></li>
+                            <li><button type="submit" class="btn btn-warning btn-info-full next-step regcontinue" onclick="fbFocusOnTop(4)">weiter</button></li>
                         </ul>
                     </div>
 
@@ -661,10 +677,9 @@
                                 <label class="radio-inline">
                                     <input type="radio" name="paymentprocessbind" value="0" checked="checked" onchange="bindpaymentprocessbind(0)">Zahlungsoptionen
                                 </label>
+                                <input type='hidden' id='braintree_token' value='{{ braintree_client_token }}'>
                                 <div class="col-sm-12" id="bindcreditdebitpaymethod">
-                                    <div id="bt-dropin">
-                                       
-                                    </div>
+                                    <div id="bt-dropin"></div>
                                 </div>
                             </div>
                             <div class="col-sm-12">
@@ -686,13 +701,15 @@
                             </div>
                         </div>
                         <ul class="list-inline pull-right">
-                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="fbFocusOnTop()">zurück</button></li>
-                            <li><input type="submit" value="Abschicken" class="btn btn-warning"></li>
+                            <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="prevTab()">zurück</button></li>
+                            <li><input type="submit" value="Abschicken" class="btn btn-warning" id="btn_submit" ></li>
                         </ul>
                     </div>
                     <input id="nonce" name="payment_method_nonce" type="hidden">
                     <input id="payment_method_type" name="payment_method_type" type="hidden">
                     <div class="clearfix"></div>
+                    <input type="hidden" id="txttermsnconditions" value="Bitte stimmen Sie den allgemeinen Geschäftsbedingungen zu">
+                    <input type="hidden" id="txtprivacypolicy" value="Bitte stimme den Datenschutzrichtlinien zu">
                 </div>
             </form>
         </div>
@@ -700,5 +717,7 @@
 </div>
 {% endblock %}
 {% block script %}
+<script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
 <script src="{% static 'js/subscription.js' %}"></script>
 {% endblock %}

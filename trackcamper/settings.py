@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -137,3 +138,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_COOKIE_AGE = 72000
 PAYPAL_RECEIVER_EMAIL = 'trackyourcamper@gmail.com'
+
+
+BRAINTREE_PRODUCTION = True
+BRAINTREE_MERCHANT_ID = "8rs2snvr866f7p2s"
+BRAINTREE_PUBLIC_KEY = "cfdx5236y73r22xw"
+BRAINTREE_PRIVATE_KEY = "074cfc1cb8e7cad6c648b4fa325fe865"

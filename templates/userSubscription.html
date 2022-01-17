@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/myaccount.css' %}">
+<div class="container mt-5 mb-5">
+    <div class="col-sm-12 text-center">
+        <h3 class="page-heading">Abonnement Rechnungen</h3>
+        <div class="horizontal-break"></div>
+    </div>
+    <div class="row">
+        <div class="myaccount-wizard">
+            <div class='row'>
+                <div class="col-sm-4">
+                    <ul class="account-menu">
+                        <li>
+                            <a href="/Myaccount">Übersicht</a>
+                        </li>
+                        <li>
+                            <a href="/Usersubscription/detail">Abonnement Rechnungen</a>
+                        </li>
+                        <li class='active'>
+                            <a href="/Usersubscription">Abonnement</a>
+                        </li>
+                        <li>
+                            <a href="">Meine Fahrzeuge</a>
+                        </li>
+                        <li>
+                            <a href="">Bestellungen</a>
+                        </li>
+                        <li>
+                            <a href="">Formulare</a>
+                        </li>
+                        <li>
+                            <a href="">Passwort ändern</a>
+                        </li>
+                        <li>
+                            <a href="">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-8">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'js/myaccount.js' %}"></script>
+{% endblock %}

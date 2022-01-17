@@ -66,6 +66,7 @@ function calTotalPrice(){
     $('#total_price').html(product_price.toFixed(2)+" €");
     $('#total_tax').html((product_price * 0.19).toFixed(2) +" €");
     $('#checkout_price').html((product_price * 1.19).toFixed(2) +" €");
+    
 }
 function setCartlist(product_id, qty){
     $.ajax({

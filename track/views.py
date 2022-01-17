@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
-from .models import Aspnetusers, Vehicleset, Vehicletypemaster, Users, Brandset, Vehicleimages, Campingplaces, CamperRegulationansmaster, Brandmodeltypeset, Aspnetroles, Salutationmaster, Aspnetuserroles, Merchants, Merchantbrands, Securitycompanies, Packagelist, Trackerlisitem, Trackercategory, Trackeritemimages, TblHeadercontent, Websitegraphics, TblTempsubscriptiongocardlessdata, Promotioncredit, TblCustomerreviewratting, Billingaddressmaster, Shippingaddressmaster
+from .models import Aspnetusers, Vehicleset, Vehicletypemaster, Users, Brandset, Vehicleimages, Campingplaces, CamperRegulationansmaster, Brandmodeltypeset, Aspnetroles, Salutationmaster, Aspnetuserroles, Merchants, Merchantbrands, Securitycompanies, Packagelist, Trackerlisitem, Trackercategory, Trackeritemimages, TblHeadercontent, Websitegraphics, TblTempsubscriptiongocardlessdata, Promotioncredit, TblCustomerreviewratting, Billingaddressmaster, Shippingaddressmaster, Trackerorders, Trackerorderitems
 from django.db import connection
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -9,8 +9,9 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 import datetime
 import os
-import string    
+import string
 import random
+import braintree
 import hashlib
 import requests
 import urllib.parse
@@ -20,15 +21,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import googlemaps
 gmaps = googlemaps.Client(key="AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM")
-
 # Create your views here.
 
 def home(request):
     header_content = TblHeadercontent.objects.all()
     graphics = Websitegraphics.objects.all()
     packagelist = Packagelist.objects.all()
-    review_list = TblCustomerreviewratting.objects.all()
-    return render(request, "home.html",{"header_content":header_content[0],"graphics":graphics[0],"packagelist":packagelist,"review_list":review_list[:5]})
+    review_list = TblCustomerreviewratting.objects.filter(isdisplay=1)
+    return render(request, "home.html",{"header_content":header_content[0],"graphics":graphics[0],"packagelist":packagelist,"review_list":review_list})
 def getMerchantList(request):
     merchant = Merchants.objects.all().values()
     return JsonResponse({'list':list(merchant)})
@@ -71,13 +71,59 @@ def cart(request):
     tracker = get_list_from_sql("select trackerlisitem.Id as id, trackerlisitem.Articlenumber as articlenumber, trackerlisitem.Trackername as trackername, trackerlisitem.DicountPrice as price, trackercategory.Tracker_Category as categoryname, trackeritemimages.Imagename as img from trackerlisitem left join trackercategory on trackercategory.Id = trackerlisitem.TrackerCategory left join trackeritemimages on trackeritemimages.Id = (select Id from trackeritemimages where TrackerId = trackerlisitem.Id limit 1)")
     header_content = TblHeadercontent.objects.all()
     return render(request,"cart.html",{"tracker_list":tracker,"cart_list":request.session['cart_list'],"header_content":header_content[0]})
+def saveBillingAddress(request):
+    if request.method == "POST":
+        try:
+            result = Billingaddressmaster.objects.get(userid=request.session['user_id'])
+        except:
+            result = Billingaddressmaster()
+        result.userid = request.session['user_id']
+        result.salutation = request.POST['Billing_salutation']
+        result.firstname = request.POST['Billing_Firstname']
+        result.lastname = request.POST['Billing_Lastname']
+        result.email = request.POST['Billing_ShopEmail']
+        result.phoneno = request.POST['Billing_ShopPhoneno']
+        result.company = request.POST['Billing_Company']
+        result.company_addition = request.POST['Billing_Company_Addition']
+        result.road = request.POST['Billing_Road']
+        result.housenumber = request.POST['Billing_HouseNumber']
+        result.additionaladdress = request.POST['Billing_Additionaladdress']
+        result.country = request.POST['Billing_Country']
+        result.state = request.POST['Billing_State']
+        result.postcode = request.POST['Billing_Postcode']
+        result.place = request.POST['Billing_place']
+        result.vatnumber = request.POST['Billing_VATnumber']
+        result.save()
+        return redirect('/Myaccount')
+def saveShippingAddress(request):
+    try:
+        s_result = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
+    except:
+        s_result = Shippingaddressmaster()
+        
+    s_result.userid = request.session['user_id']
+    s_result.salutation = request.POST['Shiiping_salutation']
+    s_result.firstname = request.POST['Shiiping_Firstname']
+    s_result.lastname = request.POST['Shiiping_Lastname']
+    s_result.email = request.POST['Shipping_ShopEmail']
+    s_result.phoneno = request.POST['Shipping_ShopPhoneno']
+    s_result.company = request.POST['Shiiping_Company']
+    s_result.company_addition = request.POST['Shiiping_Company_Addition']
+    s_result.road = request.POST['Shiiping_Road']
+    s_result.housenumber = request.POST['Shiiping_HouseNumber']
+    s_result.additionaladdress = request.POST['Shiiping_Additionaladdress']
+    s_result.country = request.POST['Shiiping_Country']
+    s_result.state = request.POST['Shiiping_State']
+    s_result.postcode = request.POST['Shiiping_Postcode']
+    s_result.place = request.POST['Shiiping_place']
+    s_result.save()
+    return redirect('/Myaccount')
 def checkoutAddress(request):
     if request.method == "POST":
         try:
             result = Billingaddressmaster.objects.get(userid=request.session['user_id'])
         except:
             result = Billingaddressmaster()
-            result.id = Billingaddressmaster.objects.latest('id').id
         result.userid = request.session['user_id']
         result.salutation = request.POST['Billing_salutation']
         result.firstname = request.POST['Billing_Firstname']
@@ -99,7 +145,6 @@ def checkoutAddress(request):
             s_result = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
         except:
             s_result = Shippingaddressmaster()
-            s_result.id = Shippingaddressmaster.objects.latest('id').id
         if request.POST['Issameshipaddress'] == "true":
             s_result.userid = request.session['user_id']
             s_result.salutation = request.POST['Billing_salutation']
@@ -139,34 +184,105 @@ def checkoutConfirm(request):
     header_content = TblHeadercontent.objects.all()
     billing_address = Billingaddressmaster.objects.get(userid=request.session['user_id'])
     shipping_address = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
-    host = request.get_host()
-    paypal_dict = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': 100,
-        'invoice': "trackyourcamper",
-        'currency_code': 'EUR',
-        'notify_url': 'http://{}{}'.format(host,
-                                           reverse('paypal-ipn')),
-        'return_url': 'http://{}{}'.format(host,
-                                           reverse('track:payment_done')),
-        'cancel_return': 'http://{}{}'.format(host,
-                                              reverse('track:payment_cancelled')),
-    }
+    # host = request.get_host()
+    # paypal_dict = {
+    #     'business': settings.PAYPAL_RECEIVER_EMAIL,
+    #     'amount': 100,
+    #     'invoice': "trackyourcamper",
+    #     'currency_code': 'EUR',
+    #     'notify_url': 'http://{}{}'.format(host,
+    #                                        reverse('paypal-ipn')),
+    #     'return_url': 'http://{}{}'.format(host,
+    #                                        reverse('track:payment_done')),
+    #     'cancel_return': 'http://{}{}'.format(host,
+    #                                           reverse('track:payment_cancelled')),
+    # }
 
-    paypal_form = PayPalPaymentsForm(initial=paypal_dict)
-    return render(request,"checkoutconfirm.html",{"header_content":header_content[0],"billing_address":billing_address,"shipping_address":shipping_address,"paypal_form":paypal_form})     
-@csrf_exempt
-def payment_done(request):
-    # users_order = OrderItem.objects.filter(user=request.user, ordered=False)
-    # for order in users_order:
-    #     order.ordered = True
-    #     order.save()
-    # order_qs = Cart.objects.filter(user=request.user, ordered=False)
-    # order_qs.delete()
-    return render(request, 'blog/payment_done.html')
-@csrf_exempt
-def payment_canceled(request):
-    return render(request, 'blog/payment_cancelled.html')
+    # paypal_form = PayPalPaymentsForm(initial=paypal_dict)
+    if settings.BRAINTREE_PRODUCTION:
+        braintree_env = braintree.Environment.Production
+    else:
+        braintree_env = braintree.Environment.Sandbox
+    # Configure Braintree
+    braintree.Configuration.configure(
+        braintree_env,
+        merchant_id=settings.BRAINTREE_MERCHANT_ID,
+        public_key=settings.BRAINTREE_PUBLIC_KEY,
+        private_key=settings.BRAINTREE_PRIVATE_KEY,
+    )
+ 
+    try:
+        braintree_client_token = braintree.ClientToken.generate({ "customer_id": request.session['user_id'] })
+    except:
+        braintree_client_token = braintree.ClientToken.generate({})
+    return render(request,"checkoutconfirm.html",{"header_content":header_content[0],"billing_address":billing_address,"shipping_address":shipping_address,"braintree_client_token": braintree_client_token})  
+def payment(request):
+    nonce_from_the_client = request.POST['paymentMethodNonce']
+    checkout_price = 0
+    for item in request.session['cart_list']:
+        tracker = Trackerlisitem.objects.get(id=item['product_id'])
+        checkout_price += tracker.dicountprice
+    checkout_price = math.floor(float(checkout_price) * 1.19)
+    billing_info = Billingaddressmaster.objects.get(userid=request.session['user_id'])
+    customer_kwargs = {
+        "first_name": billing_info.firstname,
+        "last_name": billing_info.lastname,
+        "email": billing_info.email,
+    }
+    customer_create = braintree.Customer.create(customer_kwargs)
+    customer_id = customer_create.customer.id
+    result = braintree.Transaction.sale({
+        "amount": str(checkout_price),
+        "payment_method_nonce": nonce_from_the_client,
+        "options": {
+            "submit_for_settlement": True
+        }
+    })
+    print(result.transaction)
+    if result.is_success:
+        order_item = Trackerorders()
+        order_item.orderdate = datetime.datetime.now()
+        order_item.userid = request.session['user_id']
+        order_item.subtotal = checkout_price
+        order_item.paymenttype = result.payment_instrument_type
+        order_item.save()
+        order_id = Trackerorders.objects.latest('orderid').orderid
+        for item in request.session['cart_list']: 
+            _orderitem = Trackerorderitems()
+            _orderitem.qty = item['qty']
+            _orderitem.trackerid = item['product_id']
+            _orderitem.orderid = order_id
+            _orderitem.save()
+    return JsonResponse({'result':result.is_success})  
+def userSubscription(request):
+    header_content = TblHeadercontent.objects.all()
+    content = {"header_content":header_content[0]}
+    return render(request,"userSubscription.html",content)
+def userSubscriptionDetail(request):
+    header_content = TblHeadercontent.objects.all()
+    content = {"header_content":header_content[0]}
+    return render(request,"userSubscriptionDetail.html",content)
+def myAccount(request):
+    header_content = TblHeadercontent.objects.all()
+    salutation_list = Salutationmaster.objects.all()
+    user = Users.objects.get(userid=request.session['user_id'])
+    content = {"header_content":header_content[0],"salutation_list":salutation_list,"user":user}
+    try:
+        billing_address = Billingaddressmaster.objects.get(userid=request.session['user_id'])
+        content["billing_address"] = billing_address
+    except:
+        pass
+    try:
+        shipping_address = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
+        content["shipping_address"] = shipping_address
+    except:
+        pass
+    return render(request,"myaccount.html",content)
+    
+def checkoutReceipt(request):
+    order_data = Trackerorders.objects.get(userid=request.session['user_id']).reverse()[0]
+    header_content = TblHeadercontent.objects.all()
+    return render(request,"checkoutreceipt.html",{"header_content":header_content[0],"oder_data":order_data}) 
 def checkout(request):
     header_content = TblHeadercontent.objects.all()
     salutation_list = Salutationmaster.objects.all()
@@ -210,11 +326,14 @@ def login(request):
         try:
             aspuser = Aspnetusers.objects.get(email=request.POST["Username"])
             if check_password(aspuser.passwordhash, request.POST['Password']):
-                user_role = get_list_from_sql("select RoleId as roleid from aspnetuserroles where UserId = '"+aspuser.id+"'")
-                role = Aspnetroles.objects.get(id=user_role[0]['roleid'])
                 request.session['user_id'] = aspuser.id
                 request.session['login_status'] = True
-                request.session['user_role'] = role.name
+                try:
+                    user_role = get_list_from_sql("select RoleId as roleid from aspnetuserroles where UserId = '"+aspuser.id+"'")
+                    role = Aspnetroles.objects.get(id=user_role[0]['roleid'])
+                    request.session['user_role'] = role.name
+                except:
+                    request.session['user_role'] = ""
                 if request.session['user_role'] == "Admin":
                     return redirect('/Admin')
                 else:
@@ -223,13 +342,105 @@ def login(request):
             return redirect('/Login')
     return render(request,"login.html")
 def subscription(request):
+    if settings.BRAINTREE_PRODUCTION:
+        braintree_env = braintree.Environment.Production
+    else:
+        braintree_env = braintree.Environment.Sandbox
+    # Configure Braintree
+    config = braintree.Configuration.configure(
+        braintree_env,
+        merchant_id=settings.BRAINTREE_MERCHANT_ID,
+        public_key=settings.BRAINTREE_PUBLIC_KEY,
+        private_key=settings.BRAINTREE_PRIVATE_KEY,
+    )
+    if request.method == 'POST':
+        print(request.POST)
+        users = Users.objects.filter(email=request.POST['RegEmail'])
+        if len(users) <= 0:
+            new_user = Users(salutation=int(request.POST['salutation']),firstname=request.POST['Firstname'],lastname=request.POST['Surname'],email=request.POST['RegEmail'],phoneno=request.POST['RegPhoneno'],dob=request.POST['Datebirth'],address_city=request.POST['City'],address_country=request.POST['Country'],address_street=request.POST['Road'],address_postal=request.POST['Postalcode'],createdon=datetime.datetime.now())
+            new_user.save()
+            last_id = Users.objects.latest('id').id
+            user_id = generateUserId(last_id)
+            last_user = Users.objects.get(id=last_id)
+            last_user.userid = user_id
+            last_user.save()
+            new_aspuser = Aspnetusers(id=user_id,email=request.POST['RegEmail'],passwordhash=make_password(request.POST['Password']),phonenumber=request.POST['RegPhoneno'])
+            new_aspuser.save()
+        nonce_from_the_client = request.POST['payment_method_nonce']
+        if nonce_from_the_client != "":
+            tracker_price = Trackerlisitem.objects.get(id=request.POST['Tracker_Type']).dicountprice
+            tracker_price = math.floor(float(tracker_price) * 1.19)
+            package_item = Packagelist.objects.get(id=request.POST['Subscriptiontype'])
+            if request.POST['Payment_Interval']=='1':
+                package_price = package_item.pricemonthly
+            elif request.POST['Payment_Interval']=='2':
+                package_price = package_item.pricequarter
+            elif request.POST['Payment_Interval']=='3':
+                package_price = package_item.pricehalf
+            elif request.POST['Payment_Interval']=='4':
+                package_price = package_item.priceoneyear
+            else:
+                package_price = package_item.pricetwoyear
+            
+            gateway = braintree.BraintreeGateway(
+                braintree.Configuration(
+                    braintree_env,
+                    merchant_id=settings.BRAINTREE_MERCHANT_ID,
+                    public_key=settings.BRAINTREE_PUBLIC_KEY,
+                    private_key=settings.BRAINTREE_PRIVATE_KEY,
+                )
+            )
+            result = gateway.customer.create({
+                "first_name": request.POST['Firstname'],
+                "last_name": request.POST['Surname'],
+                "email": request.POST['RegEmail']
+            })
+            customer_id = result.customer.id
+            new_nonce = gateway.payment_method.create({
+                "customer_id": customer_id,
+                "payment_method_nonce": nonce_from_the_client,
+            })
+            print(new_nonce.payment_method.token)
+            if new_nonce.is_success:
+                result = braintree.Transaction.sale({
+                    "amount": str(tracker_price),
+                    "payment_method_token": new_nonce.payment_method.token,
+                    "options": {
+                        "submit_for_settlement": True
+                    }
+                })
+                print(result.is_success,result.transaction)
+                
+                _new_nonce = gateway.payment_method.update(new_nonce.payment_method.token, {
+                    "payment_method_nonce": nonce_from_the_client,
+                    "options": {
+                        "verify_card": True,
+                    }
+                })
+                print(_new_nonce.payment_method.token)
+                result = braintree.Transaction.sale({
+                    "amount": str(package_price),
+                    "payment_method_token": _new_nonce.payment_method.token,
+                    "options": {
+                        "submit_for_settlement": True
+                    }
+                })
+                print(result.is_success, result.transaction)
+        return redirect('/Login')
     header_content = TblHeadercontent.objects.all()
     packagelist = Packagelist.objects.all()
     tracker_list = Trackerlisitem.objects.all()
     image_list = Trackeritemimages.objects.all()
-    return render(request,"subscription.html",{"header_content":header_content[0],"packagelist":packagelist,"tracker_list":tracker_list,"image_list":image_list})
+    
+ 
+    try:
+        braintree_client_token = braintree.ClientToken.generate({ "customer_id": request.session['user_id'] })
+    except:
+        braintree_client_token = braintree.ClientToken.generate({})
+    return render(request,"subscription.html",{"header_content":header_content[0],"packagelist":packagelist,"tracker_list":tracker_list,"image_list":image_list,"braintree_client_token":braintree_client_token})
 def contactus(request):
-    return render(request,"contactUs.html")
+    header_content = TblHeadercontent.objects.all()
+    return render(request,"contactUs.html",{"header_content":header_content[0]})
 def conditions(request):
     header_content = TblHeadercontent.objects.all()
     return render(request,"conditions.html",{"header_content":header_content[0]})
@@ -257,6 +468,7 @@ def admin_login(request):
             return redirect('/Admin/Login')
     return render(request,"admin/login.html",{"url":'login'})
 def logout(request):
+    user_role = request.session['user_role']
     try:
         del request.session['user_id']
         del request.session['user_role']
@@ -264,7 +476,10 @@ def logout(request):
         del request.session['cart_list']
     except KeyError:
         pass
-    return redirect('/Admin')
+    if user_role == "Admin":
+        return redirect('/Admin')
+    else:
+        return redirect('/home')
 def admin(request):
     if "user_id" not in request.session or "user_role" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
@@ -548,6 +763,12 @@ def manageUserEdit(request, id):
     campingsite_list = Campingplaces.objects.all()
     role_list = Aspnetroles.objects.all()
     return render(request,"admin/manageUserCreate.html",{"salutation_list":salutation_list,"campingsite_list":campingsite_list,"role_list":role_list,"user_info":user_info[0],"url":"manageUser"})
+def checkEmailExist(request):
+    users = Users.objects.filter(email=request.POST['email'])
+    if len(users) > 0:
+        return JsonResponse({"result":"fail"})
+    else:
+        return JsonResponse({"result":"success"})
 def manageUserCreate(request):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
