@@ -10,7 +10,7 @@
     <div class="row">
         <div class="myaccount-wizard">
             <div class='row'>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <ul class="account-menu">
                         <li>
                             <a href="/Myaccount">Übersicht</a>
@@ -22,7 +22,7 @@
                             <a href="/Usersubscription">Abonnement</a>
                         </li>
                         <li>
-                            <a href="">Meine Fahrzeuge</a>
+                            <a href="/Uservehicles">Meine Fahrzeuge</a>
                         </li>
                         <li>
                             <a href="">Bestellungen</a>
@@ -34,12 +34,31 @@
                             <a href="">Passwort ändern</a>
                         </li>
                         <li>
-                            <a href="">Logout</a>
+                            <a href="/Admin/Logout">Logout</a>
                         </li>
                     </ul>
                 </div>
-                <div class="col-sm-8">
-                   
+                <div class="col-sm-9">
+                    <div class='row subscription-table'>
+                        {% for package in packagelist %}
+                        <div class="columns">
+                            <ul class="price">
+                                <li class="header">{{ package.packagename }}</li>
+                                <li class="grey">$ {{ package.annualpricepervehicle}} pro Jahr</li>
+                                <li>10GB Storage</li>
+                                <li>10 Emails</li>
+                                <li>10 Domains</li>
+                                <li>1GB Bandwidth</li>
+                                <li class="grey"><a href="#" class="button">Upgrade</a></li>
+                            </ul>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Informationen!</strong> <br>
+                        Keine Daten.
+                    </div>
+                    Sie können noch 5 Fahrzeuge hinzufügen, Fur mehr als 5 Fahrzeuge wenden Sie sich bitte an Kundenservice. (jedes weitere Fahrzeug ab 3,80 € im Jahr zzgl. 4,99 € monatlich fur die Mobilfunkkarte pro Fahrzeug) 
                 </div>
             </div>
         </div>

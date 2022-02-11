@@ -1,0 +1,19 @@
+.control-label {
+    font-size: 0.75rem;
+}
+.sub-label .control-label {
+    font-size: 1.25rem;
+}
+.btn-light {
+    border-color: #ddd !important;
+}
+.vehiclelist-table th {
+    font-size: 0.8rem;
+}
+.vehiclelist-table td {
+    font-size: 0.75rem;
+}
+
+.vehiclelist-table{
+    min-height: 200px;
+}

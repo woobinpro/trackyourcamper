@@ -63,9 +63,9 @@ function calTotalPrice(){
     $('.total-price').each(function(){
         product_price += parseFloat($(this).attr('value'));
     });
-    $('#total_price').html(product_price.toFixed(2)+" €");
-    $('#total_tax').html((product_price * 0.19).toFixed(2) +" €");
-    $('#checkout_price').html((product_price * 1.19).toFixed(2) +" €");
+    $('#total_price').html(product_price.toFixed(1)+" €");
+    $('#total_tax').html((product_price * 0.19).toFixed(1) +" €");
+    $('#checkout_price').html((product_price * 1.19).toFixed(1) +" €");
     
 }
 function setCartlist(product_id, qty){

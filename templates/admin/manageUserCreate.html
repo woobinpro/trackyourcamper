@@ -48,7 +48,7 @@
             <form id='user_form' action="{% if not user_info %}/Admin/ManageUser/Create{% else %}/Admin/ManageUser/Edit/{{ user_info.UserID }}{% endif %}" enctype="multipart/form-data" method="post" novalidate="novalidate">
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
                 <div class='row'>
-                    <div class="col-sm-4">
+                    <div class="{% if not user_info %}col-sm-4{% else %}col-sm-3{% endif %}">
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Anrede</label>
@@ -62,7 +62,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="{% if not user_info %}col-sm-4{% else %}col-sm-3{% endif %}">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">User ID</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" disabled  name="userid" type="text" value="{{ user_info.UserID }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="{% if not user_info %}col-sm-4{% else %}col-sm-3{% endif %}">
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Vorname</label>
@@ -72,7 +82,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="{% if not user_info %}col-sm-4{% else %}col-sm-3{% endif %}">
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Familienname</label>

@@ -10,7 +10,7 @@
     <div class="row">
         <div class="myaccount-wizard">
             <div class='row'>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <ul class="account-menu">
                         <li class='active'>
                             <a href="/Myaccount">Übersicht</a>
@@ -22,7 +22,7 @@
                             <a href="/Usersubscription">Abonnement</a>
                         </li>
                         <li>
-                            <a href="">Meine Fahrzeuge</a>
+                            <a href="/Uservehicles">Meine Fahrzeuge</a>
                         </li>
                         <li>
                             <a href="">Bestellungen</a>
@@ -34,11 +34,11 @@
                             <a href="">Passwort ändern</a>
                         </li>
                         <li>
-                            <a href="">Logout</a>
+                            <a href="/Admin/Logout">Logout</a>
                         </li>
                     </ul>
                 </div>
-                <div class="col-sm-8">
+                <div class="col-sm-9">
                     <h4>Willkommen {{ user.firstname }}</h4>
                     <hr>
                     <div class="row">
@@ -47,8 +47,13 @@
                                 <p class="title">Rechnungsadresse:</p>
                                 {% if billing_address is not None %}
                                 <p class='name'><strong>Vorname:</strong>{{ billing_address.firstname }}<strong class='ml-3'>Familienname:</strong>{{ billing_address.lastname }}</p>
-                                <p class='address'>{{ billing_address.housenumber }} {{ billing_address.road }} {{ billing_address.additionaladdress }} {{ billing_address.state }} {{ billing_address.country }} {{ billing_address.postcode }}</p>
-                                <p class='ort'><strong>Ort:</strong>{{ billing_address.place }}</p>
+                                <!-- <p class='address'>{{ billing_address.housenumber }} {{ billing_address.road }} {{ billing_address.additionaladdress }} {{ billing_address.state }} {{ billing_address.country }} {{ billing_address.postcode }}</p> -->
+                                {% if billing_address.country is not None %}<p><strong>Country: </strong> {{ billing_address.country }}</p>{% endif %}
+                                {% if billing_address.state is not None %}<p><strong>State: </strong> {{ billing_address.state }}</p>{% endif %}
+                                {% if billing_address.road is not None %}<p><strong>Street: </strong> {{ billing_address.road }}</p>{% endif %}
+                                {% if billing_address.housenumber is not None %}<p><strong>Housenumber: </strong> {{ billing_address.housenumber }}</p>{% endif %}
+                                {% if billing_address.postcode is not None %}<p><strong>Zip Code: </strong> {{ billing_address.postcode }}</p>{% endif %}
+                                {% if billing_address.place is not None %}<p class='ort'><strong>Ort:</strong>{{ billing_address.place }}</p>{% endif %}
                                 <p class='firma'><strong>Firma:</strong>{{ billing_address.company }}</p>
                                 <p class="company"><strong>Firmen Zusatz:</strong>{{ billing_address.company_addition }}</p>
                                 <p class="vat"><strong>Steuernummer:</strong>{{ billing_address.vatnumber }}</p>
@@ -65,8 +70,13 @@
                                 <p class="title">Shipped To:</p>
                                 {% if shipping_address is not None %}
                                 <p class='name'><strong>Vorname:</strong>{{ shipping_address.firstname }}<strong class='ml-3'>Familienname:</strong>{{ shipping_address.lastname }}</p>
-                                <p class='address'>{{ shipping_address.housenumber }} {{ shipping_address.road }} {{ shipping_address.additionaladdress }} {{ shipping_address.state }} {{ shipping_address.country }} {{ shipping_address.postcode }}</p>
-                                <p class='ort'><strong>Ort:</strong>{{ shipping_address.place }}</p>
+                                {% if shipping_address.country is not None %}<p><strong>Country: </strong> {{ shipping_address.country }}</p>{% endif %}
+                                {% if shipping_address.state is not None %}<p><strong>State: </strong> {{ shipping_address.state }}</p>{% endif %}
+                                {% if shipping_address.road is not None %}<p><strong>Street: </strong> {{ shipping_address.road }}</p>{% endif %}
+                                {% if shipping_address.housenumber is not None %}<p><strong>Housenumber: </strong> {{ shipping_address.housenumber }}</p>{% endif %}
+                                {% if shipping_address.postcode is not None %}<p><strong>Zip Code: </strong> {{ shipping_address.postcode }}</p>{% endif %}
+                                {% if shipping_address.place is not None %}<p class='ort'><strong>Ort:</strong>{{ shipping_address.place }}</p>{% endif %}
+                                
                                 <p class='firma'><strong>Firma:</strong>{{ shipping_address.company }}</p>
                                 <p class="company"><strong>Firmen Zusatz:</strong>{{ shipping_address.company_addition }}</p>
                                 <p class="vat"><strong>Steuernummer:</strong>{{ shipping_address.vatnumber }}</p>

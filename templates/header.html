@@ -64,9 +64,9 @@
                                             <li class="nav-item shop_link">
                                                 <a class="nav-link" href="javascript:void();"> Shop</a>
                                                 <ul>
-                                                    <li><a href="/Shop/Index/1">GPS Tracker</a></li>
-                                                    <li><a href="/Shop/Index/2">Rund um die Sicherheit</a></li>
-                                                    <li><a href="/Shop/Index/3">Camping</a></li>
+                                                    {% for item in category_list %}
+                                                    <li><a href="/Shop/Index/{{ item.id }}">{{ item.tracker_category }}</a></li>
+                                                    {% endfor %}
                                                 </ul>
                                             </li>
                                         </ul>

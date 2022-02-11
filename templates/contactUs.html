@@ -85,16 +85,15 @@
         <div class="col-sm-4 contact-address">
             <h5 class="yellow-color"><i class="fas fa-map-marker-alt"></i> Adresse</h5>
             <p class="c-contact">
-                <i class="fa fa-home"></i>&nbsp; Trackyourcamper <br> Werderstraße 83 <br>
-                D-79639 Müllheim<br>
+                <i class="fa fa-home"></i>&nbsp; Trackyourcamper <br> {{ header_content.footertrackaddress | safe }}
             </p>
             <p>&nbsp;</p>
             <h5 class="yellow-color"><i class="far fa-file-alt"></i> Kontaktdaten </h5>
             <p>
                 <i class="fa fa-envelope"></i> <a href="mailto:info@trackyourcamper.com" target="_blank">
                     info@trackyourcamper.com<br>
-                </a><i class="fa fa-phone"></i>&nbsp;07621/5604978<br>
-                <i class="far fa-clock"></i>&nbsp; Mo - Fr 08:30 - 17:00
+                </a><i class="fa fa-phone"></i>&nbsp;{{ header_content.content_2 | safe }}<br>
+                <i class="far fa-clock"></i>&nbsp; {{ header_content.content_1 | safe }}
             </p>
         </div>
     </div>

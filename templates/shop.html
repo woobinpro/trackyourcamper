@@ -21,6 +21,7 @@
                     <div class="spb_content_wrapper container">
                         <div class="row">
                             {% for tracker in tracker_list %}
+                            {% if tracker.trackercategory == id %}
                             <div class="col-sm-6 text-center  mt-3  mb-3">
                                 <div class="sf-icon-box sf-icon-box-boxed-three sf-animation sf-icon-" data-animation="pop-up" data-delay="200">
                                     <div class="sf-icon-cont cont-small sf-icon-float-none sf-icon-">{{ forloop.counter }}</div>
@@ -75,6 +76,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                             {% endfor %}
                             
                         </div>
@@ -84,31 +86,27 @@
             </div>
         </div>
     </div>
-{% elif id == 2 %}
-    <div class="container mt-5">
-        <div class="col-sm-12 text-center">
-            <h3 class="page-heading">Rund um die Sicherheit</h3>
 
-            <div class="horizontal-break"></div>
-        </div>
-        <div class="row mb-4">
-            <div class="col-md-12 text-center">
-                <p>{{ header_content.shopcontentproduct2 | safe }}</p>
-                
-            </div>
-        </div>
-    </div>
 {% else %}
     <div class="container mt-5">
         <div class="col-sm-12 text-center">
-            <h3 class="page-heading">Camping</h3>
+            <h3 class="page-heading">
+                {% for item in category_list %}
+                {% if item.id == id %}
+                {{ item.tracker_category }}
+                {% endif %}
+                {% endfor %}
+            </h3>
 
             <div class="horizontal-break"></div>
         </div>
         <div class="row mb-4">
             <div class="col-md-12 text-center">
-                <p>{{ header_content.shopcontentproduct3 | safe }}<br></p>
-                
+                {% if id == 2 %}
+                <p>{{ header_content.shopcontentproduct2 | safe }}</p>
+                {% elif id == 3 %} 
+                <p>{{ header_content.shopcontentproduct3 | safe }}</p>
+                {% endif %}
             </div>
         </div>
     </div>

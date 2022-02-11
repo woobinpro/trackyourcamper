@@ -155,6 +155,7 @@ function nextTab() {
         event.preventDefault();
         return false;
     });
+    window.scrollTo(0, 0);
 }
 function prevTab() {
     var $active = $('.wizard .nav-tabs li.active');
@@ -175,6 +176,8 @@ function prevTab() {
         event.preventDefault();
         return false;
     });
+    
+    window.scrollTo(0, 0);
 }
 function fbFocusOnTop(page_index) {
     if(page_index==1){

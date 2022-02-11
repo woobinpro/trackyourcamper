@@ -429,7 +429,7 @@
                     </div>
                 </div>
                 <div class='row'>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Preis pro Monat</label>
@@ -439,7 +439,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">PlanId für Monat</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="month_planid" value="{% if subscription_info.month_planid is not None %}{{ subscription_info.month_planid }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Preis für 3 Monate</label>
@@ -449,7 +459,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">PlanId für 3 Monate</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="number_3months_planid" value="{% if subscription_info.number_3months_planid is not None %}{{ subscription_info.number_3months_planid }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-3'>
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Preis für 6 Monate</label>
@@ -459,9 +481,17 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class='row'>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">PlanId für 6 Monate</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="number_6months_planid" value="{% if subscription_info.number_6months_planid is not None %}{{ subscription_info.number_6months_planid }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Preis pro Jahr</label>
@@ -471,12 +501,34 @@
                             </div>
                         </div>
                     </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">PlanId für Jahr</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="year_planid" value="{% if subscription_info.year_planid is not None %}{{ subscription_info.year_planid }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
                     <div class='col-sm-4'>
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Preis für 2 Jahre</label>
                                 <div class="col-sm-12">
                                     <input class="form-control"  name="pricetwoyear" value="{% if subscription_info.pricetwoyear is not None %}{{ subscription_info.pricetwoyear }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">PlanId für 2 Jahre</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="number_2years_planid" value="{% if subscription_info.number_2years_planid is not None %}{{ subscription_info.number_2years_planid }}{% endif %}">
                                 </div>
                             </div>
                         </div>

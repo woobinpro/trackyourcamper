@@ -20,7 +20,7 @@ class Migrationhistory(models.Model):
 
 
 class Aspnetroles(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=150)  # Field name made lowercase.
+    id = models.CharField(db_column='Id', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=256, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -59,7 +59,7 @@ class Aspnetuserroles(models.Model):
 
 
 class Aspnetusers(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=150)  # Field name made lowercase.
+    id = models.CharField(db_column='Id', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     email = models.CharField(db_column='Email', max_length=256, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     emailconfirmed = models.IntegerField(db_column='EmailConfirmed', blank=True, null=True)  # Field name made lowercase.
     passwordhash = models.TextField(db_column='PasswordHash', blank=True, null=True)  # Field name made lowercase.
@@ -147,7 +147,7 @@ class AuthUserUserPermissions(models.Model):
 
 
 class Billingaddressmaster(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(blank=True, null=True)
     userid = models.CharField(db_column='UserID', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     salutation = models.IntegerField(blank=True, null=True)
     firstname = models.CharField(db_column='Firstname', max_length=150, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
@@ -662,6 +662,7 @@ class Paymenttype(models.Model):
 
 
 class PaypalIpn(models.Model):
+    id = models.BigAutoField(primary_key=True)
     business = models.CharField(max_length=127)
     charset = models.CharField(max_length=255)
     custom = models.CharField(max_length=256)
@@ -865,7 +866,7 @@ class Securitycompanies(models.Model):
 
 
 class Shippingaddressmaster(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(blank=True, null=True)
     userid = models.CharField(db_column='UserID', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     salutation = models.IntegerField(blank=True, null=True)
     firstname = models.CharField(db_column='Firstname', max_length=150, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
@@ -1297,7 +1298,6 @@ class Trackerlisitem(models.Model):
     trackershortdesc = models.CharField(db_column='Trackershortdesc', max_length=500, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     price = models.DecimalField(db_column='Price', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     dicountprice = models.DecimalField(db_column='DicountPrice', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
-    taxprice = models.DecimalField(db_column='taxPrice', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     original_qty = models.IntegerField(db_column='Original_qty', blank=True, null=True)  # Field name made lowercase.
     pending_qty = models.IntegerField(db_column='Pending_qty', blank=True, null=True)  # Field name made lowercase.
     isactive = models.IntegerField(db_column='Isactive', blank=True, null=True)  # Field name made lowercase.
