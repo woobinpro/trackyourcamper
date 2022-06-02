@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/myaccount.css' %}">
+<link rel="stylesheet" href="{% static 'css/userForms.css' %}">
+<div class="container mt-5 mb-5">
+    <div class="col-sm-12 text-center">
+        <h3 class="page-heading">Formulare</h3>
+        <div class="horizontal-break"></div>
+    </div>
+    <div class="row">
+        <div class="myaccount-wizard">
+            <div class='row'>
+                <div class="col-sm-3">
+                    <ul class="account-menu">
+                        <li>
+                            <a href="/Myaccount">Übersicht</a>
+                        </li>
+                        <li>
+                            <a href="/Usersubscription/detail">Abonnement Rechnungen</a>
+                        </li>
+                        <li>
+                            <a href="/Usersubscription">Abonnement</a>
+                        </li>
+                        <li>
+                            <a href="/Uservehicles">Meine Fahrzeuge</a>
+                        </li>
+                        <li>
+                            <a href="/Userorders">Bestellungen</a>
+                        </li>
+                        <li class='active'>
+                            <a href="/Userforms">Formulare</a>
+                        </li>
+                        <li>
+                            <a href="/Userchangepassword">Passwort ändern</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-9">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Form Titel</th>
+                                    <th>Description</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id='form_list'>
+                                {% for form in form_list %}
+                                <tr id="tr_{{ form.id }}">
+                                    <td>{{ form.title }}</td>
+                                    <td>{{ form.description }}</td>
+                                    <td class="text-right">
+                                        <a href="{% static 'upload/' %}{{ form.filepath }}" alt="View" target="_blank" class="btn btn-primary btn-icon rounded-round mr-2"><i class="icon-eye"></i></a>
+                                        <a href="{% static 'upload/' %}{{ form.filepath }}" download="{{ form.filename }}" class="btn btn-success btn-icon rounded-round mr-2"><i class="icon-download"></i></a>
+                                        
+                                    </td>
+                                    
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'js/myaccount.js' %}"></script>
+{% endblock %}

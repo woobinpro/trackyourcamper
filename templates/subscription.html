@@ -74,6 +74,10 @@
                                     </select>
                                     <span class="field-validation-valid" data-valmsg-for="salutation" data-valmsg-replace="true"></span>
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputEmail4">Firma</label>
+                                    <input class="form-control"  id="company"  name="company" placeholder="Gesellschaft" type="text" value="">
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -110,34 +114,12 @@
                                     <input class="form-control" required  id="ConfirmPassword" maxlength="50" name="ConfirmPassword" placeholder="********" type="password">
                                     <span class="field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
                                 </div>
-                                <div class="form-group col-md-2">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
                                     <label for="inputZip">Kontakt  Telefon</label>
                                     <input class="form-control" required id="RegPhoneno" maxlength="20" name="RegPhoneno" placeholder="Kontakt  Telefon" type="text" value="">
                                     <span class="field-validation-valid" data-valmsg-for="RegPhoneno" data-valmsg-replace="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-2">
-                                    <label for="inputZip">Postleitzahl</label>
-                                    <input class="form-control" required  id="Postalcode" maxlength="20" name="Postalcode"  placeholder="Postleitzahl" type="text" value="">
-                                    <span class="field-validation-valid" data-valmsg-for="Postalcode" data-valmsg-replace="true"></span>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputState">Ort</label>
-                                    <input class="form-control" required id="City" maxlength="100" name="City" placeholder="Ort" type="text" value="">
-                                    <span class="field-validation-valid" data-valmsg-for="City" data-valmsg-replace="true"></span>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="inputCity">Land</label>
-                                    <input class="form-control" required id="Country" maxlength="100" name="Country" placeholder="Land" type="text" value="">
-                                    <span class="field-validation-valid" data-valmsg-for="Country" data-valmsg-replace="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="inputState">Straße</label>
-                                    <input class="form-control" required id="Road" maxlength="100" name="Road" placeholder="Straße" type="text" value="">
-                                    <span class="field-validation-valid" data-valmsg-for="Road" data-valmsg-replace="true"></span>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputZip">geworben durch</label>
@@ -145,8 +127,79 @@
                                     <span class="field-validation-valid" data-valmsg-for="Acquiredby" data-valmsg-replace="true"></span>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <label for="inputZip">Postleitzahl</label>
+                                    <input class="form-control" required   name="Postalcode"  placeholder="Postleitzahl" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputState">Ort</label>
+                                    <input class="form-control" required  name="City" placeholder="Ort" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputCity">Hausnummer</label>
+                                    <input class="form-control" required  name="housenumber" placeholder="Hausnummer" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="inputState">Straße</label>
+                                    <input class="form-control" required  name="Road" placeholder="Straße" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputCity">Land</label>
+                                    <input class="form-control" required  name="Country" placeholder="Land" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputCity">UstID</label>
+                                    <input class="form-control"   name="VATnumber" placeholder="UstID" type="text" value="">
+                                </div>
+                                
+                            </div>
+                            <div class="form-group checkbox control-toggle">
+                                <input type="hidden" name="shipping_address" value="1">
+                                <label for="Issameshipaddress" class="btn-block"> 
+                                    <input  data-val-required="The Issameshipaddress field is required." id="Issameshipaddress"  onchange="Onchangedeliverycheck()" type="checkbox" >
+                                    <input  id='same_address_flag' type="hidden" value="false" name="is_like">
+
+                                    Lieferadresse entspricht Rechnungsadresse 
+                                </label>
+                            </div>
+                            <legend class="shipping-form">Neue Lieferadresse anlegen</legend>
+                            <div class="form-row shipping-form">
+                                <div class="form-group col-md-2">
+                                    <label for="inputZip">Postleitzahl</label>
+                                    <input class="form-control" required   name="Shipping_Postalcode"  placeholder="Postleitzahl" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputState">Ort</label>
+                                    <input class="form-control" required  name="Shipping_City" placeholder="Ort" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputCity">Hausnummer</label>
+                                    <input class="form-control" required  name="Shipping_housenumber" placeholder="Hausnummer" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="form-row shipping-form">
+                                <div class="form-group col-md-4">
+                                    <label for="inputState">Straße</label>
+                                    <input class="form-control" required  name="Shipping_Road" placeholder="Straße" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputCity">Land</label>
+                                    <input class="form-control" required  name="Shipping_Country" placeholder="Land" type="text" value="">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputCity">UstID</label>
+                                    <input class="form-control"   name="Shipping_VATnumber" placeholder="UstID" type="text" value="">
+                                </div>
+                            </div>
                         </div>
-                        <ul class="list-inline pull-right">
+                        <div class="row pl-3">
+                                <script src='https://www.google.com/recaptcha/api.js'></script>
+                                <div class="g-recaptcha" required data-sitekey="6LcgWK0eAAAAAGYb4J7cby-MHpf0u4Ecf7nfYC5n"></div>
+                        </div>
+                        <ul class="row list-inline pull-right">
                             <li>
                                 <button class="btn btn-warning next-step regcontinue" id="btnstep1" onclick="fbFocusOnTop(1)">weiter</button>
                             </li>
@@ -644,65 +697,78 @@
                     </div>
 
                     <div class="tab-pane bhoechie-tab-content" role="tabpanel" id="complete">
-                        <h2>
-                            Abschluss
-                        </h2>
-                        <div class="form-horizontal mt-4">
-                            <div class="col-sm-6">
-                                <label>
-                                    <input data-val="true" data-val-required="The TermsAndConditions field is required." id="TermsAndConditions" name="TermsAndConditions" type="checkbox" value="true"><input name="TermsAndConditions" type="hidden" value="false">
-                                    Hiermit bestätige ich die Allgemeinen Geschäftsbedingungen
-                                    <br>   <span class="field-validation-valid" data-valmsg-for="TermsAndConditions" data-valmsg-replace="true"></span>
-                                </label>
-                            </div>
-                            <div class="col-sm-6">
-                                <label>
-                                    <input data-val="true" data-val-required="The privacypolicy field is required." id="privacypolicy" name="privacypolicy" type="checkbox" value="true"><input name="privacypolicy" type="hidden" value="false">
-                                    Hiermit bestätige ich die Datenschutzbestimmungen
-                                </label><br>
-                                <span class="field-validation-valid" data-valmsg-for="privacypolicy" data-valmsg-replace="true"></span>
-                            </div>
-                            <div class="col-sm-12">
-                                <label>
-                                    <input data-val="true" data-val-required="The NewsLetterSubscribe field is required." id="NewsLetterSubscribe" name="NewsLetterSubscribe" type="checkbox" value="true"><input name="NewsLetterSubscribe" type="hidden" value="false">
-                                    Ich erkläre mich damit einverstanden, dass die Firma Trackyourcamper mich regelmäßig über Neuigkeiten per E-Mail Informiert. Themen: Diebstahl von Fahrzeugen, Produktinfomationen, Neue Produkte, Erfolge. Meine Einwilligung kann ich jederzeit gegenüber der Firma Trackyourcamper  widerrufen.
-                                </label><br>
-                            </div>
-                        </div>
-                        <h2>
-                            Payment Options
-                        </h2>
-                        <div class="form-horizontal mt-4">
-                            <div class="col-sm-12">
-                                <label class="radio-inline">
-                                    <input type="radio" name="paymentprocessbind" value="0" checked="checked" onchange="bindpaymentprocessbind(0)">Zahlungsoptionen
-                                </label>
-                                <input type='hidden' id='braintree_token' value='{{ braintree_client_token }}'>
-                                <div class="col-sm-12" id="bindcreditdebitpaymethod">
-                                    <div id="bt-dropin"></div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h2>
+                                    Abschluss
+                                </h2>
+                                <div class="form-horizontal mt-4">
+                                    <div class="col-sm-6">
+                                        <label>
+                                            <input data-val="true" data-val-required="The TermsAndConditions field is required." id="TermsAndConditions" name="TermsAndConditions" type="checkbox" value="true"><input name="TermsAndConditions" type="hidden" value="false">
+                                            Hiermit bestätige ich die Allgemeinen Geschäftsbedingungen
+                                            <br>   <span class="field-validation-valid" data-valmsg-for="TermsAndConditions" data-valmsg-replace="true"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label>
+                                            <input data-val="true" data-val-required="The privacypolicy field is required." id="privacypolicy" name="privacypolicy" type="checkbox" value="true"><input name="privacypolicy" type="hidden" value="false">
+                                            Hiermit bestätige ich die Datenschutzbestimmungen
+                                        </label><br>
+                                        <span class="field-validation-valid" data-valmsg-for="privacypolicy" data-valmsg-replace="true"></span>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <label>
+                                            <input data-val="true" data-val-required="The NewsLetterSubscribe field is required." id="NewsLetterSubscribe" name="NewsLetterSubscribe" type="checkbox" value="true"><input name="NewsLetterSubscribe" type="hidden" value="false">
+                                            Ich erkläre mich damit einverstanden, dass die Firma Trackyourcamper mich regelmäßig über Neuigkeiten per E-Mail Informiert. Themen: Diebstahl von Fahrzeugen, Produktinfomationen, Neue Produkte, Erfolge. Meine Einwilligung kann ich jederzeit gegenüber der Firma Trackyourcamper  widerrufen.
+                                        </label><br>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <label class="radio-inline">
-                                    <input type="radio" name="paymentprocessbind" value="1" onchange="bindpaymentprocessbind(1)">Lastschriftverfahren
-                                </label>
-                                <div class="col-sm-12" id="bindbanktransferbindinfo" style="display: none;">
-                                    <div class="alert alert-info">
-                                        <strong>Information</strong>
-                                        <br> Klicken Sie bitte auf Abschicken, um zur Zahlung umgeleitet zu werden und den Zahlungsvorgang abzuschließen zu können.
+                                <h2>
+                                    Payment Options
+                                </h2>
+                                <div class="form-horizontal mt-4">
+                                    <div class="col-sm-12">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="paymentprocessbind" value="0" checked="checked" onchange="bindpaymentprocessbind(0)">Zahlungsoptionen
+                                        </label>
+                                        <input type='hidden' id='braintree_token' value='{{ braintree_client_token }}'>
+                                        <div class="col-sm-12" id="bindcreditdebitpaymethod">
+                                            <div id="bt-dropin"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="paymentprocessbind" value="1" onchange="bindpaymentprocessbind(1)">Lastschriftverfahren
+                                        </label>
+                                        <div class="col-sm-12" id="bindbanktransferbindinfo" style="display: none;">
+                                            <div class="alert alert-info">
+                                                <strong>Information</strong>
+                                                <br> Klicken Sie bitte auf Abschicken, um zur Zahlung umgeleitet zu werden und den Zahlungsvorgang abzuschließen zu können.
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="form-horizontal mt-4">
-                            <div class="col-sm-12">
-
+                            <div class="col-sm-4">
+                                <div class="chk-total">
+                                    <ul class="font-2" style="list-style: none;">
+                                        <b>Gewählte Optionen</b>
+                                        <li class="price_item"> Abonnement: <span id="subscription_name"></span> <span id='subscription_price'>  </span> </li>
+                                        <!-- <li class="price_item"> MwSt.-Preis: <span id="subscription_tax_price"></span>  </li> -->
+                                        <!-- <br> -->
+                                        <li class="price_item"> GPS-Tracker: <span id="tracker_name"></span> <span id='tracker_price'>  </span> </li>
+                                        <li class="price_item"> Aktivierungspreis: <span id="tracker_activation_price"></span> </li>
+                                        <li class="price_item"> MwSt.-Preis: <span id="tracker_tax_price"></span> </li>
+                                        <hr>
+                                        <li class="price_item"> Gesamtsumme <span id='total_price'> </span> </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                         <ul class="list-inline pull-right">
                             <li><button type="button" class="btn btn-black btn-theme prev-step regbackcontinue" onclick="prevTab()">zurück</button></li>
-                            <li><input type="submit" value="Abschicken" class="btn btn-warning" id="btn_submit" ></li>
+                            <li><input type="submit" value="Abschicken" class="btn btn-warning" id="btn_submit"></li>
                         </ul>
                     </div>
                     <input id="nonce" name="payment_method_nonce" type="hidden">

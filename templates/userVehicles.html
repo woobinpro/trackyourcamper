@@ -26,13 +26,13 @@
                             <a href="/Uservehicles">Meine Fahrzeuge</a>
                         </li>
                         <li>
-                            <a href="">Bestellungen</a>
+                            <a href="/Userorders">Bestellungen</a>
                         </li>
                         <li>
-                            <a href="">Formulare</a>
+                            <a href="/Userforms">Formulare</a>
                         </li>
                         <li>
-                            <a href="">Passwort ändern</a>
+                            <a href="/Userchangepassword">Passwort ändern</a>
                         </li>
                         <li>
                             <a href="/Admin/Logout">Logout</a>
@@ -42,7 +42,8 @@
                 <div class="col-sm-9">
                     <div class='row mb-3'>
                         <div class='col-sm-6'>
-                            <a class="edit" href="/Uservehicles/Create">
+                            <input type="hidden" value="{{ rest_count }}" id="rest_count">
+                            <a class="edit" href="/Uservehicles/Create" id="btn_add_vehicle">
                                 <i class="fas fa-plus mr-2"></i> Erstellen Sie ein Fahrzeug
                             </a>
                         </div>
@@ -180,7 +181,49 @@
                         Keine Daten.
                     </div>
                     {% endif %}
-                    Sie können noch 5 Fahrzeuge hinzufügen, Fur mehr als 5 Fahrzeuge wenden Sie sich bitte an Kundenservice. (jedes weitere Fahrzeug ab 3,80 € im Jahr zzgl. 4,99 € monatlich fur die Mobilfunkkarte pro Fahrzeug)
+                    <div class='row'>
+                        <div class='col-sm-3'>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Abonnement</label>
+                                    <div class="col-sm-12">
+                                        <input class="form-control" disabled type="text" value="{{ sub_name }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-sm-3'>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Genehmigte Fahrzeuge</label>
+                                    <div class="col-sm-12">
+                                        <input class="form-control"  disabled type="text" value="{{ max_count }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-sm-3'>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Gebuchte Fahrzeuge</label>
+                                    <div class="col-sm-12">
+                                        <input class="form-control" disabled type="text" value="{{ vehicle_count }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-sm-3'>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-12 control-label">Noch zu buchende Fahrzeuge</label>
+                                    <div class="col-sm-12">
+                                        <input class="form-control"  disabled type="text" value="{{ rest_count }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="text-primary">Falls Sie mehr Fahrzeuge in Ihrem Account verwalten möchten Kontaktieren sie uns über das Kontaktformular!</span>
                 </div>
             </div>
         </div>

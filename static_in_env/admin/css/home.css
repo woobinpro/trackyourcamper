@@ -1,9 +1,9 @@
-.badge-pill {
+.card .badge-pill {
     padding-right: 0.6rem;
     padding-left: 0.6rem;
     border-radius: 10rem;
 }
-.badge {
+.card .badge {
     font-size: 150%;
 }
 .user-count {

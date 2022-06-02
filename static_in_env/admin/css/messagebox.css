@@ -1,0 +1,9 @@
+.message-table tr {
+    cursor: pointer;
+}
+.message-table thead {
+    display: none;
+}
+.control-label {
+    font-weight: bold;
+}

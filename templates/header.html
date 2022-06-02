@@ -65,7 +65,9 @@
                                                 <a class="nav-link" href="javascript:void();"> Shop</a>
                                                 <ul>
                                                     {% for item in category_list %}
+                                                    {% if item.isactive == 1 %}
                                                     <li><a href="/Shop/Index/{{ item.id }}">{{ item.tracker_category }}</a></li>
+                                                    {% endif %}
                                                     {% endfor %}
                                                 </ul>
                                             </li>

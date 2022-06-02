@@ -1,3 +1,10 @@
+window.onload = function() {
+    var $recaptcha = document.querySelector('#g-recaptcha-response');
+
+    if($recaptcha) {
+        $recaptcha.setAttribute("required", "required");
+    }
+};
 // Validation config
 var _componentValidation = function() {
     if (!$().validate) {

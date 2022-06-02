@@ -1,3 +1,10 @@
+window.onload = function() {
+    var $recaptcha = document.querySelector('#g-recaptcha-response');
+
+    if($recaptcha) {
+        $recaptcha.setAttribute("required", "required");
+    }
+};
 // Validation config
 var _componentValidation = function() {
     if (!$().validate) {
@@ -130,6 +137,28 @@ function getModelList(id){
         }
     });
 }
+function getAmount() {
+    var _data = new FormData($('#vehicle_form').get(0));
+    $.ajax({
+        url: host_url + '/getVehicleAmount',
+        data: _data,
+        cache: false,
+        processData: false,
+        contentType: false,
+        type: 'post', // This is the default though, you don't actually need to always mention it
+        success: function(data) {
+            $('#subscription_name').html(data.s_name);
+            $('#subscription_price').html(data.s_price.toFixed(2) + "€");
+            // $('#subscription_tax_price').html(data.s_tax_price + "€");
+            $('#tracker_name').html(data.t_name);
+            $('#tracker_price').html(data.t_price + "€");
+            $('#tracker_tax_price').html(data.t_tax_price + "€");
+            $('#tracker_activation_price').html(data.t_activate_price.toFixed(2) + "€");
+            $('#total_price').html(data.total_price + "€");
+            // nextTab();
+        }
+    }); 
+}
 $(document).ready(function () {
     _componentValidation();
     $('.form-control-uniform').uniform();
@@ -162,4 +191,11 @@ $(document).ready(function () {
         getModelList($(this).val());
     });
     getModelList($('#brandid').val());
+    if($('#vehicle_count').val()>0) {
+        getAmount();
+    }
+    $('#tracker_id').change(getAmount);
+    $('#package_id').change(getAmount);
+    $('#package_interval_id').change(getAmount);
+    $('#activate_interval_id').change(getAmount);
 });

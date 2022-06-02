@@ -17,3 +17,11 @@
 .vehiclelist-table{
     min-height: 200px;
 }
+.price_item {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+.price_item span {
+    font-weight: normal;
+}

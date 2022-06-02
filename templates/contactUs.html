@@ -10,8 +10,8 @@
     <div class="row">
         <div class="col-sm-8">
             <p>Schreiben Sie uns Ihr Anliegen. Wir werden jede Anfrage Zeitnah bearbeiten.</p>
-            <form action="/Contactus" id="frmcontactsubmit" method="post" novalidate="novalidate">
-                <input name="__RequestVerificationToken" type="hidden" value="lbivh4tzeAyS44435myRDdRxQHnBpEvNQ0MiSqtVtuMzh6d9e-L6N4PcX_5sscDgoYXCCbZ_TETC05R1wWWRk7xh_r5GWWVlGt63NDpOQFc1">
+            <form  id="frmcontactsubmit" method="post" novalidate="novalidate">
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'> 
                 <div class="validation-summary-valid" data-valmsg-summary="true">
                     <ul>
                         <li style="display:none"></li>

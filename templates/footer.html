@@ -31,7 +31,8 @@
     
                     <div class="c-feedback" id="frmfootersubmit">
                         <h3>Kontaktieren Sie uns</h3>
-                        <form action="/Home/Contact" data-ajax="true" data-ajax-failure="OnFailure" data-ajax-success="OnSuccess" id="form0" method="post" novalidate="novalidate">                        
+                        <form   id="contact_form" method="post" novalidate="novalidate">     
+                            <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>                 
                             <div class="c-form-wrap">
                                 <div class="c-form-wrap-group">
                                     <input class="form-control" data-val="true" data-val-length=" " data-val-length-max="100" data-val-length-min="2" data-val-required=" " id="Name" name="Name" placeholder="Name" type="text" value="">
@@ -122,3 +123,34 @@
 <!-- <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js'></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.js"></script>
 <script src="{% static 'js/theme.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script>
+    function contact(event) {
+        event.preventDefault();
+        var data = new FormData($('#contact_form').get(0));
+        $.ajax({
+            url: host_url + '/Contact',
+            type: 'post',
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if(data.result=='success'){
+                    new Noty({
+                        text: 'erfolgreich gesendet',
+                        type: 'success',
+                        closeWith: ['button']
+                    }).show();
+                    $('#contact_form')[0].reset();
+                }else {
+                    new Noty({text:"Senden ist fehlgeschlagen",type:'error',closeWith: ['button']}).show();
+                }
+            }
+        });
+        return false;
+    }
+    $(document).ready(function(){
+        $('#contact_form').submit(contact);
+    });
+</script>

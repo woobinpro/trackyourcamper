@@ -1,4 +1,4 @@
-var map, marker, coordinate;
+var map, marker, coordinate, shipping_map_flag;
 // Validation config
 var _componentValidation = function() {
     if (!$().validate) {
@@ -61,7 +61,7 @@ var _componentValidation = function() {
             dob: {
                 date: true
             },
-            
+            responsibleforcampingplaceid: {number: true},
             password: {
                 minlength: 5
             },
@@ -111,6 +111,16 @@ var _componentValidation = function() {
 };
 $(document).ready(function(){
     _componentValidation();
+    islike_switch = new Switchery($('#islike')[0]);
+    $('#islike').on("change" , function() {
+        if(islike_switch.isChecked()) {
+            $('.shipping-form').hide();
+            $('.shipping-form .required-input').removeAttr('required');
+        }else {
+            $('.shipping-form').show();
+            $('.shipping-form .required-input').attr('required','');
+        }
+    });
     $('.select').select2({
         minimumResultsForSearch: Infinity
     });
@@ -127,6 +137,7 @@ $(document).ready(function(){
         coordinate = e.latLng;
     });
     $('#get_coordinate_from_google').click(function(){
+        shipping_map_flag = false;
         var center = { lat: 52.520008, lng: 13.404954 };
         if($('#lat_value').val()!="" && $('#lng_value').val()!=""){
             center = { lat: parseFloat($('#lat_value').val()), lng: parseFloat($('#lng_value').val()) };
@@ -141,10 +152,32 @@ $(document).ready(function(){
         coordinate = center;
         map.panTo(center);
     });
+    $('#shipping_get_coordinate_from_google').click(function(){
+        shipping_map_flag = true;
+        var center = { lat: 52.520008, lng: 13.404954 };
+        if($('#shipping_lat_value').val()!="" && $('#shipping_lng_value').val()!=""){
+            center = { lat: parseFloat($('#shipping_lat_value').val()), lng: parseFloat($('#shipping_lng_value').val()) };
+        }
+        if(marker!=undefined)marker.setPosition(center);
+        else {
+            marker = new google.maps.Marker({
+                position: center,
+                map: map,
+            });
+        }
+        coordinate = center;
+        map.panTo(center);
+    });
     $('#btn_apply_coordinate').click(function(){
         if(coordinate!= undefined){
-            $('#lat_value').val(coordinate.lat);
-            $('#lng_value').val(coordinate.lng);
+            if(!shipping_map_flag) {
+                $('#lat_value').val(coordinate.lat);
+                $('#lng_value').val(coordinate.lng);
+            }else {
+                $('#shipping_lat_value').val(coordinate.lat);
+                $('#shipping_lng_value').val(coordinate.lng);
+            }
+            
         }
     });
     $('#get_coordinate').click(function(){
@@ -157,14 +190,46 @@ $(document).ready(function(){
             return false;
         }
         var street = $('#street').val().replaceAll(' ','+');
+        var postal = $('#postal').val();
+
         showProgress();
         $.ajax({
-            url: host_url + '/Admin/ManageUser/GetCoordinate/'+street,
+            url: host_url + '/Admin/ManageUser/GetCoordinate/'+street+"+"+postal,
             type: 'get', // This is the default though, you don't actually need to always mention it
             success: function(data) {
                 if(data.result=="success"){
                     $('#lat_value').val(data.lat);
                     $('#lng_value').val(data.lng);
+                }else {
+                    new Noty({text:"Bitte geben Sie Ihre Adresse korrekt ein",type:'warning',closeWith: ['button']}).show();
+                }
+                hideProgress();
+            },
+            failure: function() { 
+                hideProgress();
+            }
+        });
+        return false;
+    });
+    $('#shipping_get_coordinate').click(function(){
+        if($('#shipping_street').val()==''){
+            new Noty({
+                text: 'Bitte geben Sie Straßeninformationen ein',
+                type: 'warning',
+                closeWith: ['button']
+            }).show();
+            return false;
+        }
+        var street = $('#shipping_street').val().replaceAll(' ','+');
+        var postal = $('#shipping_postal').val();
+        showProgress();
+        $.ajax({
+            url: host_url + '/Admin/ManageUser/GetCoordinate/'+street+"+"+postal,
+            type: 'get', // This is the default though, you don't actually need to always mention it
+            success: function(data) {
+                if(data.result=="success"){
+                    $('#shipping_lat_value').val(data.lat);
+                    $('#shipping_lng_value').val(data.lng);
                 }else {
                     new Noty({text:"Bitte geben Sie Ihre Adresse korrekt ein",type:'warning',closeWith: ['button']}).show();
                 }

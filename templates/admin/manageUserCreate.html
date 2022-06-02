@@ -2,10 +2,13 @@
 {% load static %}  
 {% block content %}
 <link href="{% static 'admin/css/manageUser.css' %}" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRiaPjThG3eZJcdetH5veIK6nCrmjIIJM&amp;sensor=false"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDK8dwqNz7TAhgJqRo_dY_CoDsP8sxKpwo&amp;sensor=false"></script>
 <script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
 <script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
 <script src="{% static 'admin/global_assets/js/plugins/forms/selects/select2.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/extensions/jquery_ui/interactions.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switchery.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/forms/styling/switch.min.js' %}"></script>
 <!-- Page header -->
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
@@ -131,7 +134,7 @@
                             <div class="row">
                                 <label class="col-sm-12 control-label">Verantwortlich für den Campingplatz</label>
                                 <div class="col-sm-12">
-                                    <select class="form-control" name="responsibleforcampingplaceid"><option value=""> wählen</option>
+                                    <select class="form-control" name="responsibleforcampingplaceid"><option value="0"> wählen</option>
                                         {% for campingsite in campingsite_list %}
                                         <option value="{{ campingsite.id}}" {% if user_info.ResponsibleForCampingPlaceId == campingsite.id %} selected {% endif %}>{{ campingsite.name }}</option>
                                         {% endfor %}
@@ -181,7 +184,14 @@
                 </div>
                 {% endif %}
                 <div class='row sub-label'>
-                    <label class="col-sm-12 control-label">Adresse</label>
+                    <label class="col-sm-4 control-label">Rechnungsadresse</label>
+                    <div class="col-sm-8">
+                        <div class="form-check form-check-switchery">
+                            <label class="form-check-label">
+                                <input type="checkbox" name="islike" class="form-check-input-switchery" id="islike" {% if shipping_address.is_like %}checked{% endif %} data-fouc><b>Rechnungsadresse gleich Lieferadresse</b>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class='row'>
                     <div class='col-sm-4'>
@@ -199,7 +209,7 @@
                             <div class="row">
                                 <label class="col-sm-12 control-label">Postleitzahl</label>
                                 <div class="col-sm-12">
-                                    <input class="form-control" required name="address_postal" type="text" value="{{ user_info.Address_Postal }}">
+                                    <input class="form-control" required id="postal" name="address_postal" type="text" value="{{ user_info.Address_Postal }}">
                                 </div>
                             </div>
                         </div>
@@ -217,7 +227,17 @@
                 </div>
                 
                 <div class='row'>
-                    <div class='col-sm-6'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Hausnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" required  name="address_housenumber" type="text" value="{{ user_info.Address_housenumber }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Bundesland</label>
@@ -227,12 +247,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class='col-sm-6'>
+                    <div class='col-sm-4'>
                         <div class="form-group">
                             <div class="row">
                                 <label class="col-sm-12 control-label">Land</label>
                                 <div class="col-sm-12">
                                     <input class="form-control" required  name="address_country" type="text" value="{{ user_info.Address_Country }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Firma</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="company" type="text" value="{{ user_info.company }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">UstID</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="VATnumber" type="text" value="{{ billing_address.vatnumber }}">
                                 </div>
                             </div>
                         </div>
@@ -264,8 +306,168 @@
                         <a href='#' class="btn btn-primary" id='get_coordinate_from_google' data-target="#modal_google_map" data-toggle="modal"><i class="icon-map4 mr-2"></i>von google map</a>
                     </div>
                 </div>
+                <div class='row sub-label shipping-form'>
+                    <label class="col-sm-12 control-label">Lieferadresse</label>
+                </div>
+                <div class='row shipping-form'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Straße</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input" required id="shipping_street"  name="shipping_address_street" type="text" value="{{ shipping_address.road }}"> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Postleitzahl</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input"  required id="shipping_postal" name="shipping_address_postal" type="text" value="{{ shipping_address.postcode }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Ort</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input"  required name="shipping_address_city" type="text" value="{{ shipping_address.place }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                {% if user_info %}<input name='id' type='hidden' value="{{ user_info.id }}">{% endif %}
+                <div class='row shipping-form'>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Hausnummer</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input" required  name="shipping_address_housenumber" type="text" value="{{ shipping_address.housenumber }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Bundesland</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input"  required name="shipping_address_state" type="text" value="{{ shipping_address.state }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Land</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input" required name="shipping_address_country" type="text" value="{{ shipping_address.country }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row shipping-form'>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Firma</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="shipping_company" type="text" value="{{ shipping_address.company }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">UstID</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  name="shipping_VATnumber" type="text" value="{{ shipping_address.vatnumber }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row shipping-form'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Breitengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input"  required id='shipping_lat_value'  name="shipping_address_latitude" type="text" value="{{ shipping_address.latitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Längengrad</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control required-input"  required id='shipping_lng_value' name="shipping_address_longitude" type="text" value="{{ shipping_address.longitude }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <a href='#' class="btn btn-primary" id='shipping_get_coordinate'><i class="icon-location4 mr-2"></i>Koordinaten bekommen</a>
+                        <a href='#' class="btn btn-primary" id='shipping_get_coordinate_from_google' data-target="#modal_google_map" data-toggle="modal"><i class="icon-map4 mr-2"></i>von google map</a>
+                    </div>
+                </div>
+                {% if user_info %}
+                <hr>
+                <div class='row'>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Abonnement</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" disabled type="text" value="{{ subscription.packagename }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Genehmigte Fahrzeuge</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  disabled type="text" value="{{ subscription.Vehiclefleetmanagement_numberofvehicles }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Gebuchte Fahrzeuge</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" disabled type="text" value="{{ vehicle_count }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Noch zu buchende Fahrzeuge</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control"  disabled type="text" value="{{ rest_count }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input name='id' type='hidden' value="{{ user_info.id }}">
+                {% endif %}
                 <div class="row float-right">
                     <div class="col-sm-12">
                         <button class="btn btn-primary" type="submit">{% if not user_info %}Erstellen{% else %}Speichern{% endif %}</button>

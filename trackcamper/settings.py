@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mqe&b6ac44!7!&^p2cmul9hh6o088m(i_=1bi@+lz4!y_uu)o^'
+SECRET_KEY = '57=h(2ujs8wyckg9e*%&3zbyk=3*fs0uszr%@)vj20r-48=z7c7!4&d454@jkg*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "django_extensions",
     'track',
     'mathfilters',
-    'paypal.standard.ipn'
+    'paypal.standard.ipn',
+    'cookie_consent',
+    "sslserver"
 ]
 
 MIDDLEWARE = [
@@ -149,3 +152,30 @@ BRAINTREE_PRIVATE_KEY = "074cfc1cb8e7cad6c648b4fa325fe865"
 # BRAINTREE_MERCHANT_ID = "32v8hcxjr7q8h5xg"
 # BRAINTREE_PUBLIC_KEY = "w8zzy8k5g99wd5dg"
 # BRAINTREE_PRIVATE_KEY = "254a4bb3924cd9a53d9ed96a6e08642e"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "change.trackyourcamper@gmail.com"
+EMAIL_HOST_PASSWORD = "changetyc2022+"
+EMAIL_CONTACT = "kontakt@trackyourcamper.com"
+
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LcgWK0eAAAAANytvmlByhYrGqJL59Now4laluLg'
+COOKIE_CONSENT_NAME = "cookie_consent"
+COOKIE_CONSENT_MAX_AGE = 60 * 60 * 24 * 365 * 1  # 1 year
+COOKIE_CONSENT_LOG_ENABLED = True
+
+# X_FRAME_OPTIONS = 'ALLOWALL'
+
+# XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# SECURE_BROWSER_XSS_FILTER = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# CSRF_TRUSTED_ORIGINS = ['trackyourcamper.com']

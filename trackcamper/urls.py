@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('',include('track.urls')),
     path('paypal/', include('paypal.standard.ipn.urls')),
+    path('cookies/', include('cookie_consent.urls'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

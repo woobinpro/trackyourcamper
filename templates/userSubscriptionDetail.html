@@ -25,13 +25,13 @@
                             <a href="/Uservehicles">Meine Fahrzeuge</a>
                         </li>
                         <li>
-                            <a href="">Bestellungen</a>
+                            <a href="/Userorders">Bestellungen</a>
                         </li>
                         <li>
-                            <a href="">Formulare</a>
+                            <a href="/Userforms">Formulare</a>
                         </li>
                         <li>
-                            <a href="">Passwort ändern</a>
+                            <a href="/Userchangepassword">Passwort ändern</a>
                         </li>
                         <li>
                             <a href="/Admin/Logout">Logout</a>
@@ -46,7 +46,7 @@
                                     Kundendaten
                                 </th>
                                 <th>
-                                    Abonnment Paket
+                                    Abonnement Paket
                                 </th>
                                 <th>
                                     Rechnungsdatum
@@ -62,7 +62,7 @@
                                     <i class="fas fa-envelope mr-1"></i>{{ item.Email }}
                                 </td>
                                 <td>
-                                    <strong>Abonnement:</strong>{{ item.packagename }}<br>
+                                    {% if item.Note is None %} <strong>Abonnement:</strong> {{ item.packagename }} {% else %} {{ item.Note }} ({{ item.packagename }}) {% endif %}<br>
                                     <strong>Zahlungsintervall:</strong>
                                     {% if item.PaymentInterval == '1' %}1 Monat
                                     {% elif item.PaymentInterval == '2' %}3 Monate
@@ -88,8 +88,8 @@
                                 </td>
                                 <td>
                                     {{ item.Trackername }}<br>
-                                    <strong>Preis:</strong>{{ item.Subtotal }} €<br>
-                                    <strong>Einmalige Aktivierungsgebuhr:</strong>{{ item.taxPrice }} €<br>
+                                    <strong>Preis:</strong>{{ item.DicountPrice }} €<br>
+                                    <strong>Einmalige Aktivierungsgebühr:</strong>{{ item.activation_price }} €<br>
                                 </td>
                                 <td>
                                     {{ item.OrderDate }}

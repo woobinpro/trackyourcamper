@@ -27,6 +27,14 @@ class Aspnetroles(models.Model):
         managed = False
         db_table = 'aspnetroles'
 
+class Wallet(models.Model):
+    id = models.AutoField(db_column='id', primary_key=True)  # Field name made lowercase.
+    public_key = models.CharField(db_column='public_key', max_length=250, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
+    private_key = models.CharField(db_column='private_key', max_length=250, db_collation='utf8_general_ci', blank=True, null=True)
+    class Meta:
+        managed = False
+        db_table = 'wallet'
+
 
 class Aspnetuserclaims(models.Model):
     id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
@@ -57,6 +65,18 @@ class Aspnetuserroles(models.Model):
         managed = False
         db_table = 'aspnetuserroles'
 
+class Mailbox(models.Model):
+    email = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    regarding = models.CharField(max_length=255)
+    phone = models.CharField(max_length=30)
+    message = models.TextField()
+    flag = models.IntegerField()
+    datetime = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'mailbox'
 
 class Aspnetusers(models.Model):
     id = models.CharField(db_column='Id', primary_key=True, max_length=150)  # Field name made lowercase.
@@ -163,6 +183,8 @@ class Billingaddressmaster(models.Model):
     state = models.CharField(max_length=100, db_collation='utf8_general_ci', blank=True, null=True)
     postcode = models.CharField(db_column='Postcode', max_length=50, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     place = models.CharField(max_length=50, db_collation='utf8_general_ci', blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)  
+    longitude = models.FloatField(blank=True, null=True)  
     vatnumber = models.CharField(db_column='VATnumber', max_length=50, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -614,20 +636,29 @@ class Packagelist(models.Model):
     mobilesimcardincl_dataroamingeumtl = models.DecimalField(db_column='MobileSIMcardincl_DataroamingEUmtl', max_digits=18, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     isallowpayment = models.IntegerField(db_column='Isallowpayment', blank=True, null=True)  # Field name made lowercase.
     pricemonthly = models.DecimalField(db_column='PriceMonthly', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
-    month_planid = models.CharField(max_length=30)
-    number_3months_planid = models.CharField(db_column='3months_planid', max_length=30)  # Field renamed because it wasn't a valid Python identifier.
-    number_6months_planid = models.CharField(db_column='6months_planid', max_length=30)  # Field renamed because it wasn't a valid Python identifier.
-    year_planid = models.CharField(max_length=30)
-    number_2years_planid = models.CharField(db_column='2years_planid', max_length=30)  # Field renamed because it wasn't a valid Python identifier.
+    month_planid = models.CharField(max_length=30, blank=True, null=True)
+    number_3months_planid = models.CharField(db_column='3months_planid', max_length=30, blank=True, null=True)  # Field renamed because it wasn't a valid Python identifier.
+    number_6months_planid = models.CharField(db_column='6months_planid', max_length=30, blank=True, null=True)  # Field renamed because it wasn't a valid Python identifier.
+    year_planid = models.CharField(max_length=30, blank=True, null=True)
+    month_vehicle_plainid = models.CharField(max_length=50, blank=True, null=True)
+    number_3months_vehicle_plainid = models.CharField(db_column='3months_vehicle_plainid', max_length=50, blank=True, null=True)  # Field renamed because it wasn't a valid Python identifier.
+    number_6months_vehicle_plainid = models.CharField(db_column='6months_vehicle_plainid', max_length=50, blank=True, null=True)  # Field renamed because it wasn't a valid Python identifier.
+    year_vehicle_planid = models.CharField(max_length=50, blank=True, null=True)
+    number_2years_planid = models.CharField(db_column='2years_planid', max_length=30, blank=True, null=True)  # Field renamed because it wasn't a valid Python identifier.
     pricequarter = models.DecimalField(db_column='PriceQuarter', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     pricehalf = models.DecimalField(db_column='PriceHalf', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     priceoneyear = models.DecimalField(db_column='PriceOneYear', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     pricetwoyear = models.DecimalField(db_column='PriceTwoYear', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    activatepricemonthly = models.DecimalField(db_column='ActivatePriceMonthly', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    activatepricequarter = models.DecimalField(db_column='ActivatePriceQuarter', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    activatepricehalf = models.DecimalField(db_column='ActivatePriceHalf', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    activatepriceyear = models.DecimalField(db_column='ActivatePriceYear', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     bringbackservicefrom = models.CharField(db_column='BringBackServiceFrom', max_length=16, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     bringbackserviceup = models.CharField(db_column='BringBackServiceUp', max_length=16, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     isactive = models.IntegerField(db_column='Isactive', blank=True, null=True)  # Field name made lowercase.
     onrequest_txt = models.CharField(db_column='Onrequest_txt', max_length=250, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     sortorder = models.IntegerField(db_column='Sortorder', blank=True, null=True)  # Field name made lowercase.
+    group_id = models.IntegerField()
     eachadditionalvehicle = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     noofvehicleallow = models.IntegerField(db_column='Noofvehicleallow', blank=True, null=True)  # Field name made lowercase.
     annualpricepervehicle1 = models.IntegerField(db_column='Annualpricepervehicle1', blank=True, null=True)  # Field name made lowercase.
@@ -881,6 +912,9 @@ class Shippingaddressmaster(models.Model):
     state = models.CharField(max_length=100, db_collation='utf8_general_ci', blank=True, null=True)
     postcode = models.CharField(db_column='Postcode', max_length=50, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     place = models.CharField(max_length=50, db_collation='utf8_general_ci', blank=True, null=True)
+    is_like = models.BooleanField(db_column="isLike")
+    latitude = models.FloatField(blank=True, null=True)  
+    longitude = models.FloatField(blank=True, null=True)
     vatnumber = models.CharField(db_column='VATnumber', max_length=50, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -1415,6 +1449,7 @@ class Users(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     userid = models.CharField(db_column='UserID', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     salutation = models.IntegerField(blank=True, null=True)
+    company = models.CharField(max_length=255)
     firstname = models.CharField(db_column='Firstname', max_length=150, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     lastname = models.CharField(db_column='Lastname', max_length=150, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     email = models.CharField(db_column='Email', max_length=256, blank=True, null=True)  # Field name made lowercase.
@@ -1426,6 +1461,7 @@ class Users(models.Model):
     address_street = models.CharField(db_column='Address_Street', max_length=100, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     address_postal = models.CharField(db_column='Address_Postal', max_length=50, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
     address_state = models.CharField(db_column='Address_State', max_length=100, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.
+    address_housenumber = models.CharField(db_column='Address_housenumber', max_length=255)  # Field name made lowercase.
     address_latitude = models.FloatField(db_column='Address_Latitude', blank=True, null=True)  # Field name made lowercase.
     address_longitude = models.FloatField(db_column='Address_Longitude', blank=True, null=True)  # Field name made lowercase.
     creadtedby = models.CharField(db_column='Creadtedby', max_length=128, db_collation='utf8_general_ci', blank=True, null=True)  # Field name made lowercase.

@@ -10,3 +10,7 @@ def addSpace(value):
 @register.filter
 def getList(value):
     return range(value)
+    
+@register.filter()
+def to_int(value):
+    return int(value)

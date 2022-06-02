@@ -1,4 +1,11 @@
 var plan_price;
+window.onload = function() {
+    var $recaptcha = document.querySelector('#g-recaptcha-response');
+
+    if($recaptcha) {
+        $recaptcha.setAttribute("required", "required");
+    }
+};
 // Validation config
 var _componentValidation = function() {
     if (!$().validate) {
@@ -199,10 +206,44 @@ function fbFocusOnTop(page_index) {
                 }
             }); 
         }
-    }else{
+    }else if(page_index==4){
+        var _data = new FormData($('#frmregdetail').get(0));
+        $.ajax({
+            url: host_url + '/getAmount',
+            data: _data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            type: 'post', // This is the default though, you don't actually need to always mention it
+            success: function(data) {
+                $('#subscription_name').html(data.s_name);
+                $('#subscription_price').html(data.s_price + "€");
+                // $('#subscription_tax_price').html(data.s_tax_price + "€");
+                $('#tracker_name').html(data.t_name);
+                $('#tracker_price').html(data.t_price + "€");
+                $('#tracker_tax_price').html(data.t_tax_price + "€");
+                $('#tracker_activation_price').html(data.t_activate_price.toFixed(2) + "€");
+                $('#total_price').html(data.total_price + "€");
+                nextTab();
+            }
+        }); 
+    }
+    else{
         nextTab();
     }
     return false;
+}
+function Onchangedeliverycheck() {
+    if ($("#Issameshipaddress").prop('checked') == true) {
+        $(".shipping-form").hide(300);
+        $(".shipping-form .form-control").removeAttr('required');
+        $("#same_address_flag").val("true");
+    }
+    else {
+        $('.shipping-form').slideToggle('slow');
+        $(".shipping-form .form-control").attr('required','');
+        $("#same_address_flag").val("false");
+    }
 }
 function Bind_onchangepackage(index) {
     var price_html = $('#payment_method_'+index).html();

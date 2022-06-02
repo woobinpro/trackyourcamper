@@ -111,8 +111,13 @@
                                 {% elif invoice_item.PaymentInterval == '3' %}<td>monatlich</td><td>6</td>
                                 {% elif invoice_item.PaymentInterval == '4' %}<td>jährlich</td><td>1</td>
                                 {% else %}<td>jährlich</td><td>2</td>{% endif %}
-                                <td>{{ invoice_item.Paymentammount }}</td>
-                                <td>{{ invoice_item.Paymentammount }}</td>
+                                <td>{{ real_price }}</td>
+                                <td>{{ real_price }}</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td colspan="4">VAT</td>
+                                <td>{{ vat_price}}</td>
                             </tr>
                             {% else %}
                             <tr>
@@ -120,16 +125,16 @@
                                 <td>{{ invoice_item.Trackername }}</td>
                                 <td>one-time</td>
                                 <td>1</td>
-                                <td>{{ invoice_item.DicountPrice }}</td>
-                                <td>{{ invoice_item.DicountPrice }}</td>
+                                <td>{{ real_price }}</td>
+                                <td>{{ real_price }}</td>
                             </tr>
                             <tr>
                                 <td>2</td>
                                 <td>Activation</td>
                                 <td>one-time</td>
                                 <td>1</td>
-                                <td>{{ invoice_item.taxPrice }}</td>
-                                <td>Bonus</td>
+                                <td>{{ activate_price }}</td>
+                                <td>{% if activate_price == 0 %}Bonus{% else %}{{activate_price}}{% endif %}</td>
                             </tr>
                             <tr>
                                 <td>3</td>
@@ -155,7 +160,7 @@
                 <div class="col-sm-6">Gesamtbetrag*</div>
                 <div class="col-sm-6 text-right">{{ invoice_item.Subtotal }}</div> -->
             </div>
-            <p class="comment">* Im Gesamtbetrag von {{ invoice_item.Paymentammount }} € (Netto: {{ real_price }} €) sind 19 % USt. ({{ vat_price }} €) enthalten. </p>
+            <!-- {% if invoice_type == "subscription" %}<p class="comment">* Im Gesamtbetrag von {{ invoice_item.Paymentammount }} € (Netto: {{ real_price }} €) sind 19 % USt. ({{ vat_price }} €) enthalten. </p>{% endif %} -->
             <p class="comment">Zahlung erfolgte durch PayPal, Lastschriftverfahren (GoCardless) oder über Kreditkarte</p>
             <p class="comment">Wir bedanken uns für das Vertrauen in Track your Camper. </p>
             <p>Rechnungsdatum gleich Leistungsdatum.</p>

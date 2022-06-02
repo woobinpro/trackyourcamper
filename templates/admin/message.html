@@ -1,0 +1,87 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin/css/messagebox.css' %}">
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/extensions/responsive.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Message</span></h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+            <div class="d-flex justify-content-center">
+                <button href="#" message_id="{{ message.id }}" class="btn bg-danger-300 btn-sm" id="message_delete"><i class="icon-trash mr-2"></i> Löschen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">Message</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+    <div class='row'>
+        <div class='col-lg-7'>
+            <div class='card'>
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Message</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <div class="row">
+                        <div class="col-sm-3 control-label">DateTime:</div><div class="col-sm-9">{{ message.datetime }}</div>
+                        <div class="col-sm-3 control-label">Name:</div><div class="col-sm-9">{{ message.name }}</div>
+                        <div class="col-sm-3 control-label">E-Mail Adresse:</div><div class="col-sm-9">{{ message.email }}</div>
+                        <div class="col-sm-3 control-label">Betreff:</div> <div class="col-sm-9">{{ message.regarding }}</div>
+                        <div class="col-sm-3 control-label">Kontakt Telefon:</div> <div class="col-sm-9">{{ message.phone }}</div>
+                        <div class="col-sm-3 control-label">Inhalt:</div> <div class="col-sm-9">{{ message.message }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-5'>
+            <div class='card'>
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Antwort</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class='card-body'>
+                    <form id="message_reply" action="/Messagereply" method="post">
+                        <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                        <input type="hidden" name="email" value="{{ message.email }}">
+                        <textarea class="form-control" name="content"></textarea>
+                        <button class="btn bg-indigo-300 mt-2 float-right" type="submit"><i class="icon-arrow-left8 mr-2"></i> Senden</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/message.js' %}"></script>
+{% endblock %}

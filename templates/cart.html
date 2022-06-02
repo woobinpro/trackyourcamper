@@ -25,17 +25,19 @@
                             {% for tracker in tracker_list %}
                                 {% for cart in cart_list %}
                                     {% if cart.product_id == tracker.id %}
-                                    <tr product_id='{{ tracker.id }}'>
+                                    <tr product_id='{{ tracker.id }}' category_id="{{ tracker.category_id }}">
                                         <td class="image">
+                                            {% if tracker.img is not None %}
                                             <div class="white-bg">
                                                 <a class="media-link" href="/Tracker/Detail/{{ tracker.id }}">
                                                     <img src="{% static 'upload/' %}{{ tracker.img }}" class="d-block">
                                                 </a>
                                             </div>
+                                            {% endif %}
                                         </td>
                                         <td class="description">
                                             <a href="/Tracker/Detail/{{ tracker.id }}">
-                                                {{ tracker.trackername }}
+                                                {{ tracker.trackername }} 
                                             </a>
                                             <ul>
                                                 <li>
@@ -94,7 +96,7 @@
                                 <li class="ptb-10"> <hr class="divider"> </li>
                                 <li>
                                     <a class="btn btn-warning" type="button" href='/Checkout' id='btn_checkout'>Gehen Sie zur Kasse</a>
-                                    <a class="btn btn-warning" href="/Shop">Weiter einkaufen</a>
+                                    <a class="btn btn-warning" id='btn_back' href="/Shop/Index/{{ tracker_list.0.category_id }}">Weiter einkaufen</a>
                                 </li>
                             </ul>
                         </div>

@@ -252,3 +252,9 @@ label {
     opacity: 0;
     pointer-events: none;
 }
+.price_item {
+    font-weight: bold;
+}
+.price_item span {
+    font-weight: 400;
+}

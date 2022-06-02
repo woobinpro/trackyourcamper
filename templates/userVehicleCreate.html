@@ -27,13 +27,13 @@
                             <a href="/Uservehicles">Meine Fahrzeuge</a>
                         </li>
                         <li>
-                            <a href="">Bestellungen</a>
+                            <a href="/Userorders">Bestellungen</a>
                         </li>
                         <li>
-                            <a href="">Formulare</a>
+                            <a href="/Userforms">Formulare</a>
                         </li>
                         <li>
-                            <a href="">Passwort ändern</a>
+                            <a href="/Userchangepassword">Passwort ändern</a>
                         </li>
                         <li>
                             <a href="/Admin/Logout">Logout</a>
@@ -71,6 +71,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <input type="hidden" name="userid" value="{{ user_id }}">
                            
                         </div>
@@ -159,13 +160,13 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class='row'>
+                        <div class='row'>
                             <div class='col-sm-4'>
                                 <div class="form-group">
                                     <div class="row">
                                         <label class="col-sm-12 control-label">Tracker ID</label>
                                         <div class="col-sm-12">
-                                            <input class="form-control" required  placeholder="The field Tracker ID must be a number."  id="trackerid" name="trackerid" type="text" value="{{ vehicle_info.trackerid }}"> 
+                                            <input class="form-control" disabled  placeholder="The field Tracker ID must be a number."  id="trackerid" name="trackerid" type="text" value="{{ vehicle_info.trackerid }}"> 
                                         </div>
                                     </div>
                                 </div>
@@ -175,7 +176,7 @@
                                     <div class="row">
                                         <label class="col-sm-12 control-label">Tracker Mobile Sim Number</label>
                                         <div class="col-sm-12">
-                                            <input class="form-control" required id="tracker_mobilenumber" name="tracker_mobilenumber" type="text" value="{{ vehicle_info.tracker_mobilenumber }}">
+                                            <input class="form-control" disabled id="tracker_mobilenumber" name="tracker_mobilenumber" type="text" value="{{ vehicle_info.tracker_mobilenumber }}">
                                         </div>
                                     </div>
                                 </div>
@@ -185,13 +186,13 @@
                                     <div class="row">
                                         <label class="col-sm-12 control-label">Tracker Mobile Sim Number APN</label>
                                         <div class="col-sm-12">
-                                            <input class="form-control" required id="tracker_mobile_apn" name="tracker_mobile_apn" type="text" value="{{ vehicle_info.tracker_mobile_apn }}">
+                                            <input class="form-control" disabled id="tracker_mobile_apn" name="tracker_mobile_apn" type="text" value="{{ vehicle_info.tracker_mobile_apn }}">
                                              
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div class='row sub-label'>
                             <label class="col-sm-12 control-label">Abmessungen</label>
                         </div>
@@ -493,6 +494,95 @@
                                 </div>
                             </div>
                         </div>
+                        {% if vehicle_count > 0 %}
+                        <hr>
+                        <div class="row sub-label">
+                            <label class="col-sm-12 control-label">Zahlung</label>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-12 control-label">GPS Tracker</label>
+                                        <div class="col-sm-12">
+                                            <select class="form-control" required name="tracker_id" id="tracker_id">
+                                                {% for tracker in tracker_list %}
+                                                <option value="{{ tracker.id }}" price="{{ tracker.dicountprice }}">{{ tracker.trackername }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-12 control-label">Abonnement</label>
+                                        <div class="col-sm-12">
+                                            <select class="form-control" required  name="package_id" id="package_id">
+                                                {% for package in package_list %}
+                                                <option value="{{ package.id }}" >{{package.packagename}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-12 control-label">Abonnementintervall</label>
+                                        <div class="col-sm-12">
+                                            <select class="form-control" required  name="payment_interval" id="package_interval_id">
+                                                <option value="1">1 Monat</option>
+                                                <option value="2">3 Monate</option>
+                                                <option value="3">6 Monate</option>
+                                                <option value="4">1 Jahr</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-sm-3">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-12 control-label">Aktivierungsintervall</label>
+                                        <div class="col-sm-12">
+                                            <select class="form-control" required name="activate_payment_interval" id="activate_interval_id">
+                                                <option value="1">1 Monat</option>
+                                                <option value="2">3 Monate</option>
+                                                <option value="3">6 Monate</option>
+                                                <option value="4">1 Jahr</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <script src='https://www.google.com/recaptcha/api.js'></script>
+                                <div class="g-recaptcha" required data-sitekey="6LcgWK0eAAAAAGYb4J7cby-MHpf0u4Ecf7nfYC5n"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="chk-total">
+                                    <ul class="font-2" style="list-style: none;">
+                                        <b>Gewählte Optionen</b>
+                                        <li class="price_item"> Abonnement: <span id="subscription_name"></span> <span id='subscription_price'>  </span> </li>
+                                        <!-- <li class="price_item"> MwSt.-Preis: <span id="subscription_tax_price"></span>  </li> -->
+                                        <!-- <br> -->
+                                        <li class="price_item"> GPS-Tracker: <span id="tracker_name"></span> <span id='tracker_price'>  </span> </li>
+                                        <li class="price_item"> Aktivierungspreis: <span id="tracker_activation_price"></span> </li>
+                                        <li class="price_item"> MwSt.-Preis: <span id="tracker_tax_price"></span> </li>
+                                        <hr>
+                                        <li class="price_item"> Gesamtsumme: <span id='total_price'> </span> </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <input id="vehicle_count" value="{{ vehicle_count }}" type="hidden">
                         {% if vehicle_info %}<input name='id' type='hidden' value="{{ vehicle_info.id }}">{% endif %}
                         <div class="text-right">
                                 <button class="btn btn-warning" type="submit">{% if not vehicle_info %}Erstellen{% else %}Speichern{% endif %}</button>

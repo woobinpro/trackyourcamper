@@ -1,0 +1,72 @@
+{% extends 'admin/base.html' %}
+{% load static %}  
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin/css/messagebox.css' %}">
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'admin/global_assets/js/plugins/tables/datatables/extensions/responsive.min.js' %}"></script>
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">MessageBox</span></h4>
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+        <div class="d-flex">
+            <div class="breadcrumb">
+                <a href="/Admin" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                <span class="breadcrumb-item active">MessageBox</span>
+            </div>
+
+            <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">Nachrichtenliste</h5>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+        <table class="table datatable-responsive message-table">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>Message</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in message_list %}
+                <tr message_id="{{ message.id }}" id="tr_{{ message.id }}">
+                    <td>{{ message.name }}</td>
+                    <td>{{ message.message|slice:"0:80" }} {% if message.message|length > 80 %}...{% endif %}</td>
+                    <td>{{ message.datetime }}</td>
+                    <td class='text-right'>
+                        <a href="/Message/{{ message.id }}" class="btn bg-green-300 btn-sm rounded-round"><i class="icon-reply"></i></a>
+                        <button message_id="{{ message.id }}" class="btn bg-danger-300 btn-sm manage-delete rounded-round"><i class="icon-trash"></i></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+<!-- /content area -->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'admin/js/messagebox.js' %}"></script>
+{% endblock %}

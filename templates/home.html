@@ -2,6 +2,7 @@
 {% load static %}  
 {% load replace %}
 {% load mathfilters %}
+{% load cookie_consent_tags %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 <div id="header_slide" class="carousel slide" data-ride="carousel">
@@ -42,6 +43,7 @@
         <span class="sr-only">Next</span>
     </a>
 </div>
+
 <div class="container-fluid fw-row ">
     <div class="col-sm-12 pt-5 pb-5" id='world_back' data-v-center="true">
         <div class="container">
@@ -502,13 +504,122 @@
     <div class="row">
         <div class="blank_spacer col-sm-12 text-center mb-5 mt-5">
             <br>
-            <button type="button" class="btn btn-warning" onclick="btnredirecttocontact()"> Job-Angebote </button>
+            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#review_modal"> Bewerten Sie uns </button>
+        </div>
+    </div>
+</div>
+
+<div id="review_modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bewerten Sie uns!</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form id="review_form"  action="/saveReview" method="post">
+                <div class="modal-body">
+                
+                    <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <input class="form-control" required  name="review_firstname" type="text" placeholder="Vorname">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <input class="form-control" required  name="review_familyname" type="text" placeholder="Familienname">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <input class="form-control" required  name="review_email" type="text" placeholder="E-Mail">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <input class="form-control"   name="review_phonenumber" type="text" placeholder="Telefonnummer">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <label class="control-label">Your rating:</label>
+                            <input id="review_rate" name="rate" type="hidden">
+                            <i class="rate-star icon-star-empty3 mr-1 ml-1" index="1"></i>
+                            <i class="rate-star icon-star-empty3 mr-1" index="2"></i>
+                            <i class="rate-star icon-star-empty3 mr-1" index="3"></i>
+                            <i class="rate-star icon-star-empty3 mr-1" index="4"></i>
+                            <i class="rate-star icon-star-empty3 mr-1" index="5"></i>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <textarea class="form-control" required name="content" placeholder="Please write your review here."></textarea>
+                        </div>
+                    </div>
+                    <script src='https://www.google.com/recaptcha/api.js'></script>
+                    <div class="g-recaptcha" required data-sitekey="6LcgWK0eAAAAAGYb4J7cby-MHpf0u4Ecf7nfYC5n"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn bg-primary">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block script %}
+<script src="{% static 'admin/global_assets/js/plugins/forms/validation/validate.min.js' %}"></script>
+<script type="text/javascript" src={% static "cookie_consent/cookiebar.js" %}></script>
+
+    <script type="{% js_type_for_cookie_consent request "social" "*:.google.com" %}" data-varname="social">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+    
+    <!-- {% if request|cookie_consent_enabled %}
+      {% not_accepted_or_declined_cookie_groups request as cookie_groups %}
+
+      {% if cookie_groups %}
+        {% url "cookie_consent_cookie_group_list" as url_cookies %}
+        {% cookie_consent_accept_url cookie_groups as url_accept %}
+        {% cookie_consent_decline_url cookie_groups as url_decline %} -->
+        <script type="text/javascript">
+          var cookie_groups = [];
+          {% for cookie_group in cookie_groups %}
+            cookie_groups.push("{{ cookie_group.varname }}");
+          {% endfor %}
+
+          function ready(fn) {
+	          if (document.readyState != 'loading') {
+	            fn();
+	          } else if (document.addEventListener) {
+	            document.addEventListener('DOMContentLoaded', fn);
+	          } else {
+	            document.attachEvent('onreadystatechange', function() {
+		          if (document.readyState != 'loading')
+		            fn();
+	            });
+	          }
+          }
+
+          ready(function() {
+	          showCookieBar({
+              content: "{% filter escapejs %}{% with cookie_groups=cookie_groups|join:", " %}<div class="cookie-bar"><div class='text-left'><b>Diese Website verwendet Cookies</b>Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien bereitzustellen und unseren Datenverkehr zu analysieren. Wir geben auch Informationen über Ihre Nutzung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter, die diese möglicherweise mit anderen Informationen kombinieren, die Sie ihnen zur Verfügung gestellt haben oder die sie durch Ihre Nutzung ihrer Dienste gesammelt haben. Stimmen Sie der Verwendung von Cookies zu?</div><div> <a href="{{ url_accept }}" class="cc-cookie-accept">Akzeptieren</a> <a href="{{ url_decline }}" class="cc-cookie-decline">Ablehnen</a> </div></div>{% endwith %}{% endfilter %}",
+              cookie_groups: cookie_groups,
+              cookie_decline: "{% get_decline_cookie_groups_cookie_string request cookie_groups %}",
+              beforeDeclined: function() {
+                document.cookie = "{% get_decline_cookie_groups_cookie_string request cookie_groups %}";
+              }
+            });
+          });
+        </script>
+     <!-- {% endif %}
+     {% endif %} -->
 <script src="{% static 'js/home.js' %}"></script>
 {% endblock %}
  

@@ -18,7 +18,7 @@
 .control-label {
     font-weight: bold;
 }
-#get_coordinate, #get_coordinate_from_google {
+#get_coordinate, #get_coordinate_from_google, #shipping_get_coordinate, #shipping_get_coordinate_from_google{
     margin-top:27px;
 }
 #map {

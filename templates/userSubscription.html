@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}  
+{% load replace %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/myaccount.css' %}">
 <div class="container mt-5 mb-5">
@@ -25,31 +26,29 @@
                             <a href="/Uservehicles">Meine Fahrzeuge</a>
                         </li>
                         <li>
-                            <a href="">Bestellungen</a>
+                            <a href="/Userorders">Bestellungen</a>
                         </li>
                         <li>
-                            <a href="">Formulare</a>
+                            <a href="/Userforms">Formulare</a>
                         </li>
                         <li>
-                            <a href="">Passwort ändern</a>
+                            <a href="/Userchangepassword">Passwort ändern</a>
                         </li>
                         <li>
                             <a href="/Admin/Logout">Logout</a>
                         </li>
                     </ul>
                 </div>
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}" id='csrf_token'>
                 <div class="col-sm-9">
                     <div class='row subscription-table'>
                         {% for package in packagelist %}
-                        <div class="columns">
+                        <div class="col-sm-3 pb-2">
                             <ul class="price">
-                                <li class="header">{{ package.packagename }}</li>
-                                <li class="grey">$ {{ package.annualpricepervehicle}} pro Jahr</li>
-                                <li>10GB Storage</li>
-                                <li>10 Emails</li>
-                                <li>10 Domains</li>
-                                <li>1GB Bandwidth</li>
-                                <li class="grey"><a href="#" class="button">Upgrade</a></li>
+                                <li class="header">{{ package.packagename }} </li>
+                                <li class="grey">{{ package.Annualpricepervehicle}} € pro Jahr</li>
+                                <li>{{ package.Activationfeeoncepervehicle }} € pro Fahrzeug</li>
+                                <li class="grey">{% if current_subscription.Subscriptionpcakage|to_int  == package.ID %}<button href="#" class="button">Current</button>{% elif current_subscription.Sortorder < package.Sortorder %}<button href="{{ package.ID }}" class="button upgrade-link">Upgrade</button>{% else %}<button href="{{ package.ID }}" class="button upgrade-link">Downgrade</button>{% endif %}</li>
                             </ul>
                         </div>
                         {% endfor %}
@@ -67,4 +66,5 @@
 {% endblock %}
 {% block script %}
     <script src="{% static 'js/myaccount.js' %}"></script>
+    <script src="{% static 'js/userSubscription.js' %}"></script>
 {% endblock %}
